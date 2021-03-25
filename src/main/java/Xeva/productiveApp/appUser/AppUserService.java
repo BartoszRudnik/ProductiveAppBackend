@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,6 +29,39 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.
                 findByEmail(email).
                 orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
+
+    }
+
+    public String signInUser(String email, String password){
+
+        boolean userExists = appUserRepository
+                .findByEmail(email)
+                .isPresent();
+
+        if(!userExists){
+            throw new IllegalStateException("Wrong email or password");
+        }
+
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+
+        Optional<ApplicationUser> testUser = appUserRepository.findByEmail(email);
+
+        if(testUser.get().getPassword() != encodedPassword){
+            throw new IllegalStateException("Wrong email or password");
+        }
+
+        String token = UUID.randomUUID().toString();
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                testUser.get()
+        );
+
+        confirmationTokenService.updateConfirmationToken(confirmationToken);
+
+        return token;
 
     }
 
@@ -60,6 +94,10 @@ public class AppUserService implements UserDetailsService {
 
         return token;
 
+    }
+
+    public int enableAppUser(String email) {
+        return appUserRepository.enableAppUser(email);
     }
 
 }
