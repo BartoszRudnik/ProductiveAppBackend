@@ -16,8 +16,8 @@ public class ConfirmationTokenService {
         confirmationTokenRepository.save(token);
     }
 
-    public void updateConfirmationToken(ConfirmationToken token){
-        confirmationTokenRepository.updateToken(token.getToken(), token.getCreatedAt(), token.getExpiresAt(), token.getId());
+    public int updateConfirmationToken(ConfirmationToken token){
+        return confirmationTokenRepository.updateToken(token.getToken(), token.getCreatedAt(), token.getExpiresAt(), token.getAppUser().getId());
     }
 
     public Optional<ConfirmationToken> getToken(String token) {

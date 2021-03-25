@@ -14,6 +14,8 @@ public class LoginController {
     @PostMapping
     public String login(@RequestBody LoginRequest request){
 
+        System.out.println(request.getEmail() + " " + request.getPassword());
+
         return loginService.signIn(request);
 
     }

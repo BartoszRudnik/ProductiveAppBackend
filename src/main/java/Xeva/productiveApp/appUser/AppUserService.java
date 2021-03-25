@@ -42,11 +42,9 @@ public class AppUserService implements UserDetailsService {
             throw new IllegalStateException("Wrong email or password");
         }
 
-        String encodedPassword = bCryptPasswordEncoder.encode(password);
-
         Optional<ApplicationUser> testUser = appUserRepository.findByEmail(email);
 
-        if(testUser.get().getPassword() != encodedPassword){
+        if(!bCryptPasswordEncoder.matches(password, testUser.get().getPassword())){
             throw new IllegalStateException("Wrong email or password");
         }
 
@@ -60,6 +58,7 @@ public class AppUserService implements UserDetailsService {
         );
 
         confirmationTokenService.updateConfirmationToken(confirmationToken);
+        //confirmationTokenService.saveConfirmationToken(confirmationToken);
 
         return token;
 
