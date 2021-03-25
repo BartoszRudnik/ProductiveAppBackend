@@ -12,6 +12,7 @@ public class RegistrationService {
 
     private final EmailValidator emailValidator;
     private final AppUserService appUserService;
+
     public String register(RegistrationRequest request){
 
         boolean isValidEmail = emailValidator.test(request.getEmail());
@@ -23,6 +24,10 @@ public class RegistrationService {
         return appUserService.signUpUser(new ApplicationUser(
                 request.getFirstName(), request.getLastName(), request.getEmail(), request.getPassword(), AppUserRole.USER));
 
+    }
+
+    public String confirmToken(){
+        return "to do";
     }
 
 }

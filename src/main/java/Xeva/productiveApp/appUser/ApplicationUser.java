@@ -20,21 +20,24 @@ public class ApplicationUser implements UserDetails {
 
     @Id
     @SequenceGenerator(
-            name = "student_sequence",
-            sequenceName = "student_sequence",
+            name = "user_sequence",
+            sequenceName = "user_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
+            generator = "user_sequence"
     )
     private Long id;
+
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+
     @Enumerated(EnumType.STRING)
     private AppUserRole userRole;
+
     private Boolean locked = false;
     private Boolean enabled = true;
 
