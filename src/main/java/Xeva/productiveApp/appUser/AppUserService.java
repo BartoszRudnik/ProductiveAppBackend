@@ -32,7 +32,7 @@ public class AppUserService implements UserDetailsService {
 
     }
 
-    public String signInUser(String email, String password){
+    public ConfirmationToken signInUser(String email, String password){
 
         boolean userExists = appUserRepository
                 .findByEmail(email)
@@ -58,13 +58,12 @@ public class AppUserService implements UserDetailsService {
         );
 
         confirmationTokenService.updateConfirmationToken(confirmationToken);
-        //confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        return token;
+        return confirmationToken;
 
     }
 
-    public String signUpUser(ApplicationUser applicationUser){
+    public ConfirmationToken signUpUser(ApplicationUser applicationUser){
 
         boolean userExists = appUserRepository
                 .findByEmail(applicationUser.getEmail())
@@ -91,7 +90,7 @@ public class AppUserService implements UserDetailsService {
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        return token;
+        return confirmationToken;
 
     }
 

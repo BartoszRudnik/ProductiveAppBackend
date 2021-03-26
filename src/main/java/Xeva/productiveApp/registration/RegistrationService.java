@@ -21,7 +21,7 @@ public class RegistrationService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
 
-    public String register(RegistrationRequest request){
+    public ConfirmationToken register(RegistrationRequest request){
 
         boolean isValidEmail = emailValidator.test(request.getEmail());
 
@@ -29,14 +29,14 @@ public class RegistrationService {
             throw new IllegalStateException("email not valid");
         }
 
-        String token = appUserService.signUpUser(new ApplicationUser(
+        ConfirmationToken confirmationToken = appUserService.signUpUser(new ApplicationUser(
                 request.getFirstName(), request.getLastName(), request.getEmail(), request.getPassword(), AppUserRole.USER));
 
-        String link = "http://192.168.1.120:8080/api/v1/registration/confirm?token=" + token;
+        String link = "http://192.168.1.120:8080/api/v1/registration/confirm?token=" + confirmationToken.getToken();
 
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
 
-        return token;
+        return confirmationToken;
 
     }
 
