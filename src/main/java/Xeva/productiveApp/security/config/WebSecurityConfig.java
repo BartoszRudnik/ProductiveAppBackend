@@ -23,8 +23,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().
                 authorizeRequests().
-                    antMatchers("/api/v*/registration/**").permitAll().
-                    antMatchers("/api/v*/login/**").permitAll().
+                    antMatchers("/api/v*/registration/**").permitAll(). //Dostęp do strony rejestracji, bez logowania
+                    antMatchers("/api/v*/login/**").permitAll(). //Dostęp do strony logowania, bez logowania
                     antMatchers("/api/v*/resetToken/**").permitAll().
         anyRequest().
         authenticated().and()
