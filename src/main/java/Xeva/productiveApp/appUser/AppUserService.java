@@ -106,4 +106,8 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.disableAppUser(email);
     }
 
+    public int updateUserPassword(String email, String newPassword){
+        return appUserRepository.updateAppUserPassword(email, newPassword);
+    }
+
 }
