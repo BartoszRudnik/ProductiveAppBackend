@@ -1,7 +1,8 @@
 package Xeva.productiveApp.passwordReset;
 
-import Xeva.productiveApp.appUser.AppUserRepository;
+import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.email.EmailSender;
 import Xeva.productiveApp.passwordReset.resetToken.ResetToken;
 import Xeva.productiveApp.passwordReset.resetToken.ResetTokenService;
 import lombok.AllArgsConstructor;
@@ -15,8 +16,9 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ResetService {
 
-    private final AppUserRepository appUserRepository;
+    private final AppUserService appUserService;
     private final ResetTokenService resetTokenService;
+    private final EmailSender emailSender;
 
     private String generateResetToken(){
 
@@ -36,7 +38,7 @@ public class ResetService {
 
     public void resetPassword(ResetRequest request){
 
-        boolean userExists = appUserRepository
+        boolean userExists = appUserService
                 .findByEmail(request.getEmail())
                 .isPresent();
 
@@ -44,14 +46,17 @@ public class ResetService {
             throw new IllegalStateException("Wrong email or password");
         }
 
-        Optional<ApplicationUser> user = appUserRepository.findByEmail(request.getEmail());
+        appUserService.disableAppUser(request.getEmail());
+        Optional<ApplicationUser> user = appUserService.findByEmail(request.getEmail());
+
+        String code = generateResetToken();
 
         ResetToken resetToken = new ResetToken(
-                generateResetToken(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), user.get());
+                code, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), user.get());
 
         resetTokenService.saveResetToken(resetToken);
 
-        //SEND MAIL WITH TOKEN
+        emailSender.send(request.getEmail(), emailSender.buildEmail(code, code));
 
     }
 

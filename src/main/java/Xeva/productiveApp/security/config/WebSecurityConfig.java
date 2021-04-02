@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests().
                     antMatchers("/api/v*/registration/**").permitAll(). //Dostęp do strony rejestracji, bez logowania
                     antMatchers("/api/v*/login/**").permitAll(). //Dostęp do strony logowania, bez logowania
-                    antMatchers("/api/v*/resetToken/**").permitAll().
+                    antMatchers("/api/v*/resetToken/**").permitAll(). //Dostep do resetu hasla bez logowania
         anyRequest().
         authenticated().and()
         .formLogin();

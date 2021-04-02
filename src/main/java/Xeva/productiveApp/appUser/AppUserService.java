@@ -23,6 +23,10 @@ public class AppUserService implements UserDetailsService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
 
+    public Optional<ApplicationUser> findByEmail(String email){
+        return appUserRepository.findByEmail(email);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
@@ -96,6 +100,10 @@ public class AppUserService implements UserDetailsService {
 
     public int enableAppUser(String email) {
         return appUserRepository.enableAppUser(email);
+    }
+
+    public int disableAppUser(String email){
+        return appUserRepository.disableAppUser(email);
     }
 
 }

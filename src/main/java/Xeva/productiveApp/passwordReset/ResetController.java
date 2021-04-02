@@ -1,6 +1,5 @@
 package Xeva.productiveApp.passwordReset;
 
-import Xeva.productiveApp.passwordReset.resetToken.ResetTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,14 +9,12 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class ResetController {
 
-    private final ResetTokenService resetTokenService;
+    private final ResetService resetService;
 
     @PostMapping
-    public String reset(@RequestBody ResetRequest request){
+    public void reset(@RequestBody ResetRequest request){
 
-
-
-        return "success";
+        resetService.resetPassword(request);
 
     }
 

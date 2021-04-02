@@ -1,16 +1,14 @@
 package Xeva.productiveApp.passwordReset;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
-@AllArgsConstructor
 @EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class ResetRequest {
 
-    private final String email;
+    private String email;
 
 }
