@@ -1,7 +1,7 @@
 package Xeva.productiveApp.login;
 
-import Xeva.productiveApp.registration.token.ConfirmationToken;
-import Xeva.productiveApp.registration.token.ResponseToken;
+import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
+import Xeva.productiveApp.registration.confirmationToken.ResponseToken;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,7 +1,7 @@
 package Xeva.productiveApp.appUser;
 
-import Xeva.productiveApp.registration.token.ConfirmationToken;
-import Xeva.productiveApp.registration.token.ConfirmationTokenService;
+import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
+import Xeva.productiveApp.registration.confirmationToken.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

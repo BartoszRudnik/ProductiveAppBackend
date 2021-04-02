@@ -4,8 +4,8 @@ import Xeva.productiveApp.appUser.AppUserRole;
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.email.EmailSender;
-import Xeva.productiveApp.registration.token.ConfirmationToken;
-import Xeva.productiveApp.registration.token.ConfirmationTokenService;
+import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
+import Xeva.productiveApp.registration.confirmationToken.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

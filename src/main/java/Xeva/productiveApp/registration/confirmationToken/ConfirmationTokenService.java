@@ -1,4 +1,4 @@
-package Xeva.productiveApp.registration.token;
+package Xeva.productiveApp.registration.confirmationToken;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

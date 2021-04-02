@@ -1,4 +1,4 @@
-package Xeva.productiveApp.registration.token;
+package Xeva.productiveApp.registration.confirmationToken;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

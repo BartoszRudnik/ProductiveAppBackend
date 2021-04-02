@@ -25,6 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests().
                     antMatchers("/api/v*/registration/**").permitAll().
                     antMatchers("/api/v*/login/**").permitAll().
+                    antMatchers("/api/v*/resetToken/**").permitAll().
         anyRequest().
         authenticated().and()
         .formLogin();

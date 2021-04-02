@@ -1,7 +1,7 @@
 package Xeva.productiveApp.registration;
 
-import Xeva.productiveApp.registration.token.ConfirmationToken;
-import Xeva.productiveApp.registration.token.ResponseToken;
+import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
+import Xeva.productiveApp.registration.confirmationToken.ResponseToken;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +11,7 @@ import java.time.Duration;
 @CrossOrigin
 @RequestMapping(path = "api/v1/registration")
 @AllArgsConstructor
-public class UserRegistrationController {
+public class RegistrationController {
 
     private final RegistrationService registrationService;
 
