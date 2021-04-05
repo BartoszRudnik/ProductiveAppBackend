@@ -9,7 +9,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TaskRequest {
+public class AddTaskRequest {
 
     private String taskName;
     private String taskDescription;

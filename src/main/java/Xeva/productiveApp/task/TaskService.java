@@ -14,7 +14,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final AppUserService userService;
 
-    public void addTask(TaskRequest request){
+    public long addTask(AddTaskRequest request){
 
         boolean isUser = userService.findByEmail(request.getUserEmail()).isPresent();
 
@@ -27,17 +27,27 @@ public class TaskService {
         Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate());
 
         taskRepository.save(task);
+
+        return task.getId_task();
     }
 
     public void deleteTask(long id){
         taskRepository.deleteById(id);
     }
 
-    public List<Task> getTasks(){
-        return taskRepository.findAll();
+    public List<Task> getTasks(String email){
+        boolean isUser = userService.findByEmail(email).isPresent();
+
+        if(!isUser){
+            throw new IllegalStateException("Wrong user");
+        }
+
+        ApplicationUser user = userService.findByEmail(email).get();
+
+        return taskRepository.findAllByUserEmail(user.getEmail()).get();
     }
 
-    public void updateTask(TaskRequest request, long id){
+    public void updateTask(AddTaskRequest request, long id){
         Task task = taskRepository.findById(id).get();
 
         task.setDescription(request.getTaskDescription());

@@ -13,14 +13,14 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @GetMapping("/getAll")
-    public List<Task> getTasks(){
-        return taskService.getTasks();
+    @GetMapping("/getAll/{mail}")
+    public List<Task> getTasks(@PathVariable String mail){
+        return taskService.getTasks(mail);
     }
 
     @PostMapping("/add")
-    public void newTask(@RequestBody TaskRequest request){
-        taskService.addTask(request);
+    public long newTask(@RequestBody AddTaskRequest request){
+        return taskService.addTask(request);
     }
 
     @DeleteMapping("/delete/{taskId}")
@@ -29,7 +29,7 @@ public class TaskController {
     }
 
     @PutMapping("/update/{taskId}")
-    public void updateTask(@RequestBody TaskRequest request, @PathVariable long taskId){
+    public void updateTask(@RequestBody AddTaskRequest request, @PathVariable long taskId){
         taskService.updateTask(request, taskId);
     }
 
