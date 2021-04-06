@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -23,8 +25,9 @@ public class TaskService {
         }
 
         ApplicationUser user = userService.findByEmail(request.getUserEmail()).get();
+        TaskPriority priority = getPriority(request.getPriority());
 
-        Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone());
+        Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority);
 
         taskRepository.save(task);
 
@@ -71,6 +74,22 @@ public class TaskService {
 
         taskRepository.save(task);
 
+    }
+
+    private TaskPriority getPriority(String priorityName){
+        System.out.println(priorityName);
+        return switch (priorityName) {
+            case "SMALL" -> TaskPriority.SMALL;
+            case "HIGH" -> TaskPriority.HIGH;
+            case "HIGHER" -> TaskPriority.HIGHER;
+            case "CRITICAL" -> TaskPriority.CRITICAL;
+            default -> TaskPriority.NORMAL;
+        };
+
+    }
+
+    public List<String> getPriorities(){
+        return Stream.of(TaskPriority.values()).map(TaskPriority::name).collect(Collectors.toList());
     }
 
 }

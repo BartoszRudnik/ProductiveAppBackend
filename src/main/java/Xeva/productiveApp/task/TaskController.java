@@ -38,4 +38,9 @@ public class TaskController {
         taskService.changeTaskStatus(taskId);
     }
 
+    @GetMapping("/priorities")
+    public List<String> getPriorities(){
+        return taskService.getPriorities();
+    }
+
 }
