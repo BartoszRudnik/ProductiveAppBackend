@@ -33,4 +33,9 @@ public class TaskController {
         taskService.updateTask(request, taskId);
     }
 
+    @PutMapping("/done/{taskId}")
+    public void changeTaskStatus(@PathVariable long taskId){
+        taskService.changeTaskStatus(taskId);
+    }
+
 }

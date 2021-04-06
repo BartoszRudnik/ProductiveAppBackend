@@ -24,11 +24,12 @@ public class TaskService {
 
         ApplicationUser user = userService.findByEmail(request.getUserEmail()).get();
 
-        Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate());
+        Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone());
 
         taskRepository.save(task);
 
         return task.getId_task();
+
     }
 
     public void deleteTask(long id){
@@ -36,6 +37,7 @@ public class TaskService {
     }
 
     public List<Task> getTasks(String email){
+
         boolean isUser = userService.findByEmail(email).isPresent();
 
         if(!isUser){
@@ -45,15 +47,27 @@ public class TaskService {
         ApplicationUser user = userService.findByEmail(email).get();
 
         return taskRepository.findAllByUserEmail(user.getEmail()).get();
+
     }
 
     public void updateTask(AddTaskRequest request, long id){
+
         Task task = taskRepository.findById(id).get();
 
         task.setDescription(request.getTaskDescription());
         task.setTask_name(request.getTaskName());
         task.setStartDate(request.getStartDate());
         task.setEndDate(request.getEndDate());
+
+        taskRepository.save(task);
+
+    }
+
+    public void changeTaskStatus(long id){
+
+        Task task = taskRepository.getOne(id);
+
+        task.setIfDone(!task.getIfDone());
 
         taskRepository.save(task);
 
