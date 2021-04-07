@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1.2
+FROM maven:3.6-openjdk-11-slim AS Builder
+RUN groupadd maven && useradd --gid maven --home-dir /maven maven
+RUN mkdir -p /maven/build && chown -R maven:maven /maven
+USER maven:maven
+WORKDIR /maven/build
+COPY pom.xml .
+RUN --mount=type=cache,target=/maven/.m2 mvn dependency:go-offline
+COPY src ./src
+RUN --mount=type=cache,target=/maven/.m2 mvn package -DskipTests && mkdir target/layers
+WORKDIR target/layers
+RUN java -Djarmode=layertools -jar ../*.jar extract
+
+FROM openjdk:11-jre-slim
+RUN groupadd --system spring && useradd --system --gid spring spring
+USER spring:spring
+WORKDIR app
+COPY --from=Builder /maven/build/target/layers/dependencies/ .
+COPY --from=Builder /maven/build/target/layers/spring-boot-loader/ .
+COPY --from=Builder /maven/build/target/layers/snapshot-dependencies/ .
+COPY --from=Builder /maven/build/target/layers/application/ .
+EXPOSE 8080
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
