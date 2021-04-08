@@ -5,7 +5,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile.rest
     image: productivity-app-rest
-    restart: "no" #always
+    restart: always
     ports:
       - 8080:8080
     depends_on:
@@ -13,17 +13,17 @@ services:
         condition: service_healthy
   db:
     image: postgres:13
-    restart: "no" #always
+    restart: always
     env_file:
-      - ./db_creds.env
+      - ./db-creds.env
     environment:
       POSTGRES_HOST_AUTH_METHOD: scram-sha-256
-      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=scram-sha-256
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 30s
+      start_period: 20s
+      interval: 1m30s
       timeout: 5s
       retries: 5
 volumes:

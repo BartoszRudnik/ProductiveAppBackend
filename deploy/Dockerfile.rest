@@ -1,4 +1,15 @@
 # syntax=docker/dockerfile:1.2
+FROM python:3.9-slim-buster AS Patcher
+RUN pip install --no-cache-dir pyyaml
+RUN groupadd python && useradd --gid python python
+RUN mkdir -p /patch && chown -R python:python /patch
+USER python:python
+WORKDIR /patch
+COPY deploy/patch-config.py .
+COPY deploy/db-creds.env .
+COPY --chown=python:python src/main/resources/application.yml .
+RUN python ./patch-config.py
+
 FROM maven:3.6-openjdk-11-slim AS Builder
 RUN groupadd maven && useradd --gid maven --home-dir /maven maven
 RUN mkdir -p /maven/build && chown -R maven:maven /maven
@@ -7,6 +18,7 @@ WORKDIR /maven/build
 COPY pom.xml .
 RUN --mount=type=cache,target=/maven/.m2 mvn dependency:go-offline
 COPY src ./src
+COPY --from=Patcher /patch/application.yml src/main/resources
 RUN --mount=type=cache,target=/maven/.m2 mvn package -DskipTests && mkdir target/layers
 WORKDIR target/layers
 RUN java -Djarmode=layertools -jar ../*.jar extract
