@@ -45,6 +45,7 @@ public class NewPasswordService {
         String encodedPassword = bCryptPasswordEncoder.encode(request.getNewPassword());
 
         appUserService.updateUserPassword(request.getEmail(), encodedPassword);
+        appUserService.enableAppUser(request.getEmail());
 
         String token = UUID.randomUUID().toString();
 
