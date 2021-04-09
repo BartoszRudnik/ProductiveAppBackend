@@ -110,4 +110,8 @@ public class TaskService {
         return Stream.of(TaskPriority.values()).map(TaskPriority::name).collect(Collectors.toList());
     }
 
+    public List<Task> getUserTasks(String email){
+        return taskRepository.findAllByUserEmail(email).get();
+    }
+
 }

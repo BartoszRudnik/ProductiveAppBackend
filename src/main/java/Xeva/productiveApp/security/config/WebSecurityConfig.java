@@ -28,6 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     antMatchers("/api/v*/resetToken/**").permitAll(). //Dostep do resetu hasla bez logowania
                     antMatchers("/api/v*/newPassword/**").permitAll(). //Dostep do ustawienia nowego hasla bez logowania
                     antMatchers("/api/v*/task/**").permitAll().
+                    antMatchers("/api/v*/tag/**").permitAll().
         anyRequest().
         authenticated().and()
         .formLogin();
