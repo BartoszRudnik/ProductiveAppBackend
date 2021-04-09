@@ -18,4 +18,9 @@ public class TagController {
         return tagService.findAllByEmail(mail);
     }
 
+    @PostMapping("/add")
+    public void addTag(@RequestBody Tag tag){
+        tagService.save(tag);
+    }
+
 }

@@ -17,11 +17,14 @@ import java.util.Set;
 public class TagService {
 
     private final TagRepository tagRepository;
-    private final TaskRepository taskRepository;
     private final AppUserService appUserService;
 
     public void saveAll(List<Tag> tags){
         tagRepository.saveAll(tags);
+    }
+
+    public void save(Tag tag){
+        tagRepository.save(tag);
     }
 
     public List<Tag> findAllByTaskId(Long id){
@@ -35,15 +38,7 @@ public class TagService {
             throw new IllegalStateException("Wrong email");
         }
 
-        List<Task> userTasks = taskRepository.findAllByUserEmail(email).get();
-
-        Set<Tag> tags = new HashSet<>();
-
-        for(Task task : userTasks){
-            tags.addAll(tagRepository.findAllByTaskId(task.getId_task()).get());
-        }
-
-        return tags;
+        return tagRepository.findAllByOwnerEmail(email).get();
 
     }
 

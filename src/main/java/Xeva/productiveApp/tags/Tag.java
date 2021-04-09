@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -34,10 +35,20 @@ public class Tag {
     private String name;
 
     @Column(
-            name = "taskId",
-            nullable = false
+            name = "taskId"
     )
     private Long taskId;
+
+    @Column(
+            name = "owner_email",
+            nullable = false
+    )
+    private String ownerEmail;
+
+    public Tag(String ownerEmail, String name){
+        this.ownerEmail = ownerEmail;
+        this.name = name;
+    }
 
     public Tag(Long id, String name){
         this.id = id;
@@ -53,6 +64,19 @@ public class Tag {
     public Tag(String name, Long taskId){
         this.name = name;
         this.taskId = taskId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Tag tag = (Tag) o;
+        return getName().equals(tag.getName()) && getOwnerEmail().equals(tag.getOwnerEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getOwnerEmail());
     }
 
 }

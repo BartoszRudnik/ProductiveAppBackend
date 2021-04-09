@@ -37,7 +37,11 @@ public class TaskService {
         taskRepository.save(task);
 
         for(Tag tag : tags){
+            if(tag.getTaskId() == null) {
+                tag.setId(null);
+            }
             tag.setTaskId(task.getId_task());
+            tag.setOwnerEmail(user.getEmail());
         }
 
         tagService.saveAll(tags);
