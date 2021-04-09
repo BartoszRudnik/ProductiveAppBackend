@@ -14,7 +14,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping("/getAll/{mail}")
-    public List<Task> getTasks(@PathVariable String mail){
+    public List<GetTasksResponse> getTasks(@PathVariable String mail){
         return taskService.getTasks(mail);
     }
 

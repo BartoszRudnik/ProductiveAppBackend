@@ -1,8 +1,10 @@
 package Xeva.productiveApp.task;
 
+import Xeva.productiveApp.tags.Tag;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @EqualsAndHashCode
@@ -18,5 +20,6 @@ public class AddTaskRequest {
     private boolean ifDone;
     private Date startDate;
     private Date endDate;
+    private List<Tag> tags;
 
 }

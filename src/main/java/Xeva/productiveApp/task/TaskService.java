@@ -2,9 +2,12 @@ package Xeva.productiveApp.task;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.tags.Tag;
+import Xeva.productiveApp.tags.TagService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,6 +18,7 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final AppUserService userService;
+    private final TagService tagService;
 
     public long addTask(AddTaskRequest request){
 
@@ -28,8 +32,15 @@ public class TaskService {
         TaskPriority priority = getPriority(request.getPriority());
 
         Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority);
+        List<Tag> tags = request.getTags();
 
         taskRepository.save(task);
+
+        for(Tag tag : tags){
+            tag.setTaskId(task.getId_task());
+        }
+
+        tagService.saveAll(tags);
 
         return task.getId_task();
 
@@ -39,7 +50,7 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    public List<Task> getTasks(String email){
+    public List<GetTasksResponse> getTasks(String email){
 
         boolean isUser = userService.findByEmail(email).isPresent();
 
@@ -47,9 +58,16 @@ public class TaskService {
             throw new IllegalStateException("Wrong user");
         }
 
+        List<GetTasksResponse> tasksResponse = new ArrayList<>();
         ApplicationUser user = userService.findByEmail(email).get();
 
-        return taskRepository.findAllByUserEmail(user.getEmail()).get();
+        List<Task> tasks = taskRepository.findAllByUserEmail(user.getEmail()).get();
+
+        for(Task task : tasks){
+            tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task())));
+        }
+
+        return tasksResponse;
 
     }
 
