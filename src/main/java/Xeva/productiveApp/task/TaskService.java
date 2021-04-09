@@ -100,14 +100,17 @@ public class TaskService {
 
     private TaskPriority getPriority(String priorityName){
         System.out.println(priorityName);
-        return switch (priorityName) {
-            case "SMALL" -> TaskPriority.SMALL;
-            case "HIGH" -> TaskPriority.HIGH;
-            case "HIGHER" -> TaskPriority.HIGHER;
-            case "CRITICAL" -> TaskPriority.CRITICAL;
-            default -> TaskPriority.NORMAL;
+        switch (priorityName) {
+            case "SMALL":
+				return TaskPriority.SMALL;
+            case "HIGH":
+				return TaskPriority.HIGH;
+            case "HIGHER":
+				return TaskPriority.HIGHER;
+            case "CRITICAL":
+				return TaskPriority.CRITICAL;
         };
-
+		return TaskPriority.NORMAL;
     }
 
     public List<String> getPriorities(){
