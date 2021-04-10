@@ -81,7 +81,7 @@ public class Task {
         this.user = user;
     }
 
-    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority) {
+    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
@@ -89,6 +89,7 @@ public class Task {
         this.endDate = endDate;
         this.ifDone = ifDone;
         this.priority = priority;
+        this.localization = localization;
     }
 
     public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Date startDate, Date endDate) {

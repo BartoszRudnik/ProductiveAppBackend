@@ -30,8 +30,9 @@ public class TaskService {
 
         ApplicationUser user = userService.findByEmail(request.getUserEmail()).get();
         TaskPriority priority = getPriority(request.getPriority());
+        TaskLocalization localization = getLocalization(request.getLocalization());
 
-        Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority);
+        Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization);
         List<Tag> tags = request.getTags();
 
         taskRepository.save(task);
@@ -109,8 +110,22 @@ public class TaskService {
 				return TaskPriority.HIGHER;
             case "CRITICAL":
 				return TaskPriority.CRITICAL;
-        };
+        }
 		return TaskPriority.NORMAL;
+    }
+
+    private TaskLocalization getLocalization(String localizationName){
+        switch(localizationName){
+            case "INBOX":
+                return TaskLocalization.INBOX;
+            case "SCHEDULED":
+                return TaskLocalization.SCHEDULED;
+            case "ANYTIME":
+                return TaskLocalization.ANYTIME;
+            case "TRASH":
+                return TaskLocalization.TRASH;
+        }
+        return TaskLocalization.DELEGATED;
     }
 
     public List<String> getPriorities(){

@@ -5,9 +5,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/prodappdb
-    username: prodapp
-    password: 5B$n!mNQjLo-79HBv@mV
+    url: jdbc:postgresql://localhost:5432/registration
+    username: bartosz
+    password: haslo1234
   jpa:
     hibernate:
       ddl-auto: create-drop

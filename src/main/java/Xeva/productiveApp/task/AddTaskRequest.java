@@ -17,6 +17,7 @@ public class AddTaskRequest {
     private String taskDescription;
     private String userEmail;
     private String priority;
+    private String localization;
     private boolean ifDone;
     private Date startDate;
     private Date endDate;
