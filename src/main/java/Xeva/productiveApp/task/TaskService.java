@@ -84,6 +84,9 @@ public class TaskService {
         task.setTask_name(request.getTaskName());
         task.setStartDate(request.getStartDate());
         task.setEndDate(request.getEndDate());
+        task.setPriority(getPriority(request.getPriority()));
+        task.setIfDone(request.isIfDone());
+        task.setLocalization(getLocalization(request.getLocalization()));
 
         taskRepository.save(task);
 
