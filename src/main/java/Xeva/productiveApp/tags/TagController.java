@@ -18,6 +18,11 @@ public class TagController {
         return tagService.findAllByEmail(mail);
     }
 
+    @DeleteMapping("/delete/{tagName}")
+    public void deleteTag(@PathVariable String tagName){
+        tagService.deleteByEmail(tagName);
+    }
+
     @PostMapping("/add")
     public void addTag(@RequestBody Tag tag){
         tagService.save(tag);

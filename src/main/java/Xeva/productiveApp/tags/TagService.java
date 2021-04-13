@@ -42,4 +42,8 @@ public class TagService {
 
     }
 
+    public void deleteByEmail(String tagName){
+        tagRepository.deleteByName(tagName);
+    }
+
 }
