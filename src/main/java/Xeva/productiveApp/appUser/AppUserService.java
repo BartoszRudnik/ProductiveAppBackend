@@ -49,7 +49,7 @@ public class AppUserService implements UserDetailsService {
 
         Optional<ApplicationUser> testUser = appUserRepository.findByEmail(email);
 
-        if(!bCryptPasswordEncoder.matches(password, testUser.get().getPassword())){
+        if(!bCryptPasswordEncoder.matches(password, testUser.get().getPassword()) || !testUser.get().getEnabled()){
             throw new IllegalStateException("Wrong email or password");
         }
 

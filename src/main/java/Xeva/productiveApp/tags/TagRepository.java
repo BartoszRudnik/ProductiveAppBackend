@@ -1,6 +1,8 @@
 package Xeva.productiveApp.tags;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -16,6 +18,12 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Set<Tag>> findAllByOwnerEmail(String ownerEmail);
 
     @Transactional
-    void deleteByName(String name);
+    void deleteByNameAndOwnerEmail(String name, String ownerEmail);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Tag tag " +
+            "SET tag.name = ?1 where tag.name = ?2 AND tag.ownerEmail = ?3")
+    int updateTagName(String newName, String oldName, String ownerEmail);
 
 }

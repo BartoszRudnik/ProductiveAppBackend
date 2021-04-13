@@ -42,8 +42,12 @@ public class TagService {
 
     }
 
-    public void deleteByEmail(String tagName){
-        tagRepository.deleteByName(tagName);
+    public void updateTag(String mail, UpdateRequest request){
+        tagRepository.updateTagName(request.getNewName(), request.oldName, mail);
+    }
+
+    public void deleteByName(String tagName, String email){
+        tagRepository.deleteByNameAndOwnerEmail(tagName, email);
     }
 
 }
