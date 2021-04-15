@@ -43,7 +43,7 @@ public class TagService {
     }
 
     public void updateTag(String mail, UpdateRequest request){
-        tagRepository.updateTagName(request.getNewName(), request.oldName, mail);
+        tagRepository.updateTagName(request.getNewName(), request.getOldName(), mail);
     }
 
     public void deleteByName(String tagName, String email){

@@ -5,5 +5,6 @@ public enum TaskLocalization {
     ANYTIME,
     SCHEDULED,
     DELEGATED,
-    TRASH
+    TRASH,
+    COMPLETED
 }

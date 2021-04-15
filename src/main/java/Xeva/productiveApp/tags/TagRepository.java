@@ -23,7 +23,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Transactional
     @Modifying
     @Query("UPDATE Tag tag " +
-            "SET tag.name = ?1 where tag.name = ?2 AND tag.ownerEmail = ?3")
+            "SET tag.name = ?1 where (tag.name = ?2 AND tag.ownerEmail = ?3)")
     int updateTagName(String newName, String oldName, String ownerEmail);
 
 }

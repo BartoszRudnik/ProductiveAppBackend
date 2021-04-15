@@ -127,6 +127,8 @@ public class TaskService {
                 return TaskLocalization.ANYTIME;
             case "TRASH":
                 return TaskLocalization.TRASH;
+            case "COMPLETED":
+                return TaskLocalization.COMPLETED;
         }
         return TaskLocalization.DELEGATED;
     }
