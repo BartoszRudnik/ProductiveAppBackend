@@ -105,8 +105,8 @@ public class TaskService {
     private TaskPriority getPriority(String priorityName){
         System.out.println(priorityName);
         switch (priorityName) {
-            case "SMALL":
-				return TaskPriority.SMALL;
+            case "LOW":
+				return TaskPriority.LOW;
             case "HIGH":
 				return TaskPriority.HIGH;
             case "HIGHER":

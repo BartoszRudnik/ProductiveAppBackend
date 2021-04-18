@@ -1,7 +1,7 @@
 package Xeva.productiveApp.task;
 
 public enum TaskPriority {
-    SMALL,
+    LOW,
     NORMAL,
     HIGH,
     HIGHER,
