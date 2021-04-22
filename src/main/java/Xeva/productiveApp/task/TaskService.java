@@ -100,6 +100,34 @@ public class TaskService {
         task.setLocalization(getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
 
+        List<Tag> tags = request.getTags();
+        List<Tag> existingTags = tagService.findAllByTaskId(id);
+        List<Tag> tagsToAdd = new ArrayList<>();
+
+        for(Tag tag : tags){
+            tag.setOwnerEmail(task.getUser().getEmail());
+        }
+
+        for(Tag tag : existingTags){
+            if(!tags.contains(tag)){
+                tagService.deleteById(tag.getId());
+            }
+        }
+
+        for(Tag tag : tags){
+            if(!existingTags.contains(tag)) {
+                if (tag.getTaskId() == null) {
+                    tag.setId(null);
+                }
+
+                tag.setTaskId(task.getId_task());
+
+                tagsToAdd.add(tag);
+            }
+        }
+
+        tagService.saveAll(tagsToAdd);
+
         taskRepository.save(task);
 
     }

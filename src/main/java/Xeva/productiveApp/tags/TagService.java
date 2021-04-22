@@ -50,4 +50,8 @@ public class TagService {
         tagRepository.deleteByNameAndOwnerEmail(tagName, email);
     }
 
+    public void deleteById(Long id){
+        tagRepository.deleteById(id);
+    }
+
 }

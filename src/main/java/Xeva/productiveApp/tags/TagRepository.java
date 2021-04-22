@@ -18,6 +18,12 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Set<Tag>> findAllByOwnerEmail(String ownerEmail);
 
     @Transactional
+    @Modifying
+    @Query("UPDATE Tag tag " +
+            "SET tag.taskId = null where tag.id = ?1")
+    void deleteById(Long id);
+
+    @Transactional
     void deleteByNameAndOwnerEmail(String name, String ownerEmail);
 
     @Transactional
