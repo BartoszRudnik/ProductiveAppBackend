@@ -12,9 +12,11 @@ public class ResetController {
     private final ResetService resetService;
 
     @PostMapping
-    public void reset(@RequestBody ResetRequest request){
+    public String reset(@RequestBody ResetRequest request){
 
         resetService.resetPassword(request);
+
+        return "Success";
 
     }
 

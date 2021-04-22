@@ -33,8 +33,11 @@ public class TaskService {
         TaskLocalization localization = getLocalization(request.getLocalization());
 
         Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization);
+
         List<Tag> tags = request.getTags();
 
+        taskRepository.save(task);
+        task.setPosition(task.getId_task() + 1000.0);
         taskRepository.save(task);
 
         for(Tag tag : tags){
@@ -76,7 +79,15 @@ public class TaskService {
 
     }
 
-    public void updateTask(AddTaskRequest request, long id){
+    public void updateTaskPosition(UpdateTaskPositionRequest request, long id){
+        Task task = taskRepository.findById(id).get();
+
+        task.setPosition(request.getPosition());
+
+        taskRepository.save(task);
+    }
+
+    public void updateTask(UpdateTaskRequest request, long id){
 
         Task task = taskRepository.findById(id).get();
 
@@ -87,6 +98,7 @@ public class TaskService {
         task.setPriority(getPriority(request.getPriority()));
         task.setIfDone(request.isIfDone());
         task.setLocalization(getLocalization(request.getLocalization()));
+        task.setPosition(request.getPosition());
 
         taskRepository.save(task);
 

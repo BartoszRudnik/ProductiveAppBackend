@@ -29,8 +29,13 @@ public class TaskController {
     }
 
     @PutMapping("/update/{taskId}")
-    public void updateTask(@RequestBody AddTaskRequest request, @PathVariable long taskId){
+    public void updateTask(@RequestBody UpdateTaskRequest request, @PathVariable long taskId){
         taskService.updateTask(request, taskId);
+    }
+
+    @PutMapping("/updatePosition/{taskId}")
+    public void updateTaskPosition(@RequestBody UpdateTaskPositionRequest request, @PathVariable long taskId){
+        taskService.updateTaskPosition(request, taskId);
     }
 
     @PutMapping("/done/{taskId}")
