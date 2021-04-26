@@ -4,7 +4,6 @@ import Xeva.productiveApp.appUser.ApplicationUser;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -35,6 +34,7 @@ public class userRelation {
 
     @Enumerated(EnumType.STRING)
     private relationState state = relationState.WAITING;
+
     public userRelation(ApplicationUser user1, ApplicationUser user2) {
         this.user1 = user1;
         this.user2 = user2;
