@@ -32,6 +32,10 @@ public class userRelation {
     @JoinColumn(nullable = false, name = "application_user_id")
     private ApplicationUser user2;
 
+    @Column(
+            name = "state",
+            nullable = false
+    )
     @Enumerated(EnumType.STRING)
     private relationState state = relationState.WAITING;
 

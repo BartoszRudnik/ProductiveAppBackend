@@ -81,6 +81,7 @@ public class Task {
     )
     private double position;
 
+
     public Task(String task_name, String description, ApplicationUser user) {
         this.task_name = task_name;
         this.description = description;
