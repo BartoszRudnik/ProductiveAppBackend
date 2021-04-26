@@ -107,10 +107,23 @@ public class Task {
     )
     private Boolean ifUnused = false;
 
+    //Tworzenie tasku nadrzędnego
+    public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, double position, ApplicationUser userDelegated) {
+        this.task_name = task_name;
+        this.description = description;
+        this.user = user;
+        this.localization = localization;
+        this.priority = priority;
+        this.ifDone = ifDone;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.position = position;
+        Task task= new Task(task_name, description, userDelegated, localization, priority, ifDone, startDate, endDate, position, this);
+        this.childTask = task;
+    }
 
     //Tworzenie tasku podrzędnego
-    public Task(Long id_task, String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, double position, Task parentTask) {
-        this.id_task = id_task;
+    public Task( String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, double position, Task parentTask) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
