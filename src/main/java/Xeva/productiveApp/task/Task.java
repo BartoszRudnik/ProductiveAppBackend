@@ -81,6 +81,48 @@ public class Task {
     )
     private double position;
 
+    @Column(
+            name = "parentTask",
+            nullable = true
+    )
+    @ManyToOne
+    private Task parentTask;
+
+    @Column(
+            name = "childTask",
+            nullable = true
+    )
+    @ManyToOne
+    private Task childTask;
+
+    @Column(
+            name= "ifUnfastened",
+            nullable = false
+    )
+    private Boolean ifUnfastened = false;
+
+    @Column(
+            name= "ifUnused",
+            nullable = false
+    )
+    private Boolean ifUnused = false;
+
+
+    //Tworzenie tasku podrzędnego
+    public Task(Long id_task, String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, double position, Task parentTask) {
+        this.id_task = id_task;
+        this.task_name = task_name;
+        this.description = description;
+        this.user = user;
+        this.localization = localization;
+        this.priority = priority;
+        this.ifDone = ifDone;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.position = position;
+        this.parentTask = parentTask;
+        this.ifUnused = true;
+    }
 
     public Task(String task_name, String description, ApplicationUser user) {
         this.task_name = task_name;
@@ -99,7 +141,7 @@ public class Task {
         this.localization = localization;
     }
 
-    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, int position) {
+    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, double position) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
