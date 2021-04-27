@@ -10,8 +10,9 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity(name="userRelation")
-public class userRelation {
+public class UserRelation {
     @Id
     @SequenceGenerator(
             name = "userRelation_sequence",
@@ -25,11 +26,17 @@ public class userRelation {
     private Long id_userRelation;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "application_user_id")
+    @JoinColumn(
+            nullable = false,
+            name = "application_user_id"
+    )
     private ApplicationUser user1;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "application_user_id")
+    @JoinColumn(
+            nullable = false,
+            name = "collaborator_id"
+    )
     private ApplicationUser user2;
 
     @Column(
@@ -37,14 +44,14 @@ public class userRelation {
             nullable = false
     )
     @Enumerated(EnumType.STRING)
-    private relationState state = relationState.WAITING;
+    private RelationState state = RelationState.WAITING;
 
-    public userRelation(ApplicationUser user1, ApplicationUser user2) {
+    public UserRelation(ApplicationUser user1, ApplicationUser user2) {
         this.user1 = user1;
         this.user2 = user2;
     }
 
-    public userRelation(ApplicationUser user1, ApplicationUser user2, relationState state) {
+    public UserRelation(ApplicationUser user1, ApplicationUser user2, RelationState state) {
         this.user1 = user1;
         this.user2 = user2;
         this.state = state;

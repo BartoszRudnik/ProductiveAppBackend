@@ -1,5 +1,6 @@
 package Xeva.productiveApp.appUser;
 
+import Xeva.productiveApp.userRelation.UserRelation;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,6 +42,9 @@ public class ApplicationUser implements UserDetails {
 
     private Boolean locked = false;
     private Boolean enabled = true;
+
+    @OneToMany(mappedBy = "user2")
+    private List<UserRelation> listOfCollaborators;
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 

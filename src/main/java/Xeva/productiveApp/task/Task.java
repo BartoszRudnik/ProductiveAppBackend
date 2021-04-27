@@ -76,23 +76,20 @@ public class Task {
     private Date endDate;
 
     @Column(
-            name = "position",
-            nullable = true
+            name = "position"
     )
     private double position;
 
-    @Column(
-            name = "parentTask",
-            nullable = true
+    @JoinColumn(
+            name = "parentTask"
     )
-    @ManyToOne
+    @OneToOne
     private Task parentTask;
 
-    @Column(
-            name = "childTask",
-            nullable = true
+    @JoinColumn(
+            name = "childTask"
     )
-    @ManyToOne
+    @OneToOne
     private Task childTask;
 
     @Column(
@@ -118,8 +115,7 @@ public class Task {
         this.startDate = startDate;
         this.endDate = endDate;
         this.position = position;
-        Task task= new Task(task_name, description, userDelegated, localization, priority, ifDone, startDate, endDate, position, this);
-        this.childTask = task;
+        this.childTask = new Task(task_name, description, userDelegated, localization, priority, ifDone, startDate, endDate, position, this);
     }
 
     //Tworzenie tasku podrzędnego

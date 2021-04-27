@@ -1,6 +1,6 @@
 package Xeva.productiveApp.userRelation;
 
-public enum relationState {
+public enum RelationState {
     WAITING,
     ACCEPTED,
     DECLINED
