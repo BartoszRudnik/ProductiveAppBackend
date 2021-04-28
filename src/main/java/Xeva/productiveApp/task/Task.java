@@ -1,6 +1,7 @@
 package Xeva.productiveApp.task;
 
 import Xeva.productiveApp.appUser.ApplicationUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -84,12 +85,17 @@ public class Task {
             name = "parentTask"
     )
     @OneToOne
+    @JsonIgnore
     private Task parentTask;
 
     @JoinColumn(
             name = "childTask"
     )
-    @OneToOne
+    @OneToOne(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+    })
+    @JsonIgnore
     private Task childTask;
 
     @Column(
@@ -104,8 +110,10 @@ public class Task {
     )
     private Boolean ifUnused = false;
 
+    private String delegatedEmail;
+
     //Tworzenie tasku nadrzędnego
-    public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, double position, ApplicationUser userDelegated) {
+    public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
@@ -114,21 +122,20 @@ public class Task {
         this.ifDone = ifDone;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.position = position;
-        this.childTask = new Task(task_name, description, userDelegated, localization, priority, ifDone, startDate, endDate, position, this);
+        this.delegatedEmail = delegatedEmail;
+        this.childTask = new Task(task_name, description, userDelegated, priority, ifDone, startDate, endDate, this);
     }
 
     //Tworzenie tasku podrzędnego
-    public Task( String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, double position, Task parentTask) {
+    public Task( String task_name, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
-        this.localization = localization;
+        this.localization = TaskLocalization.INBOX;
         this.priority = priority;
         this.ifDone = ifDone;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.position = position;
         this.parentTask = parentTask;
         this.ifUnused = true;
     }
@@ -139,7 +146,7 @@ public class Task {
         this.user = user;
     }
 
-    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization) {
+    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, String delegatedEmail) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
@@ -148,6 +155,7 @@ public class Task {
         this.ifDone = ifDone;
         this.priority = priority;
         this.localization = localization;
+        this.delegatedEmail = delegatedEmail;
     }
 
     public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, double position) {

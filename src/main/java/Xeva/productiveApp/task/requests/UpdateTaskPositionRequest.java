@@ -1,4 +1,4 @@
-package Xeva.productiveApp.task;
+package Xeva.productiveApp.task.requests;
 
 import Xeva.productiveApp.tags.Tag;
 import lombok.*;

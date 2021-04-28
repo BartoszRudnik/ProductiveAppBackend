@@ -1,6 +1,7 @@
 package Xeva.productiveApp.appUser;
 
 import Xeva.productiveApp.userRelation.UserRelation;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,15 +36,21 @@ public class ApplicationUser implements UserDetails {
     private String firstName;
     private String lastName;
     private String email;
+
+    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
     private AppUserRole userRole;
 
+    @JsonIgnore
     private Boolean locked = false;
+
+    @JsonIgnore
     private Boolean enabled = true;
 
     @OneToMany(mappedBy = "user2")
+    @JsonIgnore
     private List<UserRelation> listOfCollaborators;
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {

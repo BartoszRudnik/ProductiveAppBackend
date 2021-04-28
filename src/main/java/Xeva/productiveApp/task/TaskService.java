@@ -4,10 +4,15 @@ import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.tags.TagService;
+import Xeva.productiveApp.task.requests.AddTaskRequest;
+import Xeva.productiveApp.task.requests.GetTasksResponse;
+import Xeva.productiveApp.task.requests.UpdateTaskPositionRequest;
+import Xeva.productiveApp.task.requests.UpdateTaskRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,6 +25,23 @@ public class TaskService {
     private final AppUserService userService;
     private final TagService tagService;
 
+    private void saveTask(Task task){
+        taskRepository.save(task);
+        task.setPosition(task.getId_task() + 1000.0);
+        taskRepository.save(task);
+    }
+
+    private void setTags(Task task, List<Tag> tags){
+        for(Tag tag : tags){
+            if(tag.getTaskId() == null) {
+                tag.setId(null);
+            }
+            tag.setTaskId(task.getId_task());
+            tag.setOwnerEmail(task.getUser().getEmail());
+        }
+        tagService.saveAll(tags);
+    }
+
     public long addTask(AddTaskRequest request){
 
         boolean isUser = userService.findByEmail(request.getUserEmail()).isPresent();
@@ -28,27 +50,28 @@ public class TaskService {
             throw new IllegalStateException("Wrong user");
         }
 
+        Task task;
         ApplicationUser user = userService.findByEmail(request.getUserEmail()).get();
         TaskPriority priority = getPriority(request.getPriority());
         TaskLocalization localization = getLocalization(request.getLocalization());
-
-        Task task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization);
-
         List<Tag> tags = request.getTags();
 
-        taskRepository.save(task);
-        task.setPosition(task.getId_task() + 1000.0);
-        taskRepository.save(task);
+        if(localization == TaskLocalization.DELEGATED && request.getDelegatedEmail().length() > 1){
 
-        for(Tag tag : tags){
-            if(tag.getTaskId() == null) {
-                tag.setId(null);
-            }
-            tag.setTaskId(task.getId_task());
-            tag.setOwnerEmail(user.getEmail());
+            ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
+
+            task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail());
+
+            this.saveTask(task);
+            this.setTags(task, tags);
+
+        }else{
+
+            task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail());
+            this.saveTask(task);
+            this.setTags(task, tags);
+
         }
-
-        tagService.saveAll(tags);
 
         return task.getId_task();
 
@@ -95,10 +118,20 @@ public class TaskService {
         task.setTask_name(request.getTaskName());
         task.setStartDate(request.getStartDate());
         task.setEndDate(request.getEndDate());
-        task.setPriority(getPriority(request.getPriority()));
+        task.setPriority(this.getPriority(request.getPriority()));
         task.setIfDone(request.isIfDone());
-        task.setLocalization(getLocalization(request.getLocalization()));
+        task.setLocalization(this.getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
+        task.setDelegatedEmail(request.getDelegatedEmail());
+
+        if(userService.findByEmail(request.getDelegatedEmail()).isPresent()) {
+
+            ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
+            Task childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
+
+            task.setChildTask(childTask);
+
+        }
 
         List<Tag> tags = request.getTags();
         List<Tag> existingTags = tagService.findAllByTaskId(id);

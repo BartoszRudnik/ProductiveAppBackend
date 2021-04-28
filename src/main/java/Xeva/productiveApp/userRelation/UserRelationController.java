@@ -30,7 +30,7 @@ public class UserRelationController {
         return userRelationService.getAllCollaborators(mail);
     }
 
-    @DeleteMapping("/deleteCollaborator")
+    @PostMapping("/deleteCollaborator")
     public void deleteCollaborator(@RequestBody Request request){
         userRelationService.deleteRelation(request);
     }

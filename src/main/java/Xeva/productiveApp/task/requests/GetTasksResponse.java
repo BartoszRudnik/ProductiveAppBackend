@@ -1,6 +1,7 @@
-package Xeva.productiveApp.task;
+package Xeva.productiveApp.task.requests;
 
 import Xeva.productiveApp.tags.Tag;
+import Xeva.productiveApp.task.Task;
 import lombok.*;
 
 import java.util.List;
