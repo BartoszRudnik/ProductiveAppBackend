@@ -26,7 +26,7 @@ public class UserRelationService {
         }
     }
 
-    public void addRelation(Request request){
+    public Long addRelation(Request request){
 
         checkIfUserExists(request.getUserEmail());
         checkIfUserExists(request.getCollaboratorEmail());
@@ -35,26 +35,24 @@ public class UserRelationService {
         ApplicationUser user2 = appUserService.findByEmail(request.getCollaboratorEmail()).get();
 
         UserRelation newRelation = new UserRelation(user1, user2);
-        UserRelation newRelation2 = new UserRelation(user2, user1);
 
         userRelationRepository.save(newRelation);
-        userRelationRepository.save(newRelation2);
+
+        return newRelation.getId_userRelation();
 
     }
 
-    public void deleteRelation(Request request){
+    public void deleteRelation(Long id){
 
-        checkIfUserExists(request.getCollaboratorEmail());
-        checkIfUserExists(request.getUserEmail());
+        if(userRelationRepository.findById(id).isPresent()) {
 
-        ApplicationUser user1 = appUserService.findByEmail(request.getUserEmail()).get();
-        ApplicationUser user2 = appUserService.findByEmail(request.getCollaboratorEmail()).get();
+            UserRelation relationToDelete = userRelationRepository.findById(id).get();
 
-        UserRelation relationToDelete = userRelationRepository.findByUser1AndUser2(user1, user2).get();
-        UserRelation relationToDelete2 = userRelationRepository.findByUser1AndUser2(user2, user1).get();
+            userRelationRepository.delete(relationToDelete);
 
-        userRelationRepository.delete(relationToDelete);
-        userRelationRepository.delete(relationToDelete2);
+        }else{
+            throw new IllegalStateException("Given relation doesn't exists");
+        }
 
     }
 
@@ -64,19 +62,14 @@ public class UserRelationService {
 
         ApplicationUser appUser = appUserService.findByEmail(mail).get();
 
-        List<UserRelation> allUserRelations = appUser.getListOfCollaborators();
+        Set<UserRelation> allUserRelations = userRelationRepository.findAllByUser1(appUser).get();
+        allUserRelations.addAll(userRelationRepository.findAllByUser2(appUser).get());
 
         Set<AllCollaboratorsResponse> result = new HashSet<>();
 
         for(UserRelation relation : allUserRelations){
 
-            AllCollaboratorsResponse newEntry;
-
-            if(relation.getUser1().getEmail().equals(mail)) {
-                newEntry = new AllCollaboratorsResponse(relation.getUser2().getEmail(), relation.getState().toString());
-            }else{
-                newEntry = new AllCollaboratorsResponse(relation.getUser1().getEmail(), relation.getState().toString());
-            }
+            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId_userRelation(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), relation.getState().toString());
 
             result.add(newEntry);
 
@@ -107,6 +100,42 @@ public class UserRelationService {
         }
 
         return result;
+
+    }
+
+    public void acceptInvitation(Long id){
+
+        UserRelation relation;
+
+        if(userRelationRepository.findById(id).isPresent()) {
+
+            relation = userRelationRepository.findById(id).get();
+
+            relation.setState(RelationState.ACCEPTED);
+
+            userRelationRepository.save(relation);
+
+        }else{
+            throw new IllegalStateException("Given relation doesn't exists");
+        }
+
+    }
+
+    public void declineInvitation(Long id){
+
+        UserRelation relation;
+
+        if(userRelationRepository.findById(id).isPresent()){
+
+            relation = userRelationRepository.findById(id).get();
+
+            relation.setState(RelationState.DECLINED);
+
+            userRelationRepository.save(relation);
+
+        }else{
+            throw new IllegalStateException("Given relation doesn't exists");
+        }
 
     }
 

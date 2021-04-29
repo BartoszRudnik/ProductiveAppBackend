@@ -16,8 +16,18 @@ public class UserRelationController {
     private final UserRelationService userRelationService;
 
     @PostMapping("/addCollaborator")
-    public void addCollaborator(@RequestBody Request request){
-        userRelationService.addRelation(request);
+    public Long addCollaborator(@RequestBody Request request){
+        return userRelationService.addRelation(request);
+    }
+
+    @PutMapping("/acceptInvitation/{id}")
+    public void acceptInvitation(@PathVariable Long id){
+        userRelationService.acceptInvitation(id);
+    }
+
+    @PutMapping("/declineInvitation/{id}")
+    public void declineInvitation(@PathVariable Long id){
+        userRelationService.declineInvitation(id);
     }
 
     @GetMapping("/getCollaborators/{mail}")
@@ -30,9 +40,9 @@ public class UserRelationController {
         return userRelationService.getAllCollaborators(mail);
     }
 
-    @PostMapping("/deleteCollaborator")
-    public void deleteCollaborator(@RequestBody Request request){
-        userRelationService.deleteRelation(request);
+    @DeleteMapping("/deleteCollaborator/{id}")
+    public void deleteCollaborator(@PathVariable Long id){
+        userRelationService.deleteRelation(id);
     }
 
 }

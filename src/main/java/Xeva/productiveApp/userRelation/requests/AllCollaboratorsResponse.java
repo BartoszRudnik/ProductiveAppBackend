@@ -10,7 +10,9 @@ import lombok.*;
 @ToString
 public class AllCollaboratorsResponse {
 
-    String collaboratorEmail;
+    Long id;
+    String invitationSender;
+    String invitationReceiver;
     String relationState;
 
 }
