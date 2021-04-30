@@ -28,6 +28,10 @@ public class UserRelationService {
 
     public Long addRelation(Request request){
 
+        if(request.getCollaboratorEmail().equals(request.getUserEmail())){
+            throw new IllegalStateException("Cannot invite yourself");
+        }
+
         checkIfUserExists(request.getUserEmail());
         checkIfUserExists(request.getCollaboratorEmail());
 
@@ -77,6 +81,17 @@ public class UserRelationService {
 
         return result;
 
+    }
+
+    public UserRelation getUsersRelation(ApplicationUser user1, ApplicationUser user2){
+        if(userRelationRepository.findByUser1AndUser2(user1, user2).isPresent()) {
+            return userRelationRepository.findByUser1AndUser2(user1, user2).get();
+        }else if(userRelationRepository.findByUser1AndUser2(user2, user1).isPresent()){
+            return userRelationRepository.findByUser1AndUser2(user2, user1).get();
+        }
+        else{
+            return null;
+        }
     }
 
     public Set<String> getCollaborators(String mail){

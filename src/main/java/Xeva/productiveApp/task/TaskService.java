@@ -8,11 +8,13 @@ import Xeva.productiveApp.task.requests.AddTaskRequest;
 import Xeva.productiveApp.task.requests.GetTasksResponse;
 import Xeva.productiveApp.task.requests.UpdateTaskPositionRequest;
 import Xeva.productiveApp.task.requests.UpdateTaskRequest;
+import Xeva.productiveApp.userRelation.RelationState;
+import Xeva.productiveApp.userRelation.UserRelation;
+import Xeva.productiveApp.userRelation.UserRelationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,6 +23,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public class TaskService {
 
+    private final UserRelationService userRelationService;
     private final TaskRepository taskRepository;
     private final AppUserService userService;
     private final TagService tagService;
@@ -95,7 +98,18 @@ public class TaskService {
         List<Task> tasks = taskRepository.findAllByUserEmail(user.getEmail()).get();
 
         for(Task task : tasks){
-            tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task())));
+            if(task.getParentTask() != null){
+
+                ApplicationUser parentUser = userService.findByEmail(task.getParentTask().getUser().getEmail()).get();
+                UserRelation relation = userRelationService.getUsersRelation(user, parentUser);
+
+                if(relation != null && relation.getState() == RelationState.ACCEPTED){
+                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task())));
+                }
+
+            }else {
+                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task())));
+            }
         }
 
         return tasksResponse;
