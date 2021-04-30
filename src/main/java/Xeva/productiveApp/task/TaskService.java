@@ -104,6 +104,9 @@ public class TaskService {
                 UserRelation relation = userRelationService.getUsersRelation(user, parentUser);
 
                 if(relation != null && relation.getState() == RelationState.ACCEPTED){
+                    this.setParentTaskInformation(task, task.getParentTask());
+                    this.taskRepository.save(task);
+
                     tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task())));
                 }
 
@@ -145,7 +148,10 @@ public class TaskService {
 
             task.setChildTask(childTask);
 
-            
+        }
+
+        if(task.getParentTask() != null){
+            this.setParentTaskInformation(task, task.getParentTask());
         }
 
         List<Tag> tags = request.getTags();
@@ -185,6 +191,10 @@ public class TaskService {
         Task task = taskRepository.getOne(id);
 
         task.setIfDone(!task.getIfDone());
+
+        if(task.getParentTask() != null && task.getIfDone()){
+            this.setParentTaskInformation(task, task.getParentTask());
+        }
 
         taskRepository.save(task);
 
@@ -227,6 +237,18 @@ public class TaskService {
 
     public List<Task> getUserTasks(String email){
         return taskRepository.findAllByUserEmail(email).get();
+    }
+
+    public void setParentTaskInformation(Task childTask, Task parentTask){
+        if(childTask.getLocalization() == TaskLocalization.INBOX){
+            parentTask.setTaskStatus("Waiting");
+        } else if((childTask.getLocalization() == TaskLocalization.ANYTIME || childTask.getLocalization() == TaskLocalization.SCHEDULED) && !childTask.getIfDone()){
+            parentTask.setTaskStatus("In progress");
+        } else if(childTask.getLocalization() == TaskLocalization.COMPLETED || childTask.getIfDone()){
+            parentTask.setTaskStatus("Done");
+        } else if(childTask.getLocalization() == TaskLocalization.TRASH){
+            parentTask.setTaskStatus("Deleted");
+        }
     }
 
 }

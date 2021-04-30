@@ -98,17 +98,9 @@ public class Task {
     @JsonIgnore
     private Task childTask;
 
-    @Column(
-            name= "ifUnfastened",
-            nullable = false
-    )
-    private Boolean ifUnfastened = false;
+    private Boolean isDelegated;
 
-    @Column(
-            name= "ifUnused",
-            nullable = false
-    )
-    private Boolean ifUnused = false;
+    private String taskStatus;
 
     private String delegatedEmail;
 
@@ -123,6 +115,7 @@ public class Task {
         this.startDate = startDate;
         this.endDate = endDate;
         this.delegatedEmail = delegatedEmail;
+        this.taskStatus = "Send";
         this.childTask = new Task(task_name, description, userDelegated, priority, ifDone, startDate, endDate, this);
     }
 
@@ -137,7 +130,7 @@ public class Task {
         this.startDate = startDate;
         this.endDate = endDate;
         this.parentTask = parentTask;
-        this.ifUnused = true;
+        this.isDelegated = true;
     }
 
     public Task(String task_name, String description, ApplicationUser user) {
@@ -156,6 +149,7 @@ public class Task {
         this.priority = priority;
         this.localization = localization;
         this.delegatedEmail = delegatedEmail;
+        this.taskStatus = "Send";
     }
 
     public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, double position) {
