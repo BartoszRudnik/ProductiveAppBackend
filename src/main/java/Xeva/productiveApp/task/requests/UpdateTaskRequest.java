@@ -24,5 +24,6 @@ public class UpdateTaskRequest {
     private Date endDate;
     private List<Tag> tags;
     private Double position;
+    private boolean isCanceled;
 
 }

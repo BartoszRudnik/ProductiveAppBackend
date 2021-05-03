@@ -139,16 +139,38 @@ public class TaskService {
         task.setIfDone(request.isIfDone());
         task.setLocalization(this.getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
-        task.setDelegatedEmail(request.getDelegatedEmail());
+        task.setIsCanceled(request.isCanceled());
 
         if(userService.findByEmail(request.getDelegatedEmail()).isPresent()) {
 
-            ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
-            Task childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
+            Task childTask;
 
-            task.setChildTask(childTask);
+            if(task.getChildTask() == null) {
+
+                ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
+                childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
+
+                task.setChildTask(childTask);
+
+            }else if(!task.getDelegatedEmail().equals(request.getDelegatedEmail())){
+
+                if(userService.findByEmail(request.getDelegatedEmail()).isPresent()){
+
+                    ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
+                    task.getChildTask().setIsCanceled(true);
+                    task.getChildTask().setParentTask(null);
+
+                    childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
+
+                    task.setChildTask(childTask);
+
+                }
+
+            }
 
         }
+
+        task.setDelegatedEmail(request.getDelegatedEmail());
 
         if(task.getParentTask() != null){
             this.setParentTaskInformation(task, task.getParentTask());
@@ -240,7 +262,7 @@ public class TaskService {
     }
 
     public void setParentTaskInformation(Task childTask, Task parentTask){
-        if(childTask.getLocalization() == TaskLocalization.INBOX){
+        if(childTask.getLocalization() == TaskLocalization.INBOX && !childTask.getIfDone()){
             parentTask.setTaskStatus("Waiting");
         } else if((childTask.getLocalization() == TaskLocalization.ANYTIME || childTask.getLocalization() == TaskLocalization.SCHEDULED) && !childTask.getIfDone()){
             parentTask.setTaskStatus("In progress");

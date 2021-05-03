@@ -104,6 +104,8 @@ public class Task {
 
     private String delegatedEmail;
 
+    private Boolean isCanceled;
+
     //Tworzenie tasku nadrzędnego
     public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail) {
         this.task_name = task_name;
@@ -117,6 +119,7 @@ public class Task {
         this.delegatedEmail = delegatedEmail;
         this.taskStatus = "Send";
         this.childTask = new Task(task_name, description, userDelegated, priority, ifDone, startDate, endDate, this);
+        this.isCanceled = false;
     }
 
     //Tworzenie tasku podrzędnego
@@ -131,6 +134,7 @@ public class Task {
         this.endDate = endDate;
         this.parentTask = parentTask;
         this.isDelegated = true;
+        this.isCanceled = false;
     }
 
     public Task(String task_name, String description, ApplicationUser user) {
@@ -149,7 +153,7 @@ public class Task {
         this.priority = priority;
         this.localization = localization;
         this.delegatedEmail = delegatedEmail;
-        this.taskStatus = "Send";
+        this.taskStatus = "Sent";
     }
 
     public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, double position) {
