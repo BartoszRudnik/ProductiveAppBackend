@@ -31,11 +31,19 @@ public class FilterSettings {
 
     private boolean showOnlyUnfinished;
     private boolean showOnlyDelegated;
+    private String collaboratorEmail;
 
     public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated){
         this.user = user;
         this.showOnlyUnfinished = showOnlyUnfinished;
         this.showOnlyDelegated = showOnlyDelegated;
+    }
+
+    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated, String collaboratorEmail){
+        this.user = user;
+        this.showOnlyUnfinished = showOnlyUnfinished;
+        this.showOnlyDelegated = showOnlyDelegated;
+        this.collaboratorEmail = collaboratorEmail;
     }
 
 }

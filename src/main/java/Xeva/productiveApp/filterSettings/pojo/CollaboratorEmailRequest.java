@@ -7,10 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class FilterSettingsResponse {
+public class CollaboratorEmailRequest {
 
-    private boolean showOnlyUnfinished;
-    private boolean showOnlyDelegated;
     private String collaboratorEmail;
 
 }

@@ -1,5 +1,6 @@
 package Xeva.productiveApp.filterSettings;
 
+import Xeva.productiveApp.filterSettings.pojo.CollaboratorEmailRequest;
 import Xeva.productiveApp.filterSettings.pojo.FilterSettingsResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,11 @@ public class FilterSettingsController {
     @PostMapping("/changeShowOnlyDelegatedStatus/{mail}")
     public void changeShowOnlyDelegatedStatus(@PathVariable String mail){
         filterSettingsService.changeShowOnlyDelegated(mail);
+    }
+
+    @PostMapping("/filterCollaboratorEmail/{mail}")
+    public void filterCollaboratorEmail(@PathVariable String mail, @RequestBody CollaboratorEmailRequest collaboratorEmail){
+        filterSettingsService.filterCollaboratorEmail(mail, collaboratorEmail);
     }
 
 }

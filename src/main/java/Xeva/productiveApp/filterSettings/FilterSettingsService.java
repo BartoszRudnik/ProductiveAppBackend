@@ -2,6 +2,7 @@ package Xeva.productiveApp.filterSettings;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.filterSettings.pojo.CollaboratorEmailRequest;
 import Xeva.productiveApp.filterSettings.pojo.FilterSettingsResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,13 +57,25 @@ public class FilterSettingsService {
 
     }
 
+    public void filterCollaboratorEmail(String userMail, CollaboratorEmailRequest collaboratorMail){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.setCollaboratorEmail(collaboratorMail.getCollaboratorEmail());
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
     public FilterSettingsResponse getFilterSettings(String mail) {
 
         ApplicationUser applicationUser = validateRequest(mail);
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated());
+        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.getCollaboratorEmail());
 
     }
 
