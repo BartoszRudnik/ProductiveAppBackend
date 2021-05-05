@@ -1,6 +1,5 @@
 package Xeva.productiveApp.task;
 
-import Xeva.productiveApp.appUser.ApplicationUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
