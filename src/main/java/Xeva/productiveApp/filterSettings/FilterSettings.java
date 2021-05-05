@@ -30,10 +30,12 @@ public class FilterSettings {
     private ApplicationUser user;
 
     private boolean showOnlyUnfinished;
+    private boolean showOnlyDelegated;
 
-    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished){
+    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated){
         this.user = user;
         this.showOnlyUnfinished = showOnlyUnfinished;
+        this.showOnlyDelegated = showOnlyDelegated;
     }
 
 }

@@ -25,7 +25,7 @@ public class FilterSettingsService {
         boolean validSettings = filterSettingsRepository.findByUser(applicationUser).isPresent();
 
         if(!validSettings){
-            FilterSettings newSettings = new FilterSettings(applicationUser, false);
+            FilterSettings newSettings = new FilterSettings(applicationUser, false, false);
             filterSettingsRepository.save(newSettings);
         }
 
@@ -44,11 +44,25 @@ public class FilterSettingsService {
 
     }
 
+    public void changeShowOnlyDelegated(String mail){
+
+        ApplicationUser applicationUser = validateRequest(mail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.setShowOnlyDelegated(!userSettings.isShowOnlyDelegated());
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
     public FilterSettingsResponse getFilterSettings(String mail) {
 
         ApplicationUser applicationUser = validateRequest(mail);
 
-        return new FilterSettingsResponse(filterSettingsRepository.findByUser(applicationUser).get().isShowOnlyUnfinished());
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated());
 
     }
 

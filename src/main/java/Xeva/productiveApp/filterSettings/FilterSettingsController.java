@@ -22,4 +22,9 @@ public class FilterSettingsController {
         filterSettingsService.changeShowOnlyUnfinished(mail);
     }
 
+    @PostMapping("/changeShowOnlyDelegatedStatus/{mail}")
+    public void changeShowOnlyDelegatedStatus(@PathVariable String mail){
+        filterSettingsService.changeShowOnlyDelegated(mail);
+    }
+
 }

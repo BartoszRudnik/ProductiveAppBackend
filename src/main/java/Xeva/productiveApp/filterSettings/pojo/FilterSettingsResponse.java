@@ -10,5 +10,6 @@ import lombok.*;
 public class FilterSettingsResponse {
 
     private boolean showOnlyUnfinished;
+    private boolean showOnlyDelegated;
 
 }
