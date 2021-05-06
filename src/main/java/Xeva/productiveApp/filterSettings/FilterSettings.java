@@ -4,6 +4,8 @@ import Xeva.productiveApp.appUser.ApplicationUser;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,15 +33,18 @@ public class FilterSettings {
 
     private boolean showOnlyUnfinished;
     private boolean showOnlyDelegated;
-    private String collaboratorEmail;
+
+    @ElementCollection
+    private List<String> collaboratorEmail;
 
     public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated){
         this.user = user;
         this.showOnlyUnfinished = showOnlyUnfinished;
         this.showOnlyDelegated = showOnlyDelegated;
+        this.collaboratorEmail = new ArrayList<>();
     }
 
-    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated, String collaboratorEmail){
+    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated, List<String> collaboratorEmail){
         this.user = user;
         this.showOnlyUnfinished = showOnlyUnfinished;
         this.showOnlyDelegated = showOnlyDelegated;

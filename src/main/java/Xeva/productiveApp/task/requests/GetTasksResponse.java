@@ -16,5 +16,11 @@ public class GetTasksResponse {
 
     private Task tasks;
     private List<Tag> tags;
+    private String supervisorEmail;
+
+    public GetTasksResponse(Task task, List<Tag> tags){
+        this.tasks = task;
+        this.tags = tags;
+    }
 
 }

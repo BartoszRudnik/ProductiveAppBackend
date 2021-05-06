@@ -107,7 +107,7 @@ public class TaskService {
                     this.setParentTaskInformation(task, task.getParentTask());
                     this.taskRepository.save(task);
 
-                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task())));
+                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task()), task.getParentTask().getUser().getEmail()));
                 }
 
             }else {

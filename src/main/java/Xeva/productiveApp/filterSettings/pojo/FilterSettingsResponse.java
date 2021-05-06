@@ -2,6 +2,8 @@ package Xeva.productiveApp.filterSettings.pojo;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @EqualsAndHashCode
 @AllArgsConstructor
@@ -11,6 +13,6 @@ public class FilterSettingsResponse {
 
     private boolean showOnlyUnfinished;
     private boolean showOnlyDelegated;
-    private String collaboratorEmail;
+    private List<String> collaboratorEmail;
 
 }

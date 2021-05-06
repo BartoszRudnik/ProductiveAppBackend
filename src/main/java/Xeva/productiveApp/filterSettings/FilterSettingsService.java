@@ -3,9 +3,12 @@ package Xeva.productiveApp.filterSettings;
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.filterSettings.pojo.CollaboratorEmailRequest;
+import Xeva.productiveApp.filterSettings.pojo.DeleteCollaboratorEmailRequest;
 import Xeva.productiveApp.filterSettings.pojo.FilterSettingsResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -57,13 +60,45 @@ public class FilterSettingsService {
 
     }
 
-    public void filterCollaboratorEmail(String userMail, CollaboratorEmailRequest collaboratorMail){
+    public void addFilterCollaboratorEmail(String userMail, CollaboratorEmailRequest collaboratorMail){
 
         ApplicationUser applicationUser = validateRequest(userMail);
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        userSettings.setCollaboratorEmail(collaboratorMail.getCollaboratorEmail());
+        for(String collaborator: collaboratorMail.getCollaboratorEmail()){
+
+            if(!userSettings.getCollaboratorEmail().contains(collaborator)){
+
+                userSettings.getCollaboratorEmail().add(collaborator);
+
+            }
+
+        }
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
+    public void deleteFilterCollaboratorEmail(String userMail, DeleteCollaboratorEmailRequest collaboratorMail){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getCollaboratorEmail().remove(collaboratorMail.getCollaboratorEmail());
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
+    public void clearFilterCollaborators(String userMail){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getCollaboratorEmail().clear();
 
         filterSettingsRepository.save(userSettings);
 
