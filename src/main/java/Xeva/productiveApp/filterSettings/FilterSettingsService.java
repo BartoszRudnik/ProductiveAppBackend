@@ -103,6 +103,49 @@ public class FilterSettingsService {
 
     }
 
+    public void addFilterTags(String userMail, TagsRequest tags){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        for(String tag : tags.getTags()){
+
+            if(!userSettings.getTags().contains(tag)){
+
+                userSettings.getTags().add(tag);
+
+            }
+
+        }
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
+    public void deleteFilterTag(String userMail, DeleteTag tag){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getTags().remove(tag.getTag());
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
+    public void clearFilterTags(String userMail){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getTags().clear();
+
+        filterSettingsRepository.save(userSettings);
+
+    }
 
     public void addFilterPriorities(String userMail, PriorityRequest priorities){
 
@@ -154,7 +197,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.getCollaboratorEmail(), userSettings.getPriorities());
+        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags());
 
     }
 

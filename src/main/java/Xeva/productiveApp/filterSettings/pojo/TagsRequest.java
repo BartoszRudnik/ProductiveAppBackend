@@ -9,12 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class FilterSettingsResponse {
+public class TagsRequest {
 
-    private boolean showOnlyUnfinished;
-    private boolean showOnlyDelegated;
-    private List<String> collaboratorEmail;
-    private List<String> priorities;
     private List<String> tags;
 
 }

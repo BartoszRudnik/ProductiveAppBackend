@@ -57,4 +57,20 @@ public class FilterSettingsController {
         filterSettingsService.clearFilterPriorities(mail);
     }
 
+    @PostMapping("/addFilterTag/{mail}")
+    public void addFilterTag(@PathVariable String mail, @RequestBody TagsRequest tagsRequest){
+        filterSettingsService.addFilterTags(mail, tagsRequest);
+    }
+
+
+    @PostMapping("/deleteFilterTag/{mail}")
+    public void deleteFilterTag(@PathVariable String mail, @RequestBody DeleteTag deleteTag){
+        filterSettingsService.deleteFilterTag(mail, deleteTag);
+    }
+
+    @PostMapping("/clearFilterTags/{mail}")
+    public void clearFilterTags(@PathVariable String mail){
+        filterSettingsService.clearFilterTags(mail);
+    }
+
 }
