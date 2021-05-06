@@ -37,11 +37,15 @@ public class FilterSettings {
     @ElementCollection
     private List<String> collaboratorEmail;
 
+    @ElementCollection
+    private List<String> priorities;
+
     public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated){
         this.user = user;
         this.showOnlyUnfinished = showOnlyUnfinished;
         this.showOnlyDelegated = showOnlyDelegated;
         this.collaboratorEmail = new ArrayList<>();
+        this.priorities = new ArrayList<>();
     }
 
     public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated, List<String> collaboratorEmail){

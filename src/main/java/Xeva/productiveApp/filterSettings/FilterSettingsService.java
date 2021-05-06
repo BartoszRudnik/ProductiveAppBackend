@@ -2,13 +2,12 @@ package Xeva.productiveApp.filterSettings;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
-import Xeva.productiveApp.filterSettings.pojo.CollaboratorEmailRequest;
-import Xeva.productiveApp.filterSettings.pojo.DeleteCollaboratorEmailRequest;
-import Xeva.productiveApp.filterSettings.pojo.FilterSettingsResponse;
+import Xeva.productiveApp.filterSettings.pojo.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Filter;
 
 @Service
 @AllArgsConstructor
@@ -104,13 +103,58 @@ public class FilterSettingsService {
 
     }
 
+
+    public void addFilterPriorities(String userMail, PriorityRequest priorities){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        for(String priority : priorities.getPriorities()){
+
+            if(!userSettings.getPriorities().contains(priority)){
+
+                userSettings.getPriorities().add(priority);
+
+            }
+
+        }
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
+    public void deleteFilterPriority(String userMail, DeletePriority priority){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getPriorities().remove(priority.getPriority());
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
+    public void clearFilterPriorities(String userMail){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getPriorities().clear();
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
     public FilterSettingsResponse getFilterSettings(String mail) {
 
         ApplicationUser applicationUser = validateRequest(mail);
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.getCollaboratorEmail());
+        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.getCollaboratorEmail(), userSettings.getPriorities());
 
     }
 

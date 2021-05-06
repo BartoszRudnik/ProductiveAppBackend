@@ -1,8 +1,6 @@
 package Xeva.productiveApp.filterSettings;
 
-import Xeva.productiveApp.filterSettings.pojo.CollaboratorEmailRequest;
-import Xeva.productiveApp.filterSettings.pojo.DeleteCollaboratorEmailRequest;
-import Xeva.productiveApp.filterSettings.pojo.FilterSettingsResponse;
+import Xeva.productiveApp.filterSettings.pojo.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +40,21 @@ public class FilterSettingsController {
     @PostMapping("/clearFilterCollaborators/{mail}")
     public void clearFilterCollaborators(@PathVariable String mail){
         filterSettingsService.clearFilterCollaborators(mail);
+    }
+
+    @PostMapping("/addFilterPriority/{mail}")
+    public void addFilterPriority(@PathVariable String mail, @RequestBody PriorityRequest priorityRequest){
+        filterSettingsService.addFilterPriorities(mail, priorityRequest);
+    }
+
+    @PostMapping("/deleteFilterPriority/{mail}")
+    public void deleteFilterPriority(@PathVariable String mail, @RequestBody DeletePriority deletePriority){
+        filterSettingsService.deleteFilterPriority(mail , deletePriority);
+    }
+
+    @PostMapping("/clearFilterPriorities/{mail}")
+    public void clearFilterPriorities(@PathVariable String mail){
+        filterSettingsService.clearFilterPriorities(mail);
     }
 
 }
