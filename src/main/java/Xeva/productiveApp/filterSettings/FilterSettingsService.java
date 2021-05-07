@@ -147,6 +147,18 @@ public class FilterSettingsService {
 
     }
 
+    public void changeSortingMode(String userMail, SortingModeRequest request){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.setSortingMode(request.getSortingMode());
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
     public void addFilterPriorities(String userMail, PriorityRequest priorities){
 
         ApplicationUser applicationUser = validateRequest(userMail);
@@ -197,7 +209,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags());
+        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getSortingMode());
 
     }
 

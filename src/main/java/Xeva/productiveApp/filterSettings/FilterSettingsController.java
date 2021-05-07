@@ -62,7 +62,6 @@ public class FilterSettingsController {
         filterSettingsService.addFilterTags(mail, tagsRequest);
     }
 
-
     @PostMapping("/deleteFilterTag/{mail}")
     public void deleteFilterTag(@PathVariable String mail, @RequestBody DeleteTag deleteTag){
         filterSettingsService.deleteFilterTag(mail, deleteTag);
@@ -71,6 +70,11 @@ public class FilterSettingsController {
     @PostMapping("/clearFilterTags/{mail}")
     public void clearFilterTags(@PathVariable String mail){
         filterSettingsService.clearFilterTags(mail);
+    }
+
+    @PostMapping("/changeSortingMode/{mail}")
+    public void changeSortingMode(@PathVariable String mail, @RequestBody SortingModeRequest request){
+        filterSettingsService.changeSortingMode(mail, request);
     }
 
 }

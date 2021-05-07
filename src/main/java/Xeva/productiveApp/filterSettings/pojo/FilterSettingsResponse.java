@@ -16,5 +16,6 @@ public class FilterSettingsResponse {
     private List<String> collaboratorEmail;
     private List<String> priorities;
     private List<String> tags;
+    private int sortingMode;
 
 }

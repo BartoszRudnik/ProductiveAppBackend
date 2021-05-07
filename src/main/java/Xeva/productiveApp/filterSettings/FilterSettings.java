@@ -43,6 +43,8 @@ public class FilterSettings {
     @ElementCollection
     private List<String> tags;
 
+    private int sortingMode;
+
     public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated){
         this.user = user;
         this.showOnlyUnfinished = showOnlyUnfinished;
@@ -50,6 +52,7 @@ public class FilterSettings {
         this.collaboratorEmail = new ArrayList<>();
         this.priorities = new ArrayList<>();
         this.tags = new ArrayList<>();
+        this.sortingMode = 0;
     }
 
     public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated, List<String> collaboratorEmail){
