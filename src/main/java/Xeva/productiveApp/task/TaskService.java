@@ -168,6 +168,11 @@ public class TaskService {
 
             }
 
+        }else if(task.getChildTask() != null){
+            task.getChildTask().setIsCanceled(true);
+            task.getChildTask().setParentTask(null);
+
+            task.setChildTask(null);
         }
 
         task.setDelegatedEmail(request.getDelegatedEmail());
