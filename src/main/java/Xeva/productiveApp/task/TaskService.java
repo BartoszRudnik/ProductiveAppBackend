@@ -141,7 +141,15 @@ public class TaskService {
         task.setPosition(request.getPosition());
         task.setIsCanceled(request.isCanceled());
 
-        if(userService.findByEmail(request.getDelegatedEmail()).isPresent()) {
+        if(task.getChildTask() != null && (request.getLocalization().equals("TRASH") || request.getLocalization().equals("COMPLETED"))){
+            if(!task.getChildTask().getIfDone()) {
+                task.getChildTask().setIsCanceled(true);
+            }
+            task.getChildTask().setParentTask(null);
+
+            task.setChildTask(null);
+        }
+        else if(userService.findByEmail(request.getDelegatedEmail()).isPresent()) {
 
             Task childTask;
 
@@ -213,17 +221,26 @@ public class TaskService {
 
     }
 
-    public void changeTaskStatus(long id){
+    public String changeTaskStatus(long id){
 
         Task task = taskRepository.getOne(id);
 
         task.setIfDone(!task.getIfDone());
 
+        if(task.getChildTask() != null){
+            task.getChildTask().setIsCanceled(task.getIfDone());
+            task.getChildTask().setIfDone(task.getIfDone());
+            this.setParentTaskInformation(task.getChildTask(), task);
+        }
+
         if(task.getParentTask() != null && task.getIfDone()){
             this.setParentTaskInformation(task, task.getParentTask());
+            task.getParentTask().setIfDone(true);
         }
 
         taskRepository.save(task);
+
+        return task.getTaskStatus();
 
     }
 
