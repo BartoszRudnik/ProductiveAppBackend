@@ -1,9 +1,9 @@
 package Xeva.productiveApp.task;
 
-import Xeva.productiveApp.task.requests.AddTaskRequest;
-import Xeva.productiveApp.task.requests.GetTasksResponse;
-import Xeva.productiveApp.task.requests.UpdateTaskPositionRequest;
-import Xeva.productiveApp.task.requests.UpdateTaskRequest;
+import Xeva.productiveApp.task.dto.AddTaskRequest;
+import Xeva.productiveApp.task.dto.GetTasksResponse;
+import Xeva.productiveApp.task.dto.UpdateTaskPositionRequest;
+import Xeva.productiveApp.task.dto.UpdateTaskRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

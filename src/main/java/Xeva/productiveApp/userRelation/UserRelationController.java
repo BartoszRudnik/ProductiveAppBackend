@@ -1,7 +1,7 @@
 package Xeva.productiveApp.userRelation;
 
-import Xeva.productiveApp.userRelation.requests.AllCollaboratorsResponse;
-import Xeva.productiveApp.userRelation.requests.Request;
+import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
+import Xeva.productiveApp.userRelation.dto.Request;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

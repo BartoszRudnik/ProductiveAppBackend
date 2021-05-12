@@ -1,5 +1,6 @@
 package Xeva.productiveApp.passwordReset;
 
+import Xeva.productiveApp.passwordReset.dto.ResetRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

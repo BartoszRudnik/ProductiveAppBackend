@@ -1,4 +1,4 @@
-package Xeva.productiveApp.filterSettings.pojo;
+package Xeva.productiveApp.filterSettings.dto;
 
 import lombok.*;
 

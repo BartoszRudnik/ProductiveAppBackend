@@ -1,5 +1,6 @@
 package Xeva.productiveApp.tags;
 
+import Xeva.productiveApp.tags.dto.UpdateRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

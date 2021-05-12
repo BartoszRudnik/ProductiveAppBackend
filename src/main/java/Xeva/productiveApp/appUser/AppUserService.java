@@ -1,5 +1,7 @@
 package Xeva.productiveApp.appUser;
 
+import Xeva.productiveApp.appUser.dto.GetUserDataRequest;
+import Xeva.productiveApp.appUser.dto.UpdateUserRequest;
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
@@ -10,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +27,54 @@ public class AppUserService implements UserDetailsService {
 
     public Optional<ApplicationUser> findByEmail(String email){
         return appUserRepository.findByEmail(email);
+    }
+
+    public void clearUserData(String userMail){
+
+        boolean isUser = findByEmail(userMail).isPresent();
+
+        if(!isUser){
+            throw new IllegalStateException("User doesn't exists");
+        }
+
+        ApplicationUser user = findByEmail(userMail).get();
+
+        user.setLastName(null);
+        user.setFirstName(null);
+
+        appUserRepository.save(user);
+
+    }
+
+    public GetUserDataRequest getUserData(String userMail){
+
+        boolean isUser = findByEmail(userMail).isPresent();
+
+        if(!isUser){
+            throw new IllegalStateException("User doesn't exists");
+        }
+
+        ApplicationUser user = findByEmail(userMail).get();
+
+        return new GetUserDataRequest(user.getFirstName(), user.getLastName());
+
+    }
+
+    public void updateUserData(String userMail, UpdateUserRequest request){
+
+        boolean isUser = findByEmail(userMail).isPresent();
+
+        if(!isUser){
+            throw new IllegalStateException("User doesn't exists");
+        }
+
+        ApplicationUser user = findByEmail(userMail).get();
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+
+        appUserRepository.save(user);
+
     }
 
     @Override

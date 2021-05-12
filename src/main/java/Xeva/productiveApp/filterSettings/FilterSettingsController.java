@@ -1,6 +1,6 @@
 package Xeva.productiveApp.filterSettings;
 
-import Xeva.productiveApp.filterSettings.pojo.*;
+import Xeva.productiveApp.filterSettings.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,12 +2,9 @@ package Xeva.productiveApp.filterSettings;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
-import Xeva.productiveApp.filterSettings.pojo.*;
+import Xeva.productiveApp.filterSettings.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.logging.Filter;
 
 @Service
 @AllArgsConstructor

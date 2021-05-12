@@ -1,5 +1,6 @@
 package Xeva.productiveApp.passwordReset;
 
+import Xeva.productiveApp.passwordReset.dto.NewPasswordRequest;
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
 import Xeva.productiveApp.registration.confirmationToken.ResponseToken;
 import lombok.AllArgsConstructor;

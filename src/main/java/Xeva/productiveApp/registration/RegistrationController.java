@@ -2,6 +2,7 @@ package Xeva.productiveApp.registration;
 
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
 import Xeva.productiveApp.registration.confirmationToken.ResponseToken;
+import Xeva.productiveApp.registration.dto.RegistrationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

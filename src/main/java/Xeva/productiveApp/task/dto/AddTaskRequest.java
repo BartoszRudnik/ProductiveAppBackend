@@ -1,4 +1,4 @@
-package Xeva.productiveApp.task.requests;
+package Xeva.productiveApp.task.dto;
 
 import Xeva.productiveApp.tags.Tag;
 import lombok.*;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UpdateTaskRequest {
+public class AddTaskRequest {
 
     private String taskName;
     private String taskDescription;
@@ -23,7 +23,5 @@ public class UpdateTaskRequest {
     private Date startDate;
     private Date endDate;
     private List<Tag> tags;
-    private Double position;
-    private boolean isCanceled;
 
 }

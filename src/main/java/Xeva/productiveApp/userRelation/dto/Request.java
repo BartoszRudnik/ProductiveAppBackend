@@ -1,4 +1,4 @@
-package Xeva.productiveApp.userRelation.requests;
+package Xeva.productiveApp.userRelation.dto;
 import lombok.*;
 
 @Getter

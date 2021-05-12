@@ -1,4 +1,4 @@
-package Xeva.productiveApp.login;
+package Xeva.productiveApp.registration.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,9 +9,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class LoginRequest {
+public class RegistrationRequest {
 
     private final String password;
     private final String email;
+    private final String firstName;
+    private final String lastName;
 
 }

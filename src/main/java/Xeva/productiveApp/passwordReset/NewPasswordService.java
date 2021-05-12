@@ -2,6 +2,7 @@ package Xeva.productiveApp.passwordReset;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.passwordReset.dto.NewPasswordRequest;
 import Xeva.productiveApp.passwordReset.resetToken.ResetToken;
 import Xeva.productiveApp.passwordReset.resetToken.ResetTokenService;
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;

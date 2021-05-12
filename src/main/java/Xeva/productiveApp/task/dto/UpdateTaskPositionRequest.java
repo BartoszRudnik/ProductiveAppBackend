@@ -1,10 +1,6 @@
-package Xeva.productiveApp.task.requests;
+package Xeva.productiveApp.task.dto;
 
-import Xeva.productiveApp.tags.Tag;
 import lombok.*;
-
-import java.util.Date;
-import java.util.List;
 
 @Getter
 @EqualsAndHashCode

@@ -1,5 +1,6 @@
 package Xeva.productiveApp.login;
 
+import Xeva.productiveApp.login.dto.LoginRequest;
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
 import Xeva.productiveApp.registration.confirmationToken.ResponseToken;
 import lombok.AllArgsConstructor;

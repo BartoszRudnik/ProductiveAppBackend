@@ -1,4 +1,4 @@
-package Xeva.productiveApp.passwordReset;
+package Xeva.productiveApp.passwordReset.dto;
 
 import lombok.*;
 

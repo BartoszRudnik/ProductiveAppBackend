@@ -32,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     antMatchers("/api/v*/delegate/**").permitAll().
                     antMatchers("/api/v*/filterSettings/**").permitAll().
                     antMatchers("/api/v*/userImage/**").permitAll().
+                    antMatchers("/api/v*/userData/**").permitAll().
         anyRequest().
         authenticated().and()
         .formLogin();

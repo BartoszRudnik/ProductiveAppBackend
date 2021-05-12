@@ -1,4 +1,4 @@
-package Xeva.productiveApp.tags;
+package Xeva.productiveApp.tags.dto;
 
 import lombok.*;
 

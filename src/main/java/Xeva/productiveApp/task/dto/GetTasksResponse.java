@@ -1,4 +1,4 @@
-package Xeva.productiveApp.task.requests;
+package Xeva.productiveApp.task.dto;
 
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.task.Task;

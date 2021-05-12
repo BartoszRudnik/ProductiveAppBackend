@@ -1,14 +1,10 @@
 package Xeva.productiveApp.tags;
 
 import Xeva.productiveApp.appUser.AppUserService;
-import Xeva.productiveApp.appUser.ApplicationUser;
-import Xeva.productiveApp.task.Task;
-import Xeva.productiveApp.task.TaskRepository;
-import Xeva.productiveApp.task.TaskService;
+import Xeva.productiveApp.tags.dto.UpdateRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
