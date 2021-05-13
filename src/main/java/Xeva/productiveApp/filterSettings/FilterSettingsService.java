@@ -210,4 +210,8 @@ public class FilterSettingsService {
 
     }
 
+    public void deleteUserFilters(ApplicationUser user){
+        filterSettingsRepository.deleteByUser(user);
+    }
+
 }

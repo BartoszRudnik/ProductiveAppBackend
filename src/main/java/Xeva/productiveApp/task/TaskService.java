@@ -295,4 +295,26 @@ public class TaskService {
         }
     }
 
+    private void clearChildTasks(ApplicationUser user){
+
+        List<Task> tasks = taskRepository.findAll();
+
+        for(Task task : tasks){
+            if(task.getChildTask() != null){
+                task.getChildTask().setParentTask(null);
+                taskRepository.save(task.getChildTask());
+            }
+            if(task.getParentTask() != null){
+                task.getParentTask().setChildTask(null);
+                taskRepository.save(task.getParentTask());
+            }
+        }
+
+    }
+
+    public void deleteAll(ApplicationUser user){
+        this.clearChildTasks(user);
+        taskRepository.deleteAllByUser(user);
+    }
+
 }

@@ -32,4 +32,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "SET tag.name = ?1 where (tag.name = ?2 AND tag.ownerEmail = ?3)")
     int updateTagName(String newName, String oldName, String ownerEmail);
 
+    @Transactional
+    void deleteAllByOwnerEmail(String ownerEmail);
+
 }

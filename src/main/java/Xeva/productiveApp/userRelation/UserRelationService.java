@@ -154,4 +154,8 @@ public class UserRelationService {
 
     }
 
+    public void deleteAllUserRelations(ApplicationUser user){
+        userRelationRepository.deleteByUser1OrUser2(user, user);
+    }
+
 }

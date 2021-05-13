@@ -13,6 +13,11 @@ public interface ResetTokenRepository extends JpaRepository<ResetToken, Long> {
 
     Optional<ResetToken> findByToken(String token);
 
+    ResetToken findByTokenAndAppUser(String token, ApplicationUser user);
+
+    @Transactional
+    void deleteAllByAppUser(ApplicationUser appUser);
+
     @Transactional
     @Modifying
     void deleteByAppUser(ApplicationUser appUser);

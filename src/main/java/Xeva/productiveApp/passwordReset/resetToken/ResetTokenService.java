@@ -24,4 +24,12 @@ public class ResetTokenService {
         return resetTokenRepository.findByToken(token);
     }
 
+    public ResetToken getTokenByTokenAndUser(ApplicationUser user, String token){
+        return resetTokenRepository.findByTokenAndAppUser(token, user);
+    }
+
+    public void deleteUserTokens(ApplicationUser user){
+        resetTokenRepository.deleteAllByAppUser(user);
+    }
+
 }

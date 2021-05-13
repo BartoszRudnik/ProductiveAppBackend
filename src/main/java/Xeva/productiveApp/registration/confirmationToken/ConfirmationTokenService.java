@@ -1,5 +1,6 @@
 package Xeva.productiveApp.registration.confirmationToken;
 
+import Xeva.productiveApp.appUser.ApplicationUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,10 @@ public class ConfirmationTokenService {
     public int setConfirmedAt(String token) {
         return confirmationTokenRepository.updateConfirmedAt(
                 token, LocalDateTime.now());
+    }
+
+    public void deleteConfirmationToken(ApplicationUser applicationUser){
+        confirmationTokenRepository.deleteByAppUser(applicationUser);
     }
 
 }

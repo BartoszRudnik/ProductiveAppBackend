@@ -18,4 +18,7 @@ public interface UserRelationRepository extends JpaRepository<UserRelation, Long
     Optional<Set<UserRelation>> findAllByUser1(ApplicationUser user);
     Optional<Set<UserRelation>> findAllByUser2(ApplicationUser user);
 
+    @Transactional
+    void deleteByUser1OrUser2(ApplicationUser user1, ApplicationUser user2);
+
 }

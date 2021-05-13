@@ -50,4 +50,8 @@ public class TagService {
         tagRepository.deleteById(id);
     }
 
+    public void deleteByUser(String userMail){
+        tagRepository.deleteAllByOwnerEmail(userMail);
+    }
+
 }

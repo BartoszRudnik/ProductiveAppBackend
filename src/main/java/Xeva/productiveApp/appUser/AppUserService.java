@@ -29,6 +29,10 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findByEmail(email);
     }
 
+    public void deleteUser(ApplicationUser user){
+        appUserRepository.delete(user);
+    }
+
     public void clearUserData(String userMail){
 
         boolean isUser = findByEmail(userMail).isPresent();
