@@ -57,7 +57,7 @@ public class ResetService {
 
         resetTokenService.saveResetToken(resetToken);
 
-        emailSender.send(request.getEmail(), emailSender.buildEmail(code, code));
+        emailSender.send("Reset password",request.getEmail(), emailSender.buildEmailPasswordReset(user.get().getFirstName(), code));
 
     }
 

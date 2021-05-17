@@ -47,7 +47,7 @@ public class DeleteAccountService {
 
         resetTokenService.saveResetToken(token);
 
-        emailSender.send(userMail, emailSender.buildEmail(code, code));
+        emailSender.send("Delete account", userMail, emailSender.buildEmailAccountDelete(user.getFirstName(), code));
 
     }
 
