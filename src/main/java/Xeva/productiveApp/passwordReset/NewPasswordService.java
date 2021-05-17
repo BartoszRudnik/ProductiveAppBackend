@@ -23,6 +23,12 @@ public class NewPasswordService {
     private final ConfirmationTokenService confirmationTokenService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    public boolean checkTokenExpiryDate(ResetToken token){
+
+        return token.getExpiresAt().isAfter(LocalDateTime.now());
+
+    }
+
     public ConfirmationToken newPassword(NewPasswordRequest request){
 
         boolean userExists = appUserService.findByEmail(request.getEmail()).isPresent();
@@ -41,6 +47,10 @@ public class NewPasswordService {
 
         if(appUser.getId() != databaseToken.getAppUser().getId()){
             throw new IllegalStateException("Token don't match with user email");
+        }
+
+        if(!this.checkTokenExpiryDate(databaseToken)){
+            throw new IllegalStateException("Token has expired");
         }
 
         String encodedPassword = bCryptPasswordEncoder.encode(request.getNewPassword());

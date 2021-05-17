@@ -31,6 +31,10 @@ public class DeleteAccountService {
     private final EmailSender emailSender;
     private final ConfirmationTokenService confirmationTokenService;
 
+    private boolean checkTokenExpiryDate(ResetToken token){
+        return token.getExpiresAt().isAfter(LocalDateTime.now());
+    }
+
     public void deleteAccountToken(String userMail){
 
         boolean isUser = appUserService.findByEmail(userMail).isPresent();
@@ -64,6 +68,10 @@ public class DeleteAccountService {
 
         if(!tokenFromDB.getToken().equals(token)){
             throw new IllegalStateException("Wrong token");
+        }
+
+        if(!this.checkTokenExpiryDate(tokenFromDB)){
+            throw new IllegalStateException("Token has expired");
         }
 
         tagService.deleteByUser(userMail);
