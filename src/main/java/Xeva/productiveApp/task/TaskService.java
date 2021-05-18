@@ -4,10 +4,7 @@ import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.tags.TagService;
-import Xeva.productiveApp.task.dto.AddTaskRequest;
-import Xeva.productiveApp.task.dto.GetTasksResponse;
-import Xeva.productiveApp.task.dto.UpdateTaskPositionRequest;
-import Xeva.productiveApp.task.dto.UpdateTaskRequest;
+import Xeva.productiveApp.task.dto.*;
 import Xeva.productiveApp.userRelation.RelationState;
 import Xeva.productiveApp.userRelation.UserRelation;
 import Xeva.productiveApp.userRelation.UserRelationService;
@@ -27,6 +24,30 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final AppUserService userService;
     private final TagService tagService;
+
+    public GetSingleTaskResponse getSingleTask(String mail, Long taskId){
+
+        boolean isUser = userService.findByEmail(mail).isPresent();
+
+        if(!isUser){
+            throw new IllegalStateException("Wrong user");
+        }
+
+        Task task = taskRepository.getOne(taskId);
+
+        GetSingleTaskResponse result = new GetSingleTaskResponse();
+
+        result.setDescription(task.getDescription());
+        result.setTaskId(task.getId_task());
+        result.setEndDate(task.getEndDate());
+        result.setStartDate(task.getStartDate());
+        result.setTaskName(task.getTask_name());
+        result.setPriority(task.getPriority().toString());
+        result.setOwnerEmail(task.getUser().getEmail());
+
+        return result;
+
+    }
 
     private void saveTask(Task task){
         taskRepository.save(task);
@@ -107,10 +128,13 @@ public class TaskService {
                     this.setParentTaskInformation(task, task.getParentTask());
                     this.taskRepository.save(task);
 
-                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task()), task.getParentTask().getUser().getEmail()));
+                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getId_task()));
                 }
 
-            }else {
+            }else if(task.getChildTask() != null){
+                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task()), null, task.getChildTask().getId_task(), null));
+            }
+            else {
                 tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task())));
             }
         }

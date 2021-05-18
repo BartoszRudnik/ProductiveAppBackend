@@ -1,9 +1,6 @@
 package Xeva.productiveApp.task;
 
-import Xeva.productiveApp.task.dto.AddTaskRequest;
-import Xeva.productiveApp.task.dto.GetTasksResponse;
-import Xeva.productiveApp.task.dto.UpdateTaskPositionRequest;
-import Xeva.productiveApp.task.dto.UpdateTaskRequest;
+import Xeva.productiveApp.task.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +17,11 @@ public class TaskController {
     @GetMapping("/getAll/{mail}")
     public List<GetTasksResponse> getTasks(@PathVariable String mail){
         return taskService.getTasks(mail);
+    }
+
+    @GetMapping("/getSingleTask/{mail}/{taskId}")
+    public GetSingleTaskResponse getSingleTask(@PathVariable String mail, @PathVariable Long taskId){
+        return taskService.getSingleTask(mail, taskId);
     }
 
     @PostMapping("/add")
