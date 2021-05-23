@@ -34,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     antMatchers("/api/v*/userImage/**").permitAll().
                     antMatchers("/api/v*/userData/**").permitAll().
                     antMatchers("/api/v*/account/**").permitAll().
+                    antMatchers("/api/v*/localization/**").permitAll().
         anyRequest().
         authenticated().and()
         .formLogin();

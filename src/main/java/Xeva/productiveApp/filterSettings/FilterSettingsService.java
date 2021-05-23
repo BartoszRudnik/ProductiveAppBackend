@@ -50,7 +50,11 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
+        System.out.println(userSettings.isShowOnlyDelegated());
+
         userSettings.setShowOnlyDelegated(!userSettings.isShowOnlyDelegated());
+
+        System.out.println(userSettings.isShowOnlyDelegated());
 
         filterSettingsRepository.save(userSettings);
 
