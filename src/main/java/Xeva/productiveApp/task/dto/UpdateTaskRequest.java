@@ -26,4 +26,8 @@ public class UpdateTaskRequest {
     private Double position;
     private boolean isCanceled;
 
+    private Long localizationId;
+    private double localizationRadius;
+    private boolean notificationOnEnter;
+
 }

@@ -2,6 +2,8 @@ package Xeva.productiveApp.task;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.localization.Localization;
+import Xeva.productiveApp.localization.LocalizationService;
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.tags.TagService;
 import Xeva.productiveApp.task.dto.*;
@@ -24,6 +26,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final AppUserService userService;
     private final TagService tagService;
+    private final LocalizationService localizationService;
 
     public GetSingleTaskResponse getSingleTask(String mail, Long taskId){
 
@@ -75,27 +78,35 @@ public class TaskService {
         }
 
         Task task;
+
         ApplicationUser user = userService.findByEmail(request.getUserEmail()).get();
         TaskPriority priority = getPriority(request.getPriority());
         TaskLocalization localization = getLocalization(request.getLocalization());
         List<Tag> tags = request.getTags();
 
-        if(localization == TaskLocalization.DELEGATED && request.getDelegatedEmail().length() > 1){
+        if(localization == TaskLocalization.DELEGATED && request.getDelegatedEmail() != null && request.getDelegatedEmail().length() > 1){
 
             ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
 
-            task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail());
-
-            this.saveTask(task);
-            this.setTags(task, tags);
+            if(request.getLocalizationId() == null) {
+                task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail());
+            }else{
+                Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
+                task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail(), notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter());
+            }
 
         }else{
 
-            task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail());
-            this.saveTask(task);
-            this.setTags(task, tags);
+            if(request.getLocalizationId() == null) {
+                task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail());
+            }else{
+                Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
+                task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail(), notificationLocalization, request.isNotificationOnEnter(), request.getLocalizationRadius());
+            }
 
         }
+        this.saveTask(task);
+        this.setTags(task, tags);
 
         return task.getId_task();
 
@@ -164,6 +175,9 @@ public class TaskService {
         task.setLocalization(this.getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
         task.setIsCanceled(request.isCanceled());
+        task.setNotificationLocalization(this.localizationService.findById(request.getLocalizationId()).get());
+        task.setLocalizationRadius(request.getLocalizationRadius());
+        task.setNotificationOnEnter(request.isNotificationOnEnter());
 
         if(task.getChildTask() != null && (request.getLocalization().equals("TRASH") || request.getLocalization().equals("COMPLETED"))){
             if(!task.getChildTask().getIfDone()) {
@@ -175,14 +189,11 @@ public class TaskService {
         }
         else if(userService.findByEmail(request.getDelegatedEmail()).isPresent()) {
 
-            Task childTask;
-
             if(task.getChildTask() == null) {
 
                 ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
-                childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
 
-                task.setChildTask(childTask);
+                setLocalizationNotification(request, task, delegatedUser);
 
             }else if(!task.getDelegatedEmail().equals(request.getDelegatedEmail())){
 
@@ -192,9 +203,7 @@ public class TaskService {
                     task.getChildTask().setIsCanceled(true);
                     task.getChildTask().setParentTask(null);
 
-                    childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
-
-                    task.setChildTask(childTask);
+                    setLocalizationNotification(request, task, delegatedUser);
 
                 }
 
@@ -243,6 +252,19 @@ public class TaskService {
 
         taskRepository.save(task);
 
+    }
+
+    private void setLocalizationNotification(UpdateTaskRequest request, Task task, ApplicationUser delegatedUser) {
+        Task childTask;
+
+        if(request.getLocalizationId() == null) {
+            childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
+        }else{
+            Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
+            childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task, notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter());
+        }
+
+        task.setChildTask(childTask);
     }
 
     public String changeTaskStatus(long id){

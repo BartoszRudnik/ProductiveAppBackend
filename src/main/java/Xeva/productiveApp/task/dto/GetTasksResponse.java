@@ -1,5 +1,6 @@
 package Xeva.productiveApp.task.dto;
 
+import Xeva.productiveApp.localization.Localization;
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.task.Task;
 import lombok.*;

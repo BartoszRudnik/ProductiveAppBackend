@@ -25,8 +25,8 @@ public class LocalizationController {
     }
 
     @PostMapping("/addLocalization/{mail}")
-    public void addLocalization(@PathVariable String mail, @RequestBody AddLocalization addLocalization){
-        localizationService.addLocalization(mail, addLocalization);
+    public Long addLocalization(@PathVariable String mail, @RequestBody AddLocalization addLocalization){
+        return localizationService.addLocalization(mail, addLocalization);
     }
 
     @DeleteMapping("/deleteLocalization/{id}")

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -43,7 +44,7 @@ public class LocalizationService {
 
     }
 
-    public void addLocalization(String mail, AddLocalization addLocalization){
+    public Long addLocalization(String mail, AddLocalization addLocalization){
 
         boolean isValidUser = appUserService.findByEmail(mail).isPresent();
 
@@ -56,6 +57,8 @@ public class LocalizationService {
         Localization localization = new Localization(addLocalization.getLocalizationName(), addLocalization.getLongitude(), addLocalization.getLatitude(), user);
 
         this.localizationRepository.save(localization);
+
+        return localization.getLocalizationId();
 
     }
 
@@ -80,6 +83,16 @@ public class LocalizationService {
         localizationToEdit.setLongitude(addLocalization.getLongitude());
 
         this.localizationRepository.save(localizationToEdit);
+
+    }
+
+    public Optional<Localization> findById(Long id){
+        return this.localizationRepository.findById(id);
+    }
+
+    public void deleteAllUserLocalizations(ApplicationUser user){
+
+        this.localizationRepository.deleteAllByUser(user);
 
     }
 

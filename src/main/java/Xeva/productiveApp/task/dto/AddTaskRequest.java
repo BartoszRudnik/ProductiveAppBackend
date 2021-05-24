@@ -24,4 +24,8 @@ public class AddTaskRequest {
     private Date endDate;
     private List<Tag> tags;
 
+    private Long localizationId;
+    private double localizationRadius;
+    private boolean notificationOnEnter;
+
 }
