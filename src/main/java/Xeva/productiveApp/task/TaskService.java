@@ -321,7 +321,7 @@ public class TaskService {
 
     private void clearChildTasks(ApplicationUser user){
 
-        List<Task> tasks = taskRepository.findAll();
+        List<Task> tasks = taskRepository.findAllByUserEmail(user.getEmail()).get();
 
         for(Task task : tasks){
             if(task.getChildTask() != null){
