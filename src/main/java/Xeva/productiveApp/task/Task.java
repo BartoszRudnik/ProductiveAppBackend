@@ -117,6 +117,8 @@ public class Task {
 
     private Boolean notificationOnEnter;
 
+    private Boolean notificationOnExit;
+
     //Tworzenie tasku nadrzędnego
     public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail) {
         this.task_name = task_name;
@@ -148,7 +150,7 @@ public class Task {
     }
 
     //Tworzenie tasku nadrzędnego z powiadomieniem
-    public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter) {
+    public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
@@ -161,13 +163,14 @@ public class Task {
         this.taskStatus = "Sent";
         this.notificationLocalization = notificationLocalization;
         this.notificationOnEnter = notificationOnEnter;
+        this.notificationOnExit = notificationOnExit;
         this.localizationRadius = localizationRadius;
-        this.childTask = new Task(task_name, description, userDelegated, priority, ifDone, startDate, endDate, this, notificationLocalization, localizationRadius, notificationOnEnter);
+        this.childTask = new Task(task_name, description, userDelegated, priority, ifDone, startDate, endDate, this, notificationLocalization, localizationRadius, notificationOnEnter, notificationOnExit);
         this.isCanceled = false;
     }
 
     //Tworzenie tasku podrzędnego z powiadomieniem
-    public Task( String task_name, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter) {
+    public Task( String task_name, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
@@ -181,6 +184,7 @@ public class Task {
         this.localizationRadius = localizationRadius;
         this.notificationLocalization = notificationLocalization;
         this.notificationOnEnter = notificationOnEnter;
+        this.notificationOnExit = notificationOnExit;
     }
 
     public Task(String task_name, String description, ApplicationUser user) {

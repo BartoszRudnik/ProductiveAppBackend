@@ -29,5 +29,6 @@ public class UpdateTaskRequest {
     private Long localizationId;
     private double localizationRadius;
     private boolean notificationOnEnter;
+    private boolean notificationOnExit;
 
 }

@@ -92,7 +92,7 @@ public class TaskService {
                 task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail());
             }else{
                 Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
-                task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail(), notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter());
+                task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail(), notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter(), request.isNotificationOnExit());
             }
 
         }else{
@@ -175,9 +175,11 @@ public class TaskService {
         task.setLocalization(this.getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
         task.setIsCanceled(request.isCanceled());
-        task.setNotificationLocalization(this.localizationService.findById(request.getLocalizationId()).get());
-        task.setLocalizationRadius(request.getLocalizationRadius());
-        task.setNotificationOnEnter(request.isNotificationOnEnter());
+        if(request.getLocalizationId() != null) {
+            task.setNotificationLocalization(this.localizationService.findById(request.getLocalizationId()).get());
+            task.setLocalizationRadius(request.getLocalizationRadius());
+            task.setNotificationOnEnter(request.isNotificationOnEnter());
+        }
 
         if(task.getChildTask() != null && (request.getLocalization().equals("TRASH") || request.getLocalization().equals("COMPLETED"))){
             if(!task.getChildTask().getIfDone()) {
@@ -261,7 +263,7 @@ public class TaskService {
             childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
         }else{
             Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
-            childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task, notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter());
+            childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task, notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter(), request.isNotificationOnExit());
         }
 
         task.setChildTask(childTask);
