@@ -101,7 +101,7 @@ public class TaskService {
                 task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail());
             }else{
                 Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
-                task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail(), notificationLocalization, request.isNotificationOnEnter(), request.getLocalizationRadius());
+                task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail(), notificationLocalization, request.isNotificationOnEnter(), request.getLocalizationRadius(), request.isNotificationOnExit());
             }
 
         }

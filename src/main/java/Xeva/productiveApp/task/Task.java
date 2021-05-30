@@ -206,7 +206,7 @@ public class Task {
         this.taskStatus = "Sent";
     }
 
-    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, String delegatedEmail, Localization notificationLocalization, boolean notificationOnEnter, double localizationRadius) {
+    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, String delegatedEmail, Localization notificationLocalization, boolean notificationOnEnter, double localizationRadius, boolean notificationOnExit) {
         this.task_name = task_name;
         this.description = description;
         this.user = user;
@@ -220,6 +220,7 @@ public class Task {
         this.notificationLocalization = notificationLocalization;
         this.localizationRadius = localizationRadius;
         this.notificationOnEnter = notificationOnEnter;
+        this.notificationOnExit = notificationOnExit;
     }
 
     public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, double position) {
