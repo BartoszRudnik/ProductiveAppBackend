@@ -6,5 +6,6 @@ public interface EmailSender {
     String buildEmailRegistration(String name, String link);
     String buildEmailPasswordReset(String name, String token);
     String buildEmailAccountDelete(String name, String token);
+    String buildEmailInviteApp(String name, String token);
 
 }
