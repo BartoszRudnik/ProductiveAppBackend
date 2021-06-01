@@ -1,6 +1,7 @@
 package Xeva.productiveApp.localization;
 
 import Xeva.productiveApp.localization.dto.AddLocalization;
+import Xeva.productiveApp.localization.dto.GetCoordinates;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,11 @@ import java.util.List;
 public class LocalizationController {
 
     private final LocalizationService localizationService;
+
+    @GetMapping("/getCoordinates/{id}")
+    public GetCoordinates getCoordinates(@PathVariable Long id){
+        return localizationService.getCoordinates(id);
+    }
 
     @GetMapping("/getLocalizations/{mail}")
     public List<Localization> getLocalizations(@PathVariable String mail){

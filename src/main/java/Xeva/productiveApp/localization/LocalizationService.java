@@ -3,6 +3,7 @@ package Xeva.productiveApp.localization;
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.localization.dto.AddLocalization;
+import Xeva.productiveApp.localization.dto.GetCoordinates;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,24 @@ public class LocalizationService {
 
     private final AppUserService appUserService;
     private final LocalizationRepository localizationRepository;
+
+    public GetCoordinates getCoordinates(Long id){
+
+        GetCoordinates coordinates = new GetCoordinates();
+
+        if(this.localizationRepository.findById(id).isPresent()) {
+
+            Localization localization = this.localizationRepository.findById(id).get();
+
+            coordinates.setLatitude(localization.getLatitude());
+            coordinates.setLongitude(localization.getLongitude());
+
+            return coordinates;
+        }else{
+            return null;
+        }
+
+    }
 
     public Localization getLocalization(Long id){
 
