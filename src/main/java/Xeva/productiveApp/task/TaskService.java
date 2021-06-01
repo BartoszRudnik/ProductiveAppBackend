@@ -175,11 +175,14 @@ public class TaskService {
         task.setLocalization(this.getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
         task.setIsCanceled(request.isCanceled());
-        if(request.getLocalizationId() != null) {
+        if(!this.localizationService.findById(request.getLocalizationId()).isPresent()){
+            task.setNotificationLocalization(null);
+        }else {
             task.setNotificationLocalization(this.localizationService.findById(request.getLocalizationId()).get());
-            task.setLocalizationRadius(request.getLocalizationRadius());
-            task.setNotificationOnEnter(request.isNotificationOnEnter());
         }
+        task.setLocalizationRadius(request.getLocalizationRadius());
+        task.setNotificationOnEnter(request.isNotificationOnEnter());
+        task.setNotificationOnExit(request.isNotificationOnExit());
 
         if(task.getChildTask() != null && (request.getLocalization().equals("TRASH") || request.getLocalization().equals("COMPLETED"))){
             if(!task.getChildTask().getIfDone()) {

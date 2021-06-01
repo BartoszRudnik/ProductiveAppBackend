@@ -87,6 +87,9 @@ public class LocalizationService {
     }
 
     public Optional<Localization> findById(Long id){
+        if(id == null){
+            return Optional.empty();
+        }
         return this.localizationRepository.findById(id);
     }
 
