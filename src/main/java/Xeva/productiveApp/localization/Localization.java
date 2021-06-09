@@ -27,6 +27,9 @@ public class Localization {
     private Long localizationId;
 
     private String localizationName;
+    private String street;
+    private String locality;
+    private String country;
     private Float longitude;
     private Float latitude;
 
@@ -35,11 +38,14 @@ public class Localization {
     @JoinColumn(nullable = false, name = "application_user_id")
     private ApplicationUser user;
 
-    public Localization(String localizationName, Float longitude, Float latitude, ApplicationUser user){
+    public Localization(String localizationName, String street, String locality, String country, Float longitude, Float latitude, ApplicationUser user){
         this.localizationName = localizationName;
         this.longitude = longitude;
         this.latitude = latitude;
         this.user = user;
+        this.street = street;
+        this.country = country;
+        this.locality = locality;
     }
 
 }

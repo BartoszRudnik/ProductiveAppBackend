@@ -10,6 +10,9 @@ import lombok.*;
 public class AddLocalization {
 
     String localizationName;
+    String street;
+    String locality;
+    String country;
     Float longitude;
     Float latitude;
 
