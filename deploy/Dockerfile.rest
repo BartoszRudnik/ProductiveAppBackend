@@ -7,6 +7,7 @@ USER python:python
 WORKDIR /patch
 COPY deploy/patch-config.py .
 COPY deploy/db-creds.env .
+COPY deploy/mail-conf.yml .
 COPY --chown=python:python src/main/resources/application.yml .
 RUN python ./patch-config.py
 

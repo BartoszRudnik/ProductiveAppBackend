@@ -23,6 +23,7 @@ spring:
     port: 1025
     username: hello
     password: hello
+    from: rudnik49@gmail.com
 
     properties:
       mail:
