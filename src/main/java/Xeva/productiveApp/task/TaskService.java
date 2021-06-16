@@ -4,6 +4,7 @@ import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.localization.Localization;
 import Xeva.productiveApp.localization.LocalizationService;
+import Xeva.productiveApp.localization.dto.AddLocalization;
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.tags.TagService;
 import Xeva.productiveApp.task.dto.*;
@@ -265,8 +266,14 @@ public class TaskService {
         if(request.getLocalizationId() == null) {
             childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task);
         }else{
-            Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
-            childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task, notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter(), request.isNotificationOnExit());
+            Localization notificationLocalization = task.getNotificationLocalization();
+
+            AddLocalization childLoc = new AddLocalization(notificationLocalization.getLocalizationName(), notificationLocalization.getStreet(), notificationLocalization.getLocality(), notificationLocalization.getCountry(), notificationLocalization.getLongitude(), notificationLocalization.getLatitude());
+            Long id = this.localizationService.addLocalization(delegatedUser.getEmail(), childLoc);
+
+            Localization childTaskLocalization = this.localizationService.findById(id).get();
+
+            childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task, childTaskLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter(), request.isNotificationOnExit());
         }
 
         task.setChildTask(childTask);
