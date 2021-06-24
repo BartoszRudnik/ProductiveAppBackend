@@ -15,4 +15,7 @@ public interface LocalizationRepository extends JpaRepository<Localization, Long
     @Transactional
     void deleteAllByUser(ApplicationUser user);
 
+    @Transactional
+    void deleteByLocalizationId(Long id);
+
 }

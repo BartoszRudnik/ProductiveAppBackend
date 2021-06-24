@@ -25,11 +25,22 @@ public class FilterSettingsService {
         boolean validSettings = filterSettingsRepository.findByUser(applicationUser).isPresent();
 
         if(!validSettings){
-            FilterSettings newSettings = new FilterSettings(applicationUser, false, false);
+            FilterSettings newSettings = new FilterSettings(applicationUser, false, false, false);
             filterSettingsRepository.save(newSettings);
         }
 
         return applicationUser;
+    }
+
+    public void changeShowOnlyWithLocation(String mail){
+        ApplicationUser applicationUser = validateRequest(mail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.setShowOnlyWithLocation(!userSettings.isShowOnlyWithLocation());
+
+        filterSettingsRepository.save(userSettings);
+
     }
 
     public void changeShowOnlyUnfinished(String mail){
@@ -210,7 +221,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getSortingMode());
+        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.isShowOnlyWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getSortingMode());
 
     }
 

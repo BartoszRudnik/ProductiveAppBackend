@@ -83,7 +83,7 @@ public class LocalizationService {
 
     public void deleteLocalization(Long id){
 
-        this.localizationRepository.deleteById(id);
+        this.localizationRepository.deleteByLocalizationId(id);
 
     }
 

@@ -17,6 +17,11 @@ public class FilterSettingsController {
         return filterSettingsService.getFilterSettings(mail);
     }
 
+    @PostMapping("/changeShowOnlyWithLocalization/{mail}")
+    public void changeShowOnlyWithLocation(@PathVariable String mail){
+        filterSettingsService.changeShowOnlyWithLocation(mail);
+    }
+
     @PostMapping("/changeShowOnlyUnfinishedStatus/{mail}")
     public void changeShowOnlyUnfinishedStatus(@PathVariable String mail){
         filterSettingsService.changeShowOnlyUnfinished(mail);

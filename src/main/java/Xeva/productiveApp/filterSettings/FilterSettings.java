@@ -33,6 +33,7 @@ public class FilterSettings {
 
     private boolean showOnlyUnfinished;
     private boolean showOnlyDelegated;
+    private boolean showOnlyWithLocation;
 
     @ElementCollection
     private List<String> collaboratorEmail;
@@ -45,10 +46,11 @@ public class FilterSettings {
 
     private int sortingMode;
 
-    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated){
+    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated, boolean showOnlyWithLocation){
         this.user = user;
         this.showOnlyUnfinished = showOnlyUnfinished;
         this.showOnlyDelegated = showOnlyDelegated;
+        this.showOnlyWithLocation = showOnlyWithLocation;
         this.collaboratorEmail = new ArrayList<>();
         this.priorities = new ArrayList<>();
         this.tags = new ArrayList<>();
