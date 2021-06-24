@@ -37,9 +37,24 @@ public class FilterSettingsController {
         filterSettingsService.addFilterCollaboratorEmail(mail, collaboratorEmail);
     }
 
+    @PostMapping("/addFilterLocations/{mail}")
+    public void addFilterLocation(@PathVariable String mail, @RequestBody LocationRequest locationRequest){
+        filterSettingsService.addFilterLocations(mail, locationRequest);
+    }
+
     @PostMapping("/deleteFilterCollaboratorEmail/{mail}")
     public void deleteFilterCollaboratorEmail(@PathVariable String mail, @RequestBody DeleteCollaboratorEmailRequest collaboratorEmail){
         filterSettingsService.deleteFilterCollaboratorEmail(mail, collaboratorEmail);
+    }
+
+    @PostMapping("/deleteFilterLocation/{mail}")
+    public void deleteFilterLocation(@PathVariable String mail, @RequestBody DeleteLocationRequest deleteLocationRequest)    {
+        filterSettingsService.deleteFilterLocation(mail, deleteLocationRequest);
+    }
+
+    @PostMapping("/clearFilterLocations/{mail}")
+    public void clearFilterLocations(@PathVariable String mail){
+        filterSettingsService.clearFilterLocations(mail);
     }
 
     @PostMapping("/clearFilterCollaborators/{mail}")

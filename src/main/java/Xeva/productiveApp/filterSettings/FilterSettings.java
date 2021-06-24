@@ -39,6 +39,9 @@ public class FilterSettings {
     private List<String> collaboratorEmail;
 
     @ElementCollection
+    private List<Integer> locations;
+
+    @ElementCollection
     private List<String> priorities;
 
     @ElementCollection
@@ -54,6 +57,7 @@ public class FilterSettings {
         this.collaboratorEmail = new ArrayList<>();
         this.priorities = new ArrayList<>();
         this.tags = new ArrayList<>();
+        this.locations = new ArrayList<>();
         this.sortingMode = 0;
     }
 

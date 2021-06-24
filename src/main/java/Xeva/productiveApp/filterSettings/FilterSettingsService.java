@@ -77,6 +77,8 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
+        userSettings.getCollaboratorEmail().clear();
+
         for(String collaborator: collaboratorMail.getCollaboratorEmail()){
 
             if(!userSettings.getCollaboratorEmail().contains(collaborator)){
@@ -120,6 +122,8 @@ public class FilterSettingsService {
         ApplicationUser applicationUser = validateRequest(userMail);
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getTags().clear();
 
         for(String tag : tags.getTags()){
 
@@ -171,11 +175,35 @@ public class FilterSettingsService {
 
     }
 
+    public void addFilterLocations(String userMail, LocationRequest locations){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getLocations().clear();
+
+        for(Integer location : locations.getLocations()){
+
+            if(!userSettings.getLocations().contains(location)){
+
+                userSettings.getLocations().add(location);
+
+            }
+
+        }
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
     public void addFilterPriorities(String userMail, PriorityRequest priorities){
 
         ApplicationUser applicationUser = validateRequest(userMail);
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getPriorities().clear();
 
         for(String priority : priorities.getPriorities()){
 
@@ -203,6 +231,30 @@ public class FilterSettingsService {
 
     }
 
+    public void deleteFilterLocation(String userMail, DeleteLocationRequest deleteLocation){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getLocations().remove(deleteLocation.getLocationId());
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
+    public void clearFilterLocations(String userMail){
+
+        ApplicationUser applicationUser = validateRequest(userMail);
+
+        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
+
+        userSettings.getLocations().clear();
+
+        filterSettingsRepository.save(userSettings);
+
+    }
+
     public void clearFilterPriorities(String userMail){
 
         ApplicationUser applicationUser = validateRequest(userMail);
@@ -221,7 +273,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.isShowOnlyWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getSortingMode());
+        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.isShowOnlyWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getLocations(), userSettings.getSortingMode());
 
     }
 
