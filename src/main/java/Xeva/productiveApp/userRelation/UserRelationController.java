@@ -1,6 +1,7 @@
 package Xeva.productiveApp.userRelation;
 
 import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
+import Xeva.productiveApp.userRelation.dto.CollaboratorNameResponse;
 import Xeva.productiveApp.userRelation.dto.Request;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,16 @@ public class UserRelationController {
     @PutMapping("/declineInvitation/{id}")
     public void declineInvitation(@PathVariable Long id){
         userRelationService.declineInvitation(id);
+    }
+
+    @PostMapping("/changePermission/{userMail}/{collaboratorMail}")
+    public void changePermission(@PathVariable String userMail, @PathVariable String collaboratorMail){
+        userRelationService.changePermission(userMail, collaboratorMail);
+    }
+
+    @GetMapping("/getCollaboratorName/{userMail}/{collaboratorMail}")
+    public CollaboratorNameResponse getCollaboratorName(@PathVariable String userMail, @PathVariable String collaboratorMail){
+        return userRelationService.getCollaboratorName(userMail, collaboratorMail);
     }
 
     @GetMapping("/getCollaborators/{mail}")

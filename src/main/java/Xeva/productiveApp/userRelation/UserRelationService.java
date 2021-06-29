@@ -3,6 +3,7 @@ package Xeva.productiveApp.userRelation;
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
+import Xeva.productiveApp.userRelation.dto.CollaboratorNameResponse;
 import Xeva.productiveApp.userRelation.dto.Request;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,54 @@ public class UserRelationService {
         if(!userExists){
             throw new IllegalStateException("Wrong email");
         }
+    }
+
+    public CollaboratorNameResponse getCollaboratorName(String user1Email, String user2Email){
+
+        this.checkIfUserExists(user1Email);
+        this.checkIfUserExists(user2Email);
+
+        ApplicationUser user1 = appUserService.findByEmail(user1Email).get();
+        ApplicationUser user2 = appUserService.findByEmail(user2Email).get();
+
+        CollaboratorNameResponse collaboratorNameResponse = new CollaboratorNameResponse();
+
+        if(userRelationRepository.findByUser1AndUser2(user1, user2).isPresent()){
+            collaboratorNameResponse.setCollaboratorName(userRelationRepository.findByUser1AndUser2(user1, user2).get().getUser2().getFirstName() + ' ' + userRelationRepository.findByUser1AndUser2(user1, user2).get().getUser2().getLastName());
+        } else if(userRelationRepository.findByUser1AndUser2(user2, user1).isPresent()){
+            collaboratorNameResponse.setCollaboratorName(userRelationRepository.findByUser1AndUser2(user2, user1).get().getUser1().getFirstName() + ' ' + userRelationRepository.findByUser1AndUser2(user2, user1).get().getUser1().getLastName());
+        } else{
+            collaboratorNameResponse.setCollaboratorName(" ");
+        }
+
+        return collaboratorNameResponse;
+
+    }
+
+    public void changePermission(String userMail, String collaboratorMail){
+
+        this.checkIfUserExists(userMail);
+        this.checkIfUserExists(collaboratorMail);
+
+        ApplicationUser user = appUserService.findByEmail(userMail).get();
+        ApplicationUser collaborator = appUserService.findByEmail(collaboratorMail).get();
+
+        UserRelation relation;
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isPresent()){
+            relation = userRelationRepository.findByUser1AndUser2(user,collaborator).get();
+        }else{
+            relation = userRelationRepository.findByUser1AndUser2(collaborator, user).get();
+        }
+
+        if(relation.getUser1().getEmail().equals(collaboratorMail)){
+            relation.setUser1Permission(!relation.isUser1Permission());
+        }else{
+            relation.setUser2Permission(!relation.isUser2Permission());
+        }
+
+        this.userRelationRepository.save(relation);
+
     }
 
     public Long addRelation(Request request){
@@ -73,7 +122,7 @@ public class UserRelationService {
 
         for(UserRelation relation : allUserRelations){
 
-            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId_userRelation(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), relation.getState().toString());
+            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId_userRelation(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission());
 
             result.add(newEntry);
 

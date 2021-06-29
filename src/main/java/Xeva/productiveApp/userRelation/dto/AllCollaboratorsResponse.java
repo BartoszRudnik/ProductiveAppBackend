@@ -14,5 +14,7 @@ public class AllCollaboratorsResponse {
     String invitationSender;
     String invitationReceiver;
     String relationState;
+    boolean user1Permission;
+    boolean user2Permission;
 
 }

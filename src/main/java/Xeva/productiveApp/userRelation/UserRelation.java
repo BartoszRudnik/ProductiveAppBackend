@@ -46,6 +46,9 @@ public class UserRelation {
     @Enumerated(EnumType.STRING)
     private RelationState state = RelationState.WAITING;
 
+    private boolean user1Permission = false;
+    private boolean user2Permission = false;
+
     public UserRelation(ApplicationUser user1, ApplicationUser user2) {
         this.user1 = user1;
         this.user2 = user2;
