@@ -2,10 +2,16 @@ package Xeva.productiveApp.userRelation;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.task.Task;
+import Xeva.productiveApp.task.TaskLocalization;
+import Xeva.productiveApp.task.TaskRepository;
 import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
 import Xeva.productiveApp.userRelation.dto.CollaboratorNameResponse;
 import Xeva.productiveApp.userRelation.dto.Request;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -18,6 +24,43 @@ public class UserRelationService {
 
     private final AppUserService appUserService;
     private final UserRelationRepository userRelationRepository;
+    private final TaskRepository taskRepository;
+
+    public List<Task> getCollaboratorRecentlyFinishedTasks(String userMail, String collaboratorMail, int page, int size){
+
+        this.checkIfUserExists(userMail);
+        this.checkIfUserExists(collaboratorMail);
+
+        ApplicationUser collaborator = appUserService.findByEmail(collaboratorMail).get();
+        ApplicationUser user = appUserService.findByEmail(userMail).get();
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isEmpty() && userRelationRepository.findByUser1AndUser2(collaborator, user).isEmpty()){
+            throw new IllegalStateException("Relation between user's don't exist");
+        }
+
+        Pageable sortedByUpdateDate = PageRequest.of(page, size, Sort.by("lastUpdated").descending());
+
+        return taskRepository.findAllByUserAndIfDone(collaborator, true, sortedByUpdateDate);
+
+    }
+
+    public int getNumberOfCollaboratorFinishedTasks(String userMail, String collaboratorMail){
+
+        this.checkIfUserExists(userMail);
+        this.checkIfUserExists(collaboratorMail);
+
+        ApplicationUser collaborator = appUserService.findByEmail(collaboratorMail).get();
+        ApplicationUser user = appUserService.findByEmail(userMail).get();
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isEmpty() && userRelationRepository.findByUser1AndUser2(collaborator, user).isEmpty()){
+            throw new IllegalStateException("Relation between user's don't exist");
+        }
+
+        List<Task> finishedTasks = taskRepository.findAllByUserAndIfDone(collaborator, true);
+
+        return finishedTasks.size();
+
+    }
 
     public void checkIfUserExists(String mail){
         boolean userExists = appUserService.findByEmail(mail).isPresent();

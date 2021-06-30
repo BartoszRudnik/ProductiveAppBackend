@@ -4,6 +4,7 @@ import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.localization.Localization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -118,6 +119,9 @@ public class Task {
     private Boolean notificationOnEnter;
 
     private Boolean notificationOnExit;
+
+    @UpdateTimestamp
+    private Date lastUpdated;
 
     //Tworzenie tasku nadrzędnego
     public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail) {

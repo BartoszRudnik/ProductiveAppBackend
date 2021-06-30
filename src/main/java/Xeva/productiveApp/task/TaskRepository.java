@@ -1,6 +1,7 @@
 package Xeva.productiveApp.task;
 
 import Xeva.productiveApp.appUser.ApplicationUser;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,5 +16,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Transactional
     void deleteAllByUser(ApplicationUser user);
+
+    List<Task> findAllByUserAndIfDone(ApplicationUser user, boolean ifDone, Pageable page);
+    List<Task> findAllByUserAndIfDone(ApplicationUser user, boolean ifDone);
 
 }

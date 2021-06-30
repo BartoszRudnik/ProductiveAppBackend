@@ -1,11 +1,13 @@
 package Xeva.productiveApp.userRelation;
 
+import Xeva.productiveApp.task.Task;
 import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
 import Xeva.productiveApp.userRelation.dto.CollaboratorNameResponse;
 import Xeva.productiveApp.userRelation.dto.Request;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -34,6 +36,20 @@ public class UserRelationController {
     @PostMapping("/changePermission/{userMail}/{collaboratorMail}")
     public void changePermission(@PathVariable String userMail, @PathVariable String collaboratorMail){
         userRelationService.changePermission(userMail, collaboratorMail);
+    }
+
+    @GetMapping("/getCollaboratorRecentlyFinished/{userMail}/{collaboratorMail}/{page}/{size}")
+    public List<Task> getCollaboratorRecentlyFinishedTasks(
+            @PathVariable String userMail,
+            @PathVariable String collaboratorMail,
+            @PathVariable int page,
+            @PathVariable int size){
+        return userRelationService.getCollaboratorRecentlyFinishedTasks(userMail, collaboratorMail, page, size);
+    }
+
+    @GetMapping("/getNumberOfCollaboratorFinishedTasks/{userMail}/{collaboratorMail}")
+    public int getNumberOfCollaboratorFinishedTasks(@PathVariable String userMail ,@PathVariable String collaboratorMail){
+        return userRelationService.getNumberOfCollaboratorFinishedTasks(userMail, collaboratorMail);
     }
 
     @GetMapping("/getCollaboratorName/{userMail}/{collaboratorMail}")
