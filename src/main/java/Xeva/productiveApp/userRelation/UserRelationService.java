@@ -44,6 +44,42 @@ public class UserRelationService {
 
     }
 
+    public List<Task> getCollaboratorActiveTasks(String userMail, String collaboratorMail, int page, int size){
+
+        this.checkIfUserExists(userMail);
+        this.checkIfUserExists(collaboratorMail);
+
+        ApplicationUser collaborator = appUserService.findByEmail(collaboratorMail).get();
+        ApplicationUser user = appUserService.findByEmail(userMail).get();
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isEmpty() && userRelationRepository.findByUser1AndUser2(collaborator, user).isEmpty()){
+            throw new IllegalStateException("Relation beetween user's don't exist");
+        }
+
+        Pageable paginationRequest = PageRequest.of(page, size);
+
+        return taskRepository.findAllByUserAndLocalizationOrLocalization(collaborator, TaskLocalization.ANYTIME, TaskLocalization.SCHEDULED, paginationRequest);
+
+    }
+
+    public int getNumberOfCollaboratorActiveTasks(String userMail, String collaboratorMail){
+
+        this.checkIfUserExists(userMail);
+        this.checkIfUserExists(collaboratorMail);
+
+        ApplicationUser collaborator = appUserService.findByEmail(collaboratorMail).get();
+        ApplicationUser user = appUserService.findByEmail(userMail).get();
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isEmpty() && userRelationRepository.findByUser1AndUser2(collaborator, user).isEmpty()){
+            throw new IllegalStateException("Relation between user's don't exist");
+        }
+
+        List<Task> activeTasks = taskRepository.findAllByUserAndLocalizationOrLocalization(collaborator, TaskLocalization.ANYTIME, TaskLocalization.SCHEDULED);
+
+        return activeTasks.size();
+
+    }
+
     public int getNumberOfCollaboratorFinishedTasks(String userMail, String collaboratorMail){
 
         this.checkIfUserExists(userMail);

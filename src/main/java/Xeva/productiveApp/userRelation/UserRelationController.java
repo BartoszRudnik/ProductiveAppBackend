@@ -48,8 +48,22 @@ public class UserRelationController {
     }
 
     @GetMapping("/getNumberOfCollaboratorFinishedTasks/{userMail}/{collaboratorMail}")
-    public int getNumberOfCollaboratorFinishedTasks(@PathVariable String userMail ,@PathVariable String collaboratorMail){
+    public int getNumberOfCollaboratorFinishedTasks(@PathVariable String userMail ,@PathVariable String collaboratorMail) {
         return userRelationService.getNumberOfCollaboratorFinishedTasks(userMail, collaboratorMail);
+    }
+
+    @GetMapping("/getNumberOfCollaboratorActiveTasks/{userMail}/{collaboratorMail}")
+    public int getNumberOfCollaboratorActiveTasks(@PathVariable String userMail, @PathVariable String collaboratorMail){
+        return userRelationService.getNumberOfCollaboratorActiveTasks(userMail, collaboratorMail);
+    }
+
+    @GetMapping("/getCollaboratorActiveTasks/{userMail}/{collaboratorMail}/{page}/{size}")
+    public List<Task> getCollaboratorActiveTasks(
+            @PathVariable String userMail,
+            @PathVariable String collaboratorMail,
+            @PathVariable int page,
+            @PathVariable int size){
+        return userRelationService.getCollaboratorActiveTasks(userMail, collaboratorMail, page, size);
     }
 
     @GetMapping("/getCollaboratorName/{userMail}/{collaboratorMail}")
