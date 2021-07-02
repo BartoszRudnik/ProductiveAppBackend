@@ -17,14 +17,16 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Transactional
     void deleteAllByUser(ApplicationUser user);
 
-    List<Task> findAllByUserAndLocalizationOrLocalization(
+    List<Task> findAllByUserAndIfDoneAndLocalizationOrLocalization(
             ApplicationUser user,
+            boolean ifDone,
             TaskLocalization localization,
             TaskLocalization localization2,
             Pageable page);
 
-    List<Task> findAllByUserAndLocalizationOrLocalization(
+    List<Task> findAllByUserAndIfDoneAndLocalizationOrLocalization(
             ApplicationUser user,
+            boolean ifDone,
             TaskLocalization localization,
             TaskLocalization localization2);
 
