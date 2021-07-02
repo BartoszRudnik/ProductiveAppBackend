@@ -38,6 +38,21 @@ public class UserRelationController {
         userRelationService.changePermission(userMail, collaboratorMail);
     }
 
+    @PostMapping("/askForPermission/{userMail}/{collaboratorMail}")
+    public void askForPermission(@PathVariable String userMail, @PathVariable String collaboratorMail){
+        userRelationService.askForPermission(userMail, collaboratorMail);
+    }
+
+    @PostMapping("/declineAskForPermission/{userMail}/{collaboratorMail}")
+    public void declineAskForPermission(@PathVariable String userMail, @PathVariable String collaboratorMail){
+        userRelationService.declineAskForPermission(userMail, collaboratorMail);
+    }
+
+    @PostMapping("/acceptAskForPermission/{userMail}/{collaboratorMail}")
+    public void acceptAskForPermission(@PathVariable String userMail, @PathVariable String collaboratorMail){
+        userRelationService.acceptAskForPermission(userMail, collaboratorMail);
+    }
+
     @GetMapping("/getCollaboratorRecentlyFinished/{userMail}/{collaboratorMail}/{page}/{size}")
     public List<Task> getCollaboratorRecentlyFinishedTasks(
             @PathVariable String userMail,

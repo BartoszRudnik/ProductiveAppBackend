@@ -48,6 +48,8 @@ public class UserRelation {
 
     private boolean user1Permission = false;
     private boolean user2Permission = false;
+    private boolean user1AskForPermission = false;
+    private boolean user2AskForPermission = false;
 
     public UserRelation(ApplicationUser user1, ApplicationUser user2) {
         this.user1 = user1;

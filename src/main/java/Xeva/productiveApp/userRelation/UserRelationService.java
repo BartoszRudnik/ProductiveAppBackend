@@ -53,7 +53,7 @@ public class UserRelationService {
         ApplicationUser user = appUserService.findByEmail(userMail).get();
 
         if(userRelationRepository.findByUser1AndUser2(user, collaborator).isEmpty() && userRelationRepository.findByUser1AndUser2(collaborator, user).isEmpty()){
-            throw new IllegalStateException("Relation beetween user's don't exist");
+            throw new IllegalStateException("Relation between user's don't exist");
         }
 
         Pageable paginationRequest = PageRequest.of(page, size);
@@ -95,6 +95,86 @@ public class UserRelationService {
         List<Task> finishedTasks = taskRepository.findAllByUserAndIfDone(collaborator, true);
 
         return finishedTasks.size();
+
+    }
+
+    public void acceptAskForPermission(String userMail, String collaboratorMail){
+
+        this.checkIfUserExists(userMail);
+        this.checkIfUserExists(collaboratorMail);
+
+        ApplicationUser collaborator = appUserService.findByEmail(collaboratorMail).get();
+        ApplicationUser user = appUserService.findByEmail(userMail).get();
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isEmpty() && userRelationRepository.findByUser1AndUser2(collaborator, user).isEmpty()){
+            throw new IllegalStateException("Relation between user's don't exist");
+        }
+
+        UserRelation userRelation;
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isPresent()){
+            userRelation = userRelationRepository.findByUser1AndUser2(user, collaborator).get();
+            userRelation.setUser2AskForPermission(false);
+            userRelation.setUser2Permission(true);
+        }else{
+            userRelation = userRelationRepository.findByUser1AndUser2(collaborator, user).get();
+            userRelation.setUser1AskForPermission(false);
+            userRelation.setUser1Permission(true);
+        }
+
+        userRelationRepository.save(userRelation);
+
+    }
+
+    public void declineAskForPermission(String userMail, String collaboratorMail){
+
+        this.checkIfUserExists(userMail);
+        this.checkIfUserExists(collaboratorMail);
+
+        ApplicationUser collaborator = appUserService.findByEmail(collaboratorMail).get();
+        ApplicationUser user = appUserService.findByEmail(userMail).get();
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isEmpty() && userRelationRepository.findByUser1AndUser2(collaborator, user).isEmpty()){
+            throw new IllegalStateException("Relation between user's don't exist");
+        }
+
+        UserRelation userRelation;
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isPresent()){
+            userRelation = userRelationRepository.findByUser1AndUser2(user, collaborator).get();
+            userRelation.setUser2AskForPermission(false);
+        }else{
+            userRelation = userRelationRepository.findByUser1AndUser2(collaborator, user).get();
+            userRelation.setUser1AskForPermission(false);
+        }
+
+        userRelationRepository.save(userRelation);
+
+    }
+
+    public void askForPermission(String userMail, String collaboratorMail){
+
+        this.checkIfUserExists(userMail);
+        this.checkIfUserExists(collaboratorMail);
+
+        ApplicationUser collaborator = appUserService.findByEmail(collaboratorMail).get();
+        ApplicationUser user = appUserService.findByEmail(userMail).get();
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isEmpty() && userRelationRepository.findByUser1AndUser2(collaborator, user).isEmpty()){
+            throw new IllegalStateException("Relation between user's don't exist");
+        }
+
+        UserRelation userRelation;
+
+        if(userRelationRepository.findByUser1AndUser2(user, collaborator).isPresent()){
+            userRelation = userRelationRepository.findByUser1AndUser2(user, collaborator).get();
+            userRelation.setUser1AskForPermission(true);
+        }else{
+            userRelation = userRelationRepository.findByUser1AndUser2(collaborator, user).get();
+            userRelation.setUser2AskForPermission(true);
+        }
+
+        userRelationRepository.save(userRelation);
 
     }
 
