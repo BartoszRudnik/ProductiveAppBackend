@@ -281,7 +281,7 @@ public class UserRelationService {
 
         for(UserRelation relation : allUserRelations){
 
-            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId_userRelation(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission());
+            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId_userRelation(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission());
 
             result.add(newEntry);
 

@@ -16,5 +16,7 @@ public class AllCollaboratorsResponse {
     String relationState;
     boolean user1Permission;
     boolean user2Permission;
+    private boolean user1AskForPermission;
+    private boolean user2AskForPermission;
 
 }
