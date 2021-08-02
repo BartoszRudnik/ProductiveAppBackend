@@ -37,7 +37,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        userSettings.setShowOnlyWithLocation(!userSettings.isShowOnlyWithLocation());
+        userSettings.setShowWithLocation(!userSettings.isShowWithLocation());
 
         filterSettingsRepository.save(userSettings);
 
@@ -49,7 +49,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        userSettings.setShowOnlyUnfinished(!userSettings.isShowOnlyUnfinished());
+        userSettings.setShowUnfinished(!userSettings.isShowUnfinished());
 
         filterSettingsRepository.save(userSettings);
 
@@ -61,11 +61,11 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        System.out.println(userSettings.isShowOnlyDelegated());
+        System.out.println(userSettings.isShowDelegated());
 
-        userSettings.setShowOnlyDelegated(!userSettings.isShowOnlyDelegated());
+        userSettings.setShowDelegated(!userSettings.isShowDelegated());
 
-        System.out.println(userSettings.isShowOnlyDelegated());
+        System.out.println(userSettings.isShowDelegated());
 
         filterSettingsRepository.save(userSettings);
 
@@ -273,7 +273,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.isShowOnlyUnfinished(), userSettings.isShowOnlyDelegated(), userSettings.isShowOnlyWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getLocations(), userSettings.getSortingMode());
+        return new FilterSettingsResponse(userSettings.isShowUnfinished(), userSettings.isShowDelegated(), userSettings.isShowWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getLocations(), userSettings.getSortingMode());
 
     }
 

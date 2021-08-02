@@ -77,7 +77,7 @@ public class LocalizationService {
 
         this.localizationRepository.save(localization);
 
-        return localization.getLocalizationId();
+        return localization.getId();
 
     }
 

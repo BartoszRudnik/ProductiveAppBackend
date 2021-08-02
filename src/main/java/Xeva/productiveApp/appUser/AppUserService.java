@@ -21,18 +21,22 @@ public class AppUserService implements UserDetailsService {
 
     private final static String USER_NOT_FOUND_MSG = "User with email %s not found";
 
+    //Wczytanie potrzebnych interfejsów
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
 
+    //Znajdź użytkownika po emailu
     public Optional<ApplicationUser> findByEmail(String email){
         return appUserRepository.findByEmail(email);
     }
 
+    //Usuń użytkownika
     public void deleteUser(ApplicationUser user){
         appUserRepository.delete(user);
     }
 
+    //Wyczyść dane użytkownika
     public void clearUserData(String userMail){
 
         boolean isUser = findByEmail(userMail).isPresent();
@@ -50,6 +54,7 @@ public class AppUserService implements UserDetailsService {
 
     }
 
+    //Weź dane użytkownika
     public GetUserDataRequest getUserData(String userMail){
 
         boolean isUser = findByEmail(userMail).isPresent();
@@ -64,6 +69,7 @@ public class AppUserService implements UserDetailsService {
 
     }
 
+    //Zaktualizuj dane użytkownika
     public void updateUserData(String userMail, UpdateUserRequest request){
 
         boolean isUser = findByEmail(userMail).isPresent();
@@ -90,6 +96,7 @@ public class AppUserService implements UserDetailsService {
 
     }
 
+    //Metody związane z tokenami
     public ConfirmationToken signInUser(String email, String password){
 
         boolean userExists = appUserRepository
@@ -152,6 +159,7 @@ public class AppUserService implements UserDetailsService {
 
     }
 
+    //Aktywacja/Dezaktywacja użytkownika
     public int enableAppUser(String email) {
         return appUserRepository.enableAppUser(email);
     }
@@ -160,6 +168,7 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.disableAppUser(email);
     }
 
+    //Zaktualizuj hasło użytkownika
     public int updateUserPassword(String email, String newPassword){
         return appUserRepository.updateAppUserPassword(email, newPassword);
     }

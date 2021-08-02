@@ -24,7 +24,7 @@ public class Localization {
             strategy = GenerationType.SEQUENCE,
             generator = "localization_sequence"
     )
-    private Long localizationId;
+    private Long id;
 
     private String localizationName;
     private String street;

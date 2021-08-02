@@ -20,15 +20,15 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findAllByUserAndIfDoneAndLocalizationOrLocalization(
             ApplicationUser user,
             boolean ifDone,
-            TaskLocalization localization,
-            TaskLocalization localization2,
+            TaskList localization,
+            TaskList localization2,
             Pageable page);
 
     List<Task> findAllByUserAndIfDoneAndLocalizationOrLocalization(
             ApplicationUser user,
             boolean ifDone,
-            TaskLocalization localization,
-            TaskLocalization localization2);
+            TaskList localization,
+            TaskList localization2);
 
     List<Task> findAllByUserAndIfDone(ApplicationUser user, boolean ifDone, Pageable page);
 

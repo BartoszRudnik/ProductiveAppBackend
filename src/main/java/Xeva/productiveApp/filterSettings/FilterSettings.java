@@ -31,9 +31,9 @@ public class FilterSettings {
     @JoinColumn(nullable = false, name = "application_user_id")
     private ApplicationUser user;
 
-    private boolean showOnlyUnfinished;
-    private boolean showOnlyDelegated;
-    private boolean showOnlyWithLocation;
+    private boolean showUnfinished;
+    private boolean showDelegated;
+    private boolean showWithLocation;
 
     @ElementCollection
     private List<String> collaboratorEmail;
@@ -49,23 +49,16 @@ public class FilterSettings {
 
     private int sortingMode;
 
-    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated, boolean showOnlyWithLocation){
+    public FilterSettings(ApplicationUser user, boolean showUnfinished, boolean showDelegated, boolean showWithLocation){
         this.user = user;
-        this.showOnlyUnfinished = showOnlyUnfinished;
-        this.showOnlyDelegated = showOnlyDelegated;
-        this.showOnlyWithLocation = showOnlyWithLocation;
+        this.showUnfinished = showUnfinished;
+        this.showDelegated = showDelegated;
+        this.showWithLocation = showWithLocation;
         this.collaboratorEmail = new ArrayList<>();
         this.priorities = new ArrayList<>();
         this.tags = new ArrayList<>();
         this.locations = new ArrayList<>();
         this.sortingMode = 0;
-    }
-
-    public FilterSettings(ApplicationUser user, boolean showOnlyUnfinished, boolean showOnlyDelegated, List<String> collaboratorEmail){
-        this.user = user;
-        this.showOnlyUnfinished = showOnlyUnfinished;
-        this.showOnlyDelegated = showOnlyDelegated;
-        this.collaboratorEmail = collaboratorEmail;
     }
 
 }

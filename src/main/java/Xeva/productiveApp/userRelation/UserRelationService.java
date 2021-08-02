@@ -3,7 +3,7 @@ package Xeva.productiveApp.userRelation;
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.task.Task;
-import Xeva.productiveApp.task.TaskLocalization;
+import Xeva.productiveApp.task.TaskList;
 import Xeva.productiveApp.task.TaskRepository;
 import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
 import Xeva.productiveApp.userRelation.dto.CollaboratorNameResponse;
@@ -58,7 +58,7 @@ public class UserRelationService {
 
         Pageable paginationRequest = PageRequest.of(page, size);
 
-        return taskRepository.findAllByUserAndIfDoneAndLocalizationOrLocalization(collaborator, false, TaskLocalization.ANYTIME, TaskLocalization.SCHEDULED, paginationRequest);
+        return taskRepository.findAllByUserAndIfDoneAndLocalizationOrLocalization(collaborator, false, TaskList.ANYTIME, TaskList.SCHEDULED, paginationRequest);
 
     }
 
@@ -74,7 +74,7 @@ public class UserRelationService {
             throw new IllegalStateException("Relation between user's don't exist");
         }
 
-        List<Task> activeTasks = taskRepository.findAllByUserAndIfDoneAndLocalizationOrLocalization(collaborator, false, TaskLocalization.ANYTIME, TaskLocalization.SCHEDULED);
+        List<Task> activeTasks = taskRepository.findAllByUserAndIfDoneAndLocalizationOrLocalization(collaborator, false, TaskList.ANYTIME, TaskList.SCHEDULED);
 
         return activeTasks.size();
 
@@ -250,7 +250,7 @@ public class UserRelationService {
 
         userRelationRepository.save(newRelation);
 
-        return newRelation.getId_userRelation();
+        return newRelation.getId();
 
     }
 
@@ -281,7 +281,7 @@ public class UserRelationService {
 
         for(UserRelation relation : allUserRelations){
 
-            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId_userRelation(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission());
+            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission());
 
             result.add(newEntry);
 

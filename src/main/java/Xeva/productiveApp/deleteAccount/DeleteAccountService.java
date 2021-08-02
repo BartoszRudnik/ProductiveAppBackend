@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DeleteAccountService {
 
+    //Usuwanie użytkownika ze wszystkich baz danych
     private final TagService tagService;
     private final TaskService taskService;
     private final FilterSettingsService filterSettingsService;
@@ -37,6 +38,7 @@ public class DeleteAccountService {
         return token.getExpiresAt().isAfter(LocalDateTime.now());
     }
 
+    //Potwierdzenie usuwania przy pomocy tokenu
     public void deleteAccountToken(String userMail){
 
         boolean isUser = appUserService.findByEmail(userMail).isPresent();
@@ -57,6 +59,7 @@ public class DeleteAccountService {
 
     }
 
+    //Usuń konto
     public void deleteAccount(String userMail, String token){
 
         boolean isUser = appUserService.findByEmail(userMail).isPresent();
@@ -88,6 +91,7 @@ public class DeleteAccountService {
 
     }
 
+    //Resetowanie hasła
     private String generateResetToken(){
 
         int tokenLen = 6;

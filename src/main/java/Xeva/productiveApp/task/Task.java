@@ -16,7 +16,29 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity(name="Task")
 public class Task {
-
+    /*
+    Dane zadań:
+    - id Long
+    - taskName String
+    - description String
+    - ApplicationUser User
+    - list TaskList - lista na której zadanie się znajduje
+    - priority TaskPriority
+    - ifDone Boolean
+    - startDate Date
+    - endDate Date
+    - position Double
+    - parrentTask - zadanie nadrzędne
+    - childTask - zadanie podrzędne
+    - isDelegated - czy zostało zlecone
+    - taskStatus - status zadania
+    - delegatedEmail - email osoby delegującej
+    - isCanceled - czy zostało anulowane (z góry)
+    - notificationLocalization - lokalizacja przypisana do zadania
+    - localizationRadius - zakres przypominania (średnica okręgu)
+    - notificationOnEnter - czy przypomnieć na wejściu w okrąg?
+    - notificationOnExit - czy przypomnieć na wyjściu z okręgu?
+    - lastUpdated - data ostatniej zmiany*/
     @Id
     @SequenceGenerator(
             name = "task_sequence",
@@ -27,17 +49,14 @@ public class Task {
             strategy = GenerationType.SEQUENCE,
             generator = "task_sequence"
     )
-    private Long id_task;
+    private Long id;
 
     @Column(
-            name= "task_name",
             nullable = false,
             columnDefinition = "TEXT"
     )
-    private String task_name;
-
+    private String taskName;
     @Column(
-            name= "description",
             columnDefinition = "TEXT"
     )
     private String description;
@@ -46,46 +65,29 @@ public class Task {
     @JoinColumn(nullable = false, name = "application_user_id")
     private ApplicationUser user;
 
-    @Column(
-            name= "localization",
-            nullable = false
-    )
     @Enumerated(EnumType.STRING)
-    private TaskLocalization localization = TaskLocalization.INBOX;
+    private TaskList taskList = TaskList.INBOX;
 
-    @Column(
-            name= "priority",
-            nullable = false
-    )
     @Enumerated(EnumType.STRING)
     private TaskPriority priority = TaskPriority.NORMAL;
 
     @Column(
-            name= "ifDone",
             nullable = false
     )
     private Boolean ifDone = false;
 
     @Column(
-            name = "start_date",
             nullable = false
     )
     private Date startDate;
 
     @Column(
-            name = "end_date",
             nullable = false
     )
     private Date endDate;
 
-    @Column(
-            name = "position"
-    )
     private double position;
 
-    @JoinColumn(
-            name = "parentTask"
-    )
     @OneToOne
     @JsonIgnore
     private Task parentTask;
@@ -124,24 +126,24 @@ public class Task {
     private Date lastUpdated;
 
     //Tworzenie tasku nadrzędnego
-    public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail) {
-        this.task_name = task_name;
+    public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail) {
+        this.taskName = taskName;
         this.description = description;
         this.user = user;
-        this.localization = localization;
+        this.taskList = taskList;
         this.priority = priority;
         this.ifDone = ifDone;
         this.startDate = startDate;
         this.endDate = endDate;
         this.delegatedEmail = delegatedEmail;
         this.taskStatus = "Sent";
-        this.childTask = new Task(task_name, description, userDelegated, priority, ifDone, startDate, endDate, this);
+        this.childTask = new Task(taskName, description, userDelegated, priority, ifDone, startDate, endDate, this);
         this.isCanceled = false;
     }
 
     //Tworzenie tasku podrzędnego
-    public Task( String task_name, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask) {
-        this.task_name = task_name;
+    public Task(String taskName, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask) {
+        this.taskName = taskName;
         this.description = description;
         this.user = user;
         this.priority = priority;
@@ -154,11 +156,11 @@ public class Task {
     }
 
     //Tworzenie tasku nadrzędnego z powiadomieniem
-    public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
-        this.task_name = task_name;
+    public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
+        this.taskName = taskName;
         this.description = description;
         this.user = user;
-        this.localization = localization;
+        this.taskList = taskList;
         this.priority = priority;
         this.ifDone = ifDone;
         this.startDate = startDate;
@@ -169,13 +171,13 @@ public class Task {
         this.notificationOnEnter = notificationOnEnter;
         this.notificationOnExit = notificationOnExit;
         this.localizationRadius = localizationRadius;
-        this.childTask = new Task(task_name, description, userDelegated, priority, ifDone, startDate, endDate, this, notificationLocalization, localizationRadius, notificationOnEnter, notificationOnExit);
+        this.childTask = new Task(taskName, description, userDelegated, priority, ifDone, startDate, endDate, this, notificationLocalization, localizationRadius, notificationOnEnter, notificationOnExit);
         this.isCanceled = false;
     }
 
     //Tworzenie tasku podrzędnego z powiadomieniem
-    public Task( String task_name, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
-        this.task_name = task_name;
+    public Task(String taskName, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
+        this.taskName = taskName;
         this.description = description;
         this.user = user;
         this.priority = priority;
@@ -191,62 +193,35 @@ public class Task {
         this.notificationOnExit = notificationOnExit;
     }
 
-    public Task(String task_name, String description, ApplicationUser user) {
-        this.task_name = task_name;
-        this.description = description;
-        this.user = user;
-    }
 
-    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, String delegatedEmail) {
-        this.task_name = task_name;
+    public Task(String taskName, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail) {
+        this.taskName = taskName;
         this.description = description;
         this.user = user;
         this.startDate = startDate;
         this.endDate = endDate;
         this.ifDone = ifDone;
         this.priority = priority;
-        this.localization = localization;
+        this.taskList = taskList;
         this.delegatedEmail = delegatedEmail;
         this.taskStatus = "Sent";
     }
 
-    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, String delegatedEmail, Localization notificationLocalization, boolean notificationOnEnter, double localizationRadius, boolean notificationOnExit) {
-        this.task_name = task_name;
+    public Task(String taskName, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail, Localization notificationLocalization, boolean notificationOnEnter, double localizationRadius, boolean notificationOnExit) {
+        this.taskName = taskName;
         this.description = description;
         this.user = user;
         this.startDate = startDate;
         this.endDate = endDate;
         this.ifDone = ifDone;
         this.priority = priority;
-        this.localization = localization;
+        this.taskList = taskList;
         this.delegatedEmail = delegatedEmail;
         this.taskStatus = "Sent";
         this.notificationLocalization = notificationLocalization;
         this.localizationRadius = localizationRadius;
         this.notificationOnEnter = notificationOnEnter;
         this.notificationOnExit = notificationOnExit;
-    }
-
-    public Task(String task_name, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskLocalization localization, double position) {
-        this.task_name = task_name;
-        this.description = description;
-        this.user = user;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.ifDone = ifDone;
-        this.priority = priority;
-        this.localization = localization;
-        this.position = position;
-    }
-
-    public Task(String task_name, String description, ApplicationUser user, TaskLocalization localization, TaskPriority priority, Date startDate, Date endDate) {
-        this.task_name = task_name;
-        this.description = description;
-        this.user = user;
-        this.localization = localization;
-        this.priority = priority;
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 
 }

@@ -21,6 +21,18 @@ import java.util.List;
 @Entity
 public class ApplicationUser implements UserDetails {
 
+    /*
+    Dane użytkownika:
+    - Id Long klucz główny
+    - firstName String
+    - lastName String
+    - email String
+    - password String
+    - userRole enum
+    - locked boolean - blokada użytkownika
+    - enabled boolean - czy konto zostało aktywowane?
+    - listOfCollaborators - lista znajomych
+    */
     @Id
     @SequenceGenerator(
             name = "user_sequence",
@@ -35,6 +47,9 @@ public class ApplicationUser implements UserDetails {
 
     private String firstName;
     private String lastName;
+    @Column(
+        nullable=false
+    )
     private String email;
 
     @JsonIgnore

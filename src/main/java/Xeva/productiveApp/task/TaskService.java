@@ -42,10 +42,10 @@ public class TaskService {
         GetSingleTaskResponse result = new GetSingleTaskResponse();
 
         result.setDescription(task.getDescription());
-        result.setTaskId(task.getId_task());
+        result.setTaskId(task.getId());
         result.setEndDate(task.getEndDate());
         result.setStartDate(task.getStartDate());
-        result.setTaskName(task.getTask_name());
+        result.setTaskName(task.getTaskName());
         result.setPriority(task.getPriority().toString());
         result.setOwnerEmail(task.getUser().getEmail());
 
@@ -55,7 +55,7 @@ public class TaskService {
 
     private void saveTask(Task task){
         taskRepository.save(task);
-        task.setPosition(task.getId_task() + 1000.0);
+        task.setPosition(task.getId() + 1000.0);
         taskRepository.save(task);
     }
 
@@ -64,7 +64,7 @@ public class TaskService {
             if(tag.getTaskId() == null) {
                 tag.setId(null);
             }
-            tag.setTaskId(task.getId_task());
+            tag.setTaskId(task.getId());
             tag.setOwnerEmail(task.getUser().getEmail());
         }
         tagService.saveAll(tags);
@@ -82,10 +82,10 @@ public class TaskService {
 
         ApplicationUser user = userService.findByEmail(request.getUserEmail()).get();
         TaskPriority priority = getPriority(request.getPriority());
-        TaskLocalization localization = getLocalization(request.getLocalization());
+        TaskList localization = getLocalization(request.getLocalization());
         List<Tag> tags = request.getTags();
 
-        if(localization == TaskLocalization.DELEGATED && request.getDelegatedEmail() != null && request.getDelegatedEmail().length() > 1){
+        if(localization == TaskList.DELEGATED && request.getDelegatedEmail() != null && request.getDelegatedEmail().length() > 1){
 
             ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
 
@@ -109,7 +109,7 @@ public class TaskService {
         this.saveTask(task);
         this.setTags(task, tags);
 
-        return task.getId_task();
+        return task.getId();
 
     }
 
@@ -140,14 +140,14 @@ public class TaskService {
                     this.setParentTaskInformation(task, task.getParentTask());
                     this.taskRepository.save(task);
 
-                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getId_task()));
+                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getId()));
                 }
 
             }else if(task.getChildTask() != null){
-                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task()), null, task.getChildTask().getId_task(), null));
+                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), null, task.getChildTask().getId(), null));
             }
             else {
-                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId_task())));
+                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId())));
             }
         }
 
@@ -168,12 +168,12 @@ public class TaskService {
         Task task = taskRepository.findById(id).get();
 
         task.setDescription(request.getTaskDescription());
-        task.setTask_name(request.getTaskName());
+        task.setTaskName(request.getTaskName());
         task.setStartDate(request.getStartDate());
         task.setEndDate(request.getEndDate());
         task.setPriority(this.getPriority(request.getPriority()));
         task.setIfDone(request.isIfDone());
-        task.setLocalization(this.getLocalization(request.getLocalization()));
+        task.setTaskList(this.getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
         task.setIsCanceled(request.isCanceled());
         if(!this.localizationService.findById(request.getLocalizationId()).isPresent()){
@@ -248,7 +248,7 @@ public class TaskService {
                     tag.setId(null);
                 }
 
-                tag.setTaskId(task.getId_task());
+                tag.setTaskId(task.getId());
 
                 tagsToAdd.add(tag);
             }
@@ -317,20 +317,20 @@ public class TaskService {
 		return TaskPriority.NORMAL;
     }
 
-    private TaskLocalization getLocalization(String localizationName){
+    private TaskList getLocalization(String localizationName){
         switch(localizationName){
             case "INBOX":
-                return TaskLocalization.INBOX;
+                return TaskList.INBOX;
             case "SCHEDULED":
-                return TaskLocalization.SCHEDULED;
+                return TaskList.SCHEDULED;
             case "ANYTIME":
-                return TaskLocalization.ANYTIME;
+                return TaskList.ANYTIME;
             case "TRASH":
-                return TaskLocalization.TRASH;
+                return TaskList.TRASH;
             case "COMPLETED":
-                return TaskLocalization.COMPLETED;
+                return TaskList.COMPLETED;
         }
-        return TaskLocalization.DELEGATED;
+        return TaskList.DELEGATED;
     }
 
     public List<String> getPriorities(){
@@ -342,13 +342,13 @@ public class TaskService {
     }
 
     public void setParentTaskInformation(Task childTask, Task parentTask){
-        if(childTask.getLocalization() == TaskLocalization.INBOX && !childTask.getIfDone()){
+        if(childTask.getTaskList() == TaskList.INBOX && !childTask.getIfDone()){
             parentTask.setTaskStatus("Waiting");
-        } else if((childTask.getLocalization() == TaskLocalization.ANYTIME || childTask.getLocalization() == TaskLocalization.SCHEDULED) && !childTask.getIfDone()){
+        } else if((childTask.getTaskList() == TaskList.ANYTIME || childTask.getTaskList() == TaskList.SCHEDULED) && !childTask.getIfDone()){
             parentTask.setTaskStatus("In progress");
-        } else if(childTask.getLocalization() == TaskLocalization.COMPLETED || childTask.getIfDone()){
+        } else if(childTask.getTaskList() == TaskList.COMPLETED || childTask.getIfDone()){
             parentTask.setTaskStatus("Done");
-        } else if(childTask.getLocalization() == TaskLocalization.TRASH){
+        } else if(childTask.getTaskList() == TaskList.TRASH){
             parentTask.setTaskStatus("Deleted");
         }
     }

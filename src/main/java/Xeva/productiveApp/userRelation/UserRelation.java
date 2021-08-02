@@ -23,7 +23,7 @@ public class UserRelation {
             strategy = GenerationType.SEQUENCE,
             generator = "userRelation_sequence"
     )
-    private Long id_userRelation;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(

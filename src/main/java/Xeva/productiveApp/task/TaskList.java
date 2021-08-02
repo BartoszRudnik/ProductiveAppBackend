@@ -1,6 +1,6 @@
 package Xeva.productiveApp.task;
 
-public enum TaskLocalization {
+public enum TaskList {
     INBOX,
     ANYTIME,
     SCHEDULED,
