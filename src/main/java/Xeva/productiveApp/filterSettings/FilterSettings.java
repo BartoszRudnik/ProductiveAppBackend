@@ -25,7 +25,7 @@ public class FilterSettings {
             strategy = GenerationType.SEQUENCE,
             generator = "filter_sequence"
     )
-    private Long filterSettingsId;
+    private Long id;
 
     @OneToOne
     @JoinColumn(nullable = false, name = "application_user_id")
