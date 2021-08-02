@@ -58,7 +58,7 @@ public class UserRelationService {
 
         Pageable paginationRequest = PageRequest.of(page, size);
 
-        return taskRepository.findAllByUserAndIfDoneAndLocalizationOrLocalization(collaborator, false, TaskList.ANYTIME, TaskList.SCHEDULED, paginationRequest);
+        return taskRepository.findAllByUserAndIfDoneAndTaskListOrTaskList(collaborator, false, TaskList.ANYTIME, TaskList.SCHEDULED, paginationRequest);
 
     }
 
@@ -74,7 +74,7 @@ public class UserRelationService {
             throw new IllegalStateException("Relation between user's don't exist");
         }
 
-        List<Task> activeTasks = taskRepository.findAllByUserAndIfDoneAndLocalizationOrLocalization(collaborator, false, TaskList.ANYTIME, TaskList.SCHEDULED);
+        List<Task> activeTasks = taskRepository.findAllByUserAndIfDoneAndTaskListOrTaskList(collaborator, false, TaskList.ANYTIME, TaskList.SCHEDULED);
 
         return activeTasks.size();
 

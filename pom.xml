@@ -8,6 +8,7 @@
 		<version>2.4.4</version>
 		<relativePath/>
 	</parent>
+	<packaging>jar</packaging>
 	<groupId>xeva.productivity</groupId>
 	<artifactId>productivity-rest-server</artifactId>
 	<version>0.0.1</version>
@@ -111,6 +112,7 @@
 					<layers>
 						<enabled>true</enabled>
 					</layers>
+					<executable>true</executable>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

@@ -11,29 +11,34 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class GraphicBackgroundService {
+
     private final AppUserService appUserService;
     private final GraphicBackgroundRepository graphicBackgroundRepository;
 
-    public void saveAll(List<GraphicBackground> graphicBackgrounds){
-        graphicBackgroundRepository.saveAll(graphicBackgrounds);
-    }
+    public BackgroundResponse getBackground(String userMail){
 
-    public void save(GraphicBackground graphicBackground){
-        graphicBackgroundRepository.save(graphicBackground);
-    }
-
-    public requestBody getBackground(String userMail){
         boolean isUser = appUserService.findByEmail(userMail).isPresent();
 
         if(!isUser){
             throw new IllegalStateException("User doesn't exists");
         }
         ApplicationUser appUser= appUserService.findByEmail(userMail).get();
-        GraphicBackground background = graphicBackgroundRepository.findByUser(appUser).get();
-        return new requestBody(background.getUser().getEmail(), background.getBackgroundType().toString());
+
+        if(this.graphicBackgroundRepository.findByUser(appUser).isPresent()) {
+
+            GraphicBackground background = graphicBackgroundRepository.findByUser(appUser).get();
+
+            System.out.println(background.getBackgroundType().toString());
+
+            return new BackgroundResponse(background.getBackgroundType().toString());
+        }else{
+            return new BackgroundResponse(BackgroundType.GREY.toString());
+        }
+
     }
 
-    public void updateBackground(responseBody body){
+    public void saveBackground(BackgroundRequest body){
+
         boolean isUser = appUserService.findByEmail(body.getUserMail()).isPresent();
 
         if(!isUser){
@@ -41,17 +46,19 @@ public class GraphicBackgroundService {
         }
 
         ApplicationUser user = appUserService.findByEmail(body.getUserMail()).get();
-        GraphicBackground background = new GraphicBackground(user, getBackgroundType(body.getBackgroundType()));
+        GraphicBackground background = new GraphicBackground(user, this.getBackgroundType(body.getBackgroundType()));
+
         graphicBackgroundRepository.save(background);
+
     }
+
     private BackgroundType getBackgroundType(String type){
-        switch(type){
-            case "BLACK":
-                return BackgroundType.BLACK;
-            case "GREY":
-                return BackgroundType.GREY;
-            default:
-                return BackgroundType.BLACK;
+
+        if ("GREY".equals(type)) {
+            return BackgroundType.GREY;
         }
+
+        return BackgroundType.BLACK;
+
     }
 }

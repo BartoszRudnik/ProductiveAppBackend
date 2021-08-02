@@ -7,7 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class responseBody {
-    String userMail;
+public class BackgroundResponse {
+
     String backgroundType;
+
 }

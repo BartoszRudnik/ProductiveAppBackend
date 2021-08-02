@@ -8,7 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class requestBody {
+public class BackgroundRequest {
+
     String userMail;
     String backgroundType;
+
 }
