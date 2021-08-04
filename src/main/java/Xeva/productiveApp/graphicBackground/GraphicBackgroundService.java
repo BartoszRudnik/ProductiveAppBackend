@@ -46,7 +46,15 @@ public class GraphicBackgroundService {
         }
 
         ApplicationUser user = appUserService.findByEmail(body.getUserMail()).get();
-        GraphicBackground background = new GraphicBackground(user, this.getBackgroundType(body.getBackgroundType()));
+
+        GraphicBackground background;
+
+        if(this.graphicBackgroundRepository.findByUser(user).isPresent()){
+            background = this.graphicBackgroundRepository.findByUser(user).get();
+            background.setBackgroundType(this.getBackgroundType(body.getBackgroundType()));
+        }else{
+            background = new GraphicBackground(user, this.getBackgroundType(body.getBackgroundType()));
+        }
 
         graphicBackgroundRepository.save(background);
 
