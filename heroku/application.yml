@@ -21,10 +21,15 @@ spring:
     username: productiveAppDev
     password: KAD$Kz>SoFb5N#AQ1?=9
     from: productiveAppDev@yandex.com
+    protocol: smtp
 
     properties:
       mail:
+        transport:
+          protocol: smtp
         smtp:
+          starttls:
+            enable: true
           auth: true
           ssl:
             enable: true
