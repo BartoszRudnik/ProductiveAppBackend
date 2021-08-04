@@ -4,6 +4,7 @@ import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.email.EmailSender;
 import Xeva.productiveApp.filterSettings.FilterSettingsService;
+import Xeva.productiveApp.graphicBackground.GraphicBackgroundService;
 import Xeva.productiveApp.localization.LocalizationService;
 import Xeva.productiveApp.passwordReset.resetToken.ResetToken;
 import Xeva.productiveApp.passwordReset.resetToken.ResetTokenService;
@@ -33,6 +34,7 @@ public class DeleteAccountService {
     private final EmailSender emailSender;
     private final ConfirmationTokenService confirmationTokenService;
     private final LocalizationService localizationService;
+    private final GraphicBackgroundService graphicBackgroundService;
 
     private boolean checkTokenExpiryDate(ResetToken token){
         return token.getExpiresAt().isAfter(LocalDateTime.now());
@@ -87,8 +89,8 @@ public class DeleteAccountService {
         userImageService.deleteImage(userMail);
         resetTokenService.deleteUserTokens(user);
         confirmationTokenService.deleteConfirmationToken(user);
+        graphicBackgroundService.deleteUserBackground(user);
         appUserService.deleteUser(user);
-
     }
 
     //Resetowanie hasła

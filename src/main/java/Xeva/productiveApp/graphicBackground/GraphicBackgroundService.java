@@ -69,4 +69,6 @@ public class GraphicBackgroundService {
         return BackgroundType.BLACK;
 
     }
+
+    public void deleteUserBackground(ApplicationUser user) {graphicBackgroundRepository.deleteByUser(user);}
 }

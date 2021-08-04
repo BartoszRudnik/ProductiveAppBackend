@@ -18,9 +18,9 @@ spring:
   mail:
     host: smtp.yandex.com
     port: 465
-    username: xeva-productivity
+    username: productiveAppDev
     password: KAD$Kz>SoFb5N#AQ1?=9
-    from: xeva-productivity@yandex.com
+    from: productiveAppDev@yandex.com
 
     properties:
       mail:
