@@ -29,6 +29,44 @@ public class TaskService {
     private final TagService tagService;
     private final LocalizationService localizationService;
 
+    public GetTasksResponse getSingleTaskFull(String mail, Long taskId){
+
+        boolean isUser = userService.findByEmail(mail).isPresent();
+
+        if(!isUser){
+            throw new IllegalStateException("Wrong user");
+        }
+
+        ApplicationUser user = userService.findByEmail(mail).get();
+        Task task = new Task();
+        if(taskRepository.findById(taskId).isPresent()) {
+            task = taskRepository.findById(taskId).get();
+        }
+
+        GetTasksResponse taskResponse = new GetTasksResponse();
+
+        if(task.getParentTask() != null){
+
+            ApplicationUser parentUser = userService.findByEmail(task.getParentTask().getUser().getEmail()).get();
+            UserRelation relation = userRelationService.getUsersRelation(user, parentUser);
+
+            if(relation != null && relation.getState() == RelationState.ACCEPTED){
+                this.setParentTaskInformation(task, task.getParentTask());
+                this.taskRepository.save(task);
+
+                taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getId());
+            }
+
+        }else if(task.getChildTask() != null){
+            taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), null, task.getChildTask().getId(), null);
+        }
+        else {
+            taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()));
+        }
+
+        return taskResponse;
+    }
+
     public GetSingleTaskResponse getSingleTask(String mail, Long taskId){
 
         boolean isUser = userService.findByEmail(mail).isPresent();

@@ -24,6 +24,11 @@ public class TaskController {
         return taskService.getSingleTask(mail, taskId);
     }
 
+    @GetMapping("/getSingleTaskFull/{mail}/{taskId}")
+    public GetTasksResponse getSingleTaskFull(@PathVariable String mail, @PathVariable Long taskId){
+        return this.taskService.getSingleTaskFull(mail, taskId);
+    }
+
     @PostMapping("/add")
     public long newTask(@RequestBody AddTaskRequest request){
         return taskService.addTask(request);
