@@ -3,6 +3,7 @@ package Xeva.productiveApp.login;
 import Xeva.productiveApp.login.dto.LoginRequest;
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
 import Xeva.productiveApp.registration.confirmationToken.ResponseToken;
+import Xeva.productiveApp.registration.dto.RegistrationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,13 @@ public class LoginController {
 
         return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis());
 
+    }
+
+    @PostMapping("/googleLogin")
+    public ResponseToken googleLogin(@RequestBody RegistrationRequest request){
+        ConfirmationToken token = loginService.googleSignIn(request);
+
+        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis());
 
     }
 

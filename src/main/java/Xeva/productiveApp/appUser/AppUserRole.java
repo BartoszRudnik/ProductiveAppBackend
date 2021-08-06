@@ -2,7 +2,8 @@ package Xeva.productiveApp.appUser;
 
 public enum AppUserRole {
 
-    USER,
+    MAIL_USER,
+    GOOGLE_USER,
     ADMIN
 
 }

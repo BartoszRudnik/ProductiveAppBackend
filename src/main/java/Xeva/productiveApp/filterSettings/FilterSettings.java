@@ -28,7 +28,7 @@ public class FilterSettings {
     private Long id;
 
     @OneToOne
-    @JoinColumn(nullable = false, name = "application_user_id")
+    @JoinColumn(nullable = false, name = "application_user_id", unique = true)
     private ApplicationUser user;
 
     private boolean showUnfinished;

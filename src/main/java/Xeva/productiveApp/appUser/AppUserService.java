@@ -2,8 +2,10 @@ package Xeva.productiveApp.appUser;
 
 import Xeva.productiveApp.appUser.dto.GetUserDataRequest;
 import Xeva.productiveApp.appUser.dto.UpdateUserRequest;
+import Xeva.productiveApp.login.dto.LoginRequest;
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationToken;
 import Xeva.productiveApp.registration.confirmationToken.ConfirmationTokenService;
+import Xeva.productiveApp.registration.dto.RegistrationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -65,7 +67,7 @@ public class AppUserService implements UserDetailsService {
 
         ApplicationUser user = findByEmail(userMail).get();
 
-        return new GetUserDataRequest(user.getFirstName(), user.getLastName());
+        return new GetUserDataRequest(user.getFirstName(), user.getLastName(), user.getUserRole().toString());
 
     }
 
@@ -128,6 +130,43 @@ public class AppUserService implements UserDetailsService {
 
     }
 
+    public ConfirmationToken googleSignIn(RegistrationRequest request){
+
+        boolean userExists = appUserRepository
+                .findByEmail(request.getEmail())
+                .isPresent();
+
+        if(!userExists){
+            AppUserRole userRole;
+
+            if(request.getUserType().equals("google")){
+                userRole = AppUserRole.GOOGLE_USER;
+            }else{
+                userRole = AppUserRole.MAIL_USER;
+            }
+
+            ApplicationUser user = new ApplicationUser(request.getFirstName(), request.getLastName(), request.getEmail(), userRole);
+
+            this.appUserRepository.save(user);
+        }
+
+        Optional<ApplicationUser> testUser = appUserRepository.findByEmail(request.getEmail());
+
+        String token = UUID.randomUUID().toString();
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMonths(4),
+                testUser.get()
+        );
+
+        confirmationTokenService.updateConfirmationToken(confirmationToken);
+
+        return confirmationToken;
+
+    }
+
     public ConfirmationToken signUpUser(ApplicationUser applicationUser){
 
         boolean userExists = appUserRepository
@@ -149,7 +188,7 @@ public class AppUserService implements UserDetailsService {
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
+                LocalDateTime.now().plusMonths(4),
                 applicationUser
         );
 
@@ -160,17 +199,17 @@ public class AppUserService implements UserDetailsService {
     }
 
     //Aktywacja/Dezaktywacja użytkownika
-    public int enableAppUser(String email) {
-        return appUserRepository.enableAppUser(email);
+    public void enableAppUser(String email) {
+        appUserRepository.enableAppUser(email);
     }
 
-    public int disableAppUser(String email){
-        return appUserRepository.disableAppUser(email);
+    public void disableAppUser(String email){
+        appUserRepository.disableAppUser(email);
     }
 
     //Zaktualizuj hasło użytkownika
-    public int updateUserPassword(String email, String newPassword){
-        return appUserRepository.updateAppUserPassword(email, newPassword);
+    public void updateUserPassword(String email, String newPassword){
+        appUserRepository.updateAppUserPassword(email, newPassword);
     }
 
 }

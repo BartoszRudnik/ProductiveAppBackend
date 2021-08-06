@@ -31,7 +31,7 @@ public class RegistrationService {
         }
 
         ConfirmationToken confirmationToken = appUserService.signUpUser(new ApplicationUser(
-                request.getFirstName(), request.getLastName(), request.getEmail(), request.getPassword(), AppUserRole.USER));
+                request.getFirstName(), request.getLastName(), request.getEmail(), request.getPassword(), AppUserRole.MAIL_USER));
 
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + confirmationToken.getToken();
 

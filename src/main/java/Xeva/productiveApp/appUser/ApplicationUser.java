@@ -115,4 +115,11 @@ public class ApplicationUser implements UserDetails {
         return this.enabled;
     }
 
+    public ApplicationUser(String firstName, String lastName, String email, AppUserRole userRole){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.userRole = userRole;
+    }
+
 }

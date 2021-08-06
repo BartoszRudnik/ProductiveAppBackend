@@ -11,5 +11,6 @@ public class GetUserDataRequest {
 
     String firstName;
     String lastName;
+    String userType;
 
 }

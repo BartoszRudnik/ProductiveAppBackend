@@ -22,11 +22,11 @@ public class FilterSettingsService {
 
         ApplicationUser applicationUser = appUserService.findByEmail(mail).get();
 
-        boolean validSettings = filterSettingsRepository.findByUser(applicationUser).isPresent();
+        if(filterSettingsRepository.findByUser(applicationUser).isEmpty()){
 
-        if(!validSettings){
             FilterSettings newSettings = new FilterSettings(applicationUser, false, false, false);
             filterSettingsRepository.save(newSettings);
+
         }
 
         return applicationUser;
