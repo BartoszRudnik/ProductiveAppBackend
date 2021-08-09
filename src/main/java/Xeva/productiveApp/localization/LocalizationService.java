@@ -4,6 +4,8 @@ import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.localization.dto.AddLocalization;
 import Xeva.productiveApp.localization.dto.GetCoordinates;
+import Xeva.productiveApp.task.Task;
+import Xeva.productiveApp.task.TaskRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ public class LocalizationService {
 
     private final AppUserService appUserService;
     private final LocalizationRepository localizationRepository;
+    private final TaskRepository taskRepository;
 
     public GetCoordinates getCoordinates(Long id){
 
@@ -83,7 +86,29 @@ public class LocalizationService {
 
     public void deleteLocalization(Long id){
 
-        this.localizationRepository.deleteById(id);
+        if(this.localizationRepository.findById(id).isPresent()) {
+            Localization localization = this.localizationRepository.findById(id).get();
+
+            if(this.taskRepository.findAllByNotificationLocalization(localization).isPresent()) {
+
+                List<Task> tasks = this.taskRepository.findAllByNotificationLocalization(localization).get();
+
+                for(Task task : tasks){
+                    task.setNotificationLocalization(null);
+                    task.setNotificationOnExit(false);
+                    task.setNotificationOnEnter(false);
+                    task.setLocalizationRadius(0);
+
+                    this.taskRepository.save(task);
+                }
+
+            }
+
+            this.localizationRepository.delete(localization);
+
+        }else{
+            throw new IllegalStateException("Given localization doesn't exist");
+        }
 
     }
 

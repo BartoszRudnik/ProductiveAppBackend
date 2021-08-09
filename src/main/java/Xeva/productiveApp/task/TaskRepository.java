@@ -1,6 +1,7 @@
 package Xeva.productiveApp.task;
 
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.localization.Localization;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,8 @@ import java.util.Optional;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Optional<List<Task>> findAllByUserEmail(String email);
+
+    Optional<List<Task>> findAllByNotificationLocalization(Localization notificationLocalization);
 
     @Transactional
     void deleteAllByUser(ApplicationUser user);
