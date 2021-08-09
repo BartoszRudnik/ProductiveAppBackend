@@ -19,7 +19,7 @@ spring:
     host: smtp.yandex.com
     port: 465
     username: productiveAppDev
-    password: KAD$Kz>SoFb5N#AQ1?=9
+    password: KAD$Kz>SoFb5N#AQ1?=91
     from: productiveAppDev@yandex.com
     protocol: smtp
 
