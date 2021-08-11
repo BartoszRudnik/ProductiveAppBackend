@@ -281,7 +281,18 @@ public class UserRelationService {
 
         for(UserRelation relation : allUserRelations){
 
-            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission());
+            String user1Name = " ";
+            String user2Name = " ";
+
+            if(relation.getUser1().getFirstName() != null && relation.getUser1().getLastName() != null){
+                user1Name = relation.getUser1().getFirstName() + " " + relation.getUser1().getLastName();
+            }
+
+            if(relation.getUser2().getFirstName() != null && relation.getUser2().getLastName() != null){
+                user2Name = relation.getUser2().getFirstName() + " " + relation.getUser2().getLastName();
+            }
+
+            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), user1Name, user2Name, relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission());
 
             result.add(newEntry);
 

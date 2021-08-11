@@ -13,6 +13,8 @@ public class AllCollaboratorsResponse {
     Long id;
     String invitationSender;
     String invitationReceiver;
+    String invitationSenderName;
+    String invitationReceiverName;
     String relationState;
     boolean user1Permission;
     boolean user2Permission;
