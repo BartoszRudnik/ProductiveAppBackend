@@ -1,5 +1,6 @@
 package Xeva.productiveApp.attachment;
 
+import Xeva.productiveApp.attachment.dto.DelegatedAttachments;
 import Xeva.productiveApp.attachment.dto.GetAttachments;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,11 @@ public class AttachmentController {
     @GetMapping("/getAttachment/{attachmentId}")
     public Resource getAttachment(@PathVariable Long attachmentId){
         return this.attachmentService.getAttachment(attachmentId);
+    }
+
+    @PostMapping("/getDelegatedAttachments")
+    public List<GetAttachments> getDelegatedAttachments(@RequestBody DelegatedAttachments delegatedAttachments){
+        return this.attachmentService.getDelegatedAttachments(delegatedAttachments);
     }
 
     @GetMapping("/getUserAttachments/{userMail}")

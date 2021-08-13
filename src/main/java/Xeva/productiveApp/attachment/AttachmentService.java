@@ -2,6 +2,7 @@ package Xeva.productiveApp.attachment;
 
 import Xeva.productiveApp.appUser.AppUserRepository;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.attachment.dto.DelegatedAttachments;
 import Xeva.productiveApp.attachment.dto.GetAttachments;
 import Xeva.productiveApp.task.Task;
 import Xeva.productiveApp.task.TaskRepository;
@@ -78,6 +79,25 @@ public class AttachmentService {
             GetAttachments getAttachments = new GetAttachments(attachment.getAttachmentId(), attachment.getTask().getId(), attachment.getFileName());
 
             result.add(getAttachments);
+        }
+
+        return result;
+
+    }
+
+    public List<GetAttachments> getDelegatedAttachments(DelegatedAttachments attachments){
+
+        List<GetAttachments> result = new ArrayList<>();
+
+        for(int i = 0; i < attachments.getTasksId().size(); i++){
+              List<Attachment> attachment = this.attachmentRepository.findAllByTaskId(attachments.getTasksId().get(i));
+
+              if(attachment != null) {
+                  for(Attachment singleAttachment: attachment) {
+                      GetAttachments getAttachments = new GetAttachments(singleAttachment.getAttachmentId(), singleAttachment.getTask().getId(), singleAttachment.getFileName());
+                      result.add(getAttachments);
+                  }
+              }
         }
 
         return result;
