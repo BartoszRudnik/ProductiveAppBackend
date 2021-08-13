@@ -14,4 +14,7 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     @Transactional
     List<Attachment> findAllByTaskId(Long taskId);
 
+    @Transactional
+    void deleteAllByApplicationUser(ApplicationUser applicationUser);
+
 }

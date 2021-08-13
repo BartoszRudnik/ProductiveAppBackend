@@ -104,6 +104,14 @@ public class AttachmentService {
 
     }
 
+    public void deleteUserAttachments(ApplicationUser applicationUser){
+        if(this.appUserRepository.findByEmail(applicationUser.getEmail()).isEmpty()){
+            throw new IllegalStateException("User doesn't exist");
+        }
+
+        this.attachmentRepository.deleteAllByApplicationUser(applicationUser);
+    }
+
     @Transactional
     public void deleteAttachment(Long attachmentId){
 

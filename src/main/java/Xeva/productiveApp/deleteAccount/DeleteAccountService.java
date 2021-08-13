@@ -2,6 +2,7 @@ package Xeva.productiveApp.deleteAccount;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.attachment.AttachmentService;
 import Xeva.productiveApp.email.EmailSender;
 import Xeva.productiveApp.filterSettings.FilterSettingsService;
 import Xeva.productiveApp.graphicBackground.GraphicBackgroundService;
@@ -35,6 +36,7 @@ public class DeleteAccountService {
     private final ConfirmationTokenService confirmationTokenService;
     private final LocalizationService localizationService;
     private final GraphicBackgroundService graphicBackgroundService;
+    private final AttachmentService attachmentService;
 
     private boolean checkTokenExpiryDate(ResetToken token){
         return token.getExpiresAt().isAfter(LocalDateTime.now());
@@ -81,6 +83,7 @@ public class DeleteAccountService {
             throw new IllegalStateException("Token has expired");
         }
 
+        attachmentService.deleteUserAttachments(user);
         localizationService.deleteAllUserLocalizations(user);
         tagService.deleteByUser(userMail);
         taskService.deleteAll(user);
