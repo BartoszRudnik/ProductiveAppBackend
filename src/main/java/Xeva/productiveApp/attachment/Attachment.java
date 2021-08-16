@@ -34,8 +34,8 @@ public class Attachment {
     private Task task;
 
     @ManyToOne
-            @JoinColumn(nullable = false, name = "application_user_id")
-            private ApplicationUser applicationUser;
+    @JoinColumn(nullable = false, name = "application_user_id")
+    private ApplicationUser applicationUser;
 
     String fileName;
 

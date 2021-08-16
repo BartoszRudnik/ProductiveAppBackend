@@ -2,6 +2,7 @@ package Xeva.productiveApp.task;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.attachment.AttachmentRepository;
 import Xeva.productiveApp.localization.Localization;
 import Xeva.productiveApp.localization.LocalizationService;
 import Xeva.productiveApp.localization.dto.AddLocalization;
@@ -28,6 +29,7 @@ public class TaskService {
     private final AppUserService userService;
     private final TagService tagService;
     private final LocalizationService localizationService;
+    private final AttachmentRepository attachmentRepository;
 
     public GetTasksResponse getSingleTaskFull(String mail, Long taskId){
 
@@ -152,6 +154,10 @@ public class TaskService {
     }
 
     public void deleteTask(long id){
+        if(!this.attachmentRepository.findAllByTaskId(id).isEmpty()){
+            this.attachmentRepository.deleteAllByTaskId(id);
+        }
+
         taskRepository.deleteById(id);
     }
 
