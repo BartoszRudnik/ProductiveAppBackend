@@ -15,6 +15,7 @@ import Xeva.productiveApp.userRelation.UserRelationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -159,6 +160,17 @@ public class TaskService {
         }
 
         taskRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deleteAllFromList(DeleteAllRequest request){
+        for(Long i : request.getTasks()){
+            if(!this.attachmentRepository.findAllByTaskId(i).isEmpty()){
+                this.attachmentRepository.deleteAllByTaskId(i);
+            }
+
+            this.taskRepository.deleteById(i);
+        }
     }
 
     public List<GetTasksResponse> getTasks(String email){

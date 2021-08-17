@@ -29,6 +29,11 @@ public class TaskController {
         return this.taskService.getSingleTaskFull(mail, taskId);
     }
 
+    @PostMapping("/deleteAllFromList")
+    public void deleteAllFromList(@RequestBody DeleteAllRequest request){
+        this.taskService.deleteAllFromList(request);
+    }
+
     @PostMapping("/add")
     public long newTask(@RequestBody AddTaskRequest request){
         return taskService.addTask(request);
