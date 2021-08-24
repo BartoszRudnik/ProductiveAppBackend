@@ -1,5 +1,6 @@
 package Xeva.productiveApp.appUser;
 
+import Xeva.productiveApp.locale.Locale;
 import Xeva.productiveApp.userRelation.UserRelation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
@@ -67,6 +68,10 @@ public class ApplicationUser implements UserDetails {
     @OneToMany(mappedBy = "user2")
     @JsonIgnore
     private List<UserRelation> listOfCollaborators;
+
+    @ManyToOne
+    @JoinColumn(name = "locale_id")
+    private Locale locale;
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 
