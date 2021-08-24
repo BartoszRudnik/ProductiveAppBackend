@@ -27,17 +27,26 @@ public class GraphicBackground {
     )
     private Long id;
 
-    @OneToOne
-    @JoinColumn(nullable = false, name = "application_user_id")
-    private ApplicationUser user;
+    @OneToMany(mappedBy = "graphicBackground")
+    private List<ApplicationUser> users;
 
     @Enumerated(EnumType.STRING)
     private BackgroundType backgroundType;
 
-    public GraphicBackground(ApplicationUser applicationUser, BackgroundType backgroundType){
+    public GraphicBackground(BackgroundType backgroundType){
 
-        this.user = applicationUser;
         this.backgroundType = backgroundType;
+
+    }
+
+    public void addUser(ApplicationUser newUser){
+        if(this.users == null){
+            this.users = new ArrayList<>();
+        }
+
+        this.users.add(newUser);
+
+        newUser.setGraphicBackground(this);
 
     }
 

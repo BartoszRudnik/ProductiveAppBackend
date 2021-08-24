@@ -24,16 +24,15 @@ public class GraphicBackgroundService {
         }
         ApplicationUser appUser= appUserService.findByEmail(userMail).get();
 
-        if(this.graphicBackgroundRepository.findByUser(appUser).isPresent()) {
+        BackgroundResponse response;
 
-            GraphicBackground background = graphicBackgroundRepository.findByUser(appUser).get();
-
-            System.out.println(background.getBackgroundType().toString());
-
-            return new BackgroundResponse(background.getBackgroundType().toString());
+        if(appUser.getGraphicBackground() != null){
+            response = new BackgroundResponse(appUser.getGraphicBackground().getBackgroundType().toString());
         }else{
-            return new BackgroundResponse(BackgroundType.GREY.toString());
+            response = new BackgroundResponse(BackgroundType.GREY.toString());
         }
+
+        return response;
 
     }
 
@@ -49,13 +48,13 @@ public class GraphicBackgroundService {
 
         GraphicBackground background;
 
-        if(this.graphicBackgroundRepository.findByUser(user).isPresent()){
-            background = this.graphicBackgroundRepository.findByUser(user).get();
-            background.setBackgroundType(this.getBackgroundType(body.getBackgroundType()));
+        if(this.graphicBackgroundRepository.findByBackgroundType(this.getBackgroundType(body.getBackgroundType())).isPresent()){
+            background = this.graphicBackgroundRepository.findByBackgroundType(this.getBackgroundType(body.getBackgroundType())).get();
         }else{
-            background = new GraphicBackground(user, this.getBackgroundType(body.getBackgroundType()));
+            background = new GraphicBackground(this.getBackgroundType(body.getBackgroundType()));
         }
 
+        background.addUser(user);
         graphicBackgroundRepository.save(background);
 
     }
@@ -70,5 +69,4 @@ public class GraphicBackgroundService {
 
     }
 
-    public void deleteUserBackground(ApplicationUser user) {graphicBackgroundRepository.deleteByUser(user);}
 }

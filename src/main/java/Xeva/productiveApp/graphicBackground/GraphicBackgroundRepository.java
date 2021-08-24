@@ -10,9 +10,7 @@ import java.util.Optional;
 @Repository
 public interface GraphicBackgroundRepository extends JpaRepository<GraphicBackground, Long> {
 
-    Optional<GraphicBackground> findByUser(ApplicationUser user);
+    Optional<GraphicBackground> findByBackgroundType(BackgroundType backgroundType);
 
-    @Transactional
-    void deleteByUser(ApplicationUser user);
 
 }

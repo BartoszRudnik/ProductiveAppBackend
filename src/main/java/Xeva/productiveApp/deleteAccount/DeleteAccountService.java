@@ -92,7 +92,6 @@ public class DeleteAccountService {
         userImageService.deleteImage(userMail);
         resetTokenService.deleteUserTokens(user);
         confirmationTokenService.deleteConfirmationToken(user);
-        graphicBackgroundService.deleteUserBackground(user);
         appUserService.deleteUser(user);
     }
 

@@ -1,5 +1,6 @@
 package Xeva.productiveApp.appUser;
 
+import Xeva.productiveApp.graphicBackground.GraphicBackground;
 import Xeva.productiveApp.locale.Locale;
 import Xeva.productiveApp.userRelation.UserRelation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -72,6 +73,10 @@ public class ApplicationUser implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "locale_id")
     private Locale locale;
+
+    @ManyToOne
+    @JoinColumn(name = "graphic_background_id")
+    private GraphicBackground graphicBackground;
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 
