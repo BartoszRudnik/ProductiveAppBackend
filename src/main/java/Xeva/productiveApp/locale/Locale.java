@@ -37,6 +37,7 @@ public class Locale {
     }
 
     void addUser(ApplicationUser applicationUser){
+
         if(this.applicationUsers == null){
             this.applicationUsers = new ArrayList<>();
         }
@@ -44,6 +45,7 @@ public class Locale {
         this.applicationUsers.add(applicationUser);
 
         applicationUser.setLocale(this);
+
     }
 
 }
