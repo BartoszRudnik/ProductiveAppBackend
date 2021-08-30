@@ -21,22 +21,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Transactional
     void deleteAllByUser(ApplicationUser user);
 
-    List<Task> findAllByUserAndIfDoneAndTaskListOrTaskList(
-            ApplicationUser user,
-            boolean ifDone,
-            TaskList localization,
-            TaskList localization2,
-            Pageable page);
-
-    List<Task> findAllByUserAndIfDoneAndTaskListOrTaskList(
-            ApplicationUser user,
-            boolean ifDone,
-            TaskList localization,
-            TaskList localization2);
-
     @Transactional
     @Query("SELECT t FROM Task t where t.user = ?1 AND t.ifDone = false AND (t.taskList = ?2 or t.taskList = ?3)")
     List<Task> getUserActiveTasks(ApplicationUser user, TaskList taskList1, TaskList taskList2, Pageable page);
+
+    @Transactional
+    @Query("SELECT t FROM Task t where t.user = ?1 AND t.ifDone = false AND (t.taskList = ?2 or t.taskList = ?3)")
+    List<Task> getUserActiveTasks(ApplicationUser user, TaskList taskList1, TaskList taskList2);
 
     List<Task> findAllByUserAndIfDone(ApplicationUser user, boolean ifDone, Pageable page);
 
