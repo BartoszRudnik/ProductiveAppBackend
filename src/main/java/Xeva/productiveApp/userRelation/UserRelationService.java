@@ -58,7 +58,7 @@ public class UserRelationService {
 
         Pageable paginationRequest = PageRequest.of(page, size);
 
-        return taskRepository.findAllByUserAndIfDoneAndTaskListOrTaskList(collaborator, false, TaskList.ANYTIME, TaskList.SCHEDULED, paginationRequest);
+        return taskRepository.getUserActiveTasks(collaborator, TaskList.ANYTIME, TaskList.SCHEDULED, paginationRequest);
 
     }
 
