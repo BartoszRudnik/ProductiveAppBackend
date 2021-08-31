@@ -39,11 +39,17 @@ public class TagService {
     }
 
     public void updateTag(String mail, UpdateRequest request){
-        tagRepository.updateTagName(request.getNewName(), request.getOldName(), mail);
+       if(this.tagRepository.findByNameAndOwnerEmail(request.getOldName(), mail).isPresent()){
+           Tag tagToEdit = this.tagRepository.findByNameAndOwnerEmail(request.getOldName(), mail).get();
+
+           tagToEdit.setName(request.getNewName());
+
+           this.tagRepository.save(tagToEdit);
+       }
     }
 
-    public boolean tagAlreadyExist(String mail, String name){
-        return this.tagRepository.findByNameAndOwnerEmail(name, mail).isPresent();
+    public boolean tagAlreadyExist(String mail, Long id){
+        return this.tagRepository.findByOwnerEmailAndId(mail ,id).isPresent();
     }
 
     public void deleteByName(String tagName, String email){

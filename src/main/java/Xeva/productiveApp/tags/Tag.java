@@ -6,10 +6,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -48,8 +54,17 @@ public class Tag {
     )
     private String ownerEmail;
 
-    @UpdateTimestamp
-    private Date lastUpdated;
+    private LocalDateTime lastUpdated;
+
+    @PrePersist
+    public void onInsert() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     public Tag(String ownerEmail, String name){
         this.ownerEmail = ownerEmail;

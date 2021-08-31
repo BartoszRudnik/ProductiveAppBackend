@@ -1,5 +1,6 @@
 package Xeva.productiveApp.tags;
 
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,9 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     Optional<Tag> findByNameAndOwnerEmail(String name, String ownerEmail);
 
+    Optional<Tag> findByOwnerEmailAndId(String ownerEmail, Long id);
+
+
     Optional<List<Tag>> findAllByTaskId(Long id);
 
     Optional<Set<Tag>> findAllByOwnerEmail(String ownerEmail);
@@ -27,12 +31,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     @Transactional
     void deleteByNameAndOwnerEmail(String name, String ownerEmail);
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE Tag tag " +
-            "SET tag.name = ?1 where (tag.name = ?2 AND tag.ownerEmail = ?3)")
-    int updateTagName(String newName, String oldName, String ownerEmail);
 
     @Transactional
     void deleteAllByOwnerEmail(String ownerEmail);
