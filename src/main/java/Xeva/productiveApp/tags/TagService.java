@@ -42,6 +42,10 @@ public class TagService {
         tagRepository.updateTagName(request.getNewName(), request.getOldName(), mail);
     }
 
+    public boolean tagAlreadyExist(String mail, String name){
+        return this.tagRepository.findByNameAndOwnerEmail(name, mail).isPresent();
+    }
+
     public void deleteByName(String tagName, String email){
         tagRepository.deleteByNameAndOwnerEmail(tagName, email);
     }

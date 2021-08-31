@@ -6,8 +6,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Objects;
 
 @Getter
@@ -44,6 +47,9 @@ public class Tag {
             nullable = false
     )
     private String ownerEmail;
+
+    @UpdateTimestamp
+    private Date lastUpdated;
 
     public Tag(String ownerEmail, String name){
         this.ownerEmail = ownerEmail;

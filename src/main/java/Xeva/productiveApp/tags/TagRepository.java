@@ -13,6 +13,8 @@ import java.util.Set;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
+    Optional<Tag> findByNameAndOwnerEmail(String name, String ownerEmail);
+
     Optional<List<Tag>> findAllByTaskId(Long id);
 
     Optional<Set<Tag>> findAllByOwnerEmail(String ownerEmail);
