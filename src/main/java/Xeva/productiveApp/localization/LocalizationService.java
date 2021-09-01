@@ -66,6 +66,10 @@ public class LocalizationService {
 
     }
 
+    public void save(Localization localization){
+        this.localizationRepository.save(localization);
+    }
+
     public Long addLocalization(String mail, AddLocalization addLocalization){
 
         boolean isValidUser = appUserService.findByEmail(mail).isPresent();
@@ -146,4 +150,13 @@ public class LocalizationService {
 
     }
 
+    public boolean localizationAlreadyExist(String mail, long id) {
+        ApplicationUser applicationUser = new ApplicationUser();
+
+        if(this.appUserService.findByEmail(mail).isPresent()){
+            applicationUser = this.appUserService.findByEmail(mail).get();
+        }
+
+        return this.localizationRepository.findByIdAndUser(id, applicationUser).isPresent();
+    }
 }

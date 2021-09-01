@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -32,6 +33,18 @@ public class Localization {
     private String country;
     private Float longitude;
     private Float latitude;
+
+    private LocalDateTime lastUpdated;
+
+    @PrePersist
+    public void onInsert() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     @JsonIgnore
     @ManyToOne

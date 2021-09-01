@@ -377,4 +377,25 @@ public class UserRelationService {
         userRelationRepository.deleteByUser1OrUser2(user, user);
     }
 
+    public void save(UserRelation userRelation) {
+        this.userRelationRepository.save(userRelation);
+    }
+
+    public boolean relationAlreadyExist(String mail, String collaboratorName) {
+        ApplicationUser user1 = new ApplicationUser();
+        ApplicationUser user2 = new ApplicationUser();
+
+        if(this.appUserService.findByEmail(mail).isPresent()){
+            user1 = this.appUserService.findByEmail(mail).get();
+        }
+        if(this.appUserService.findByEmail(collaboratorName).isPresent()){
+            user2 = this.appUserService.findByEmail(collaboratorName).get();
+        }
+
+        return this.userRelationRepository.findByUser1AndUser2(user1, user2).isPresent();
+    }
+
+    public UserRelation findById(Long id) {
+        return this.userRelationRepository.findById(id).get();
+    }
 }

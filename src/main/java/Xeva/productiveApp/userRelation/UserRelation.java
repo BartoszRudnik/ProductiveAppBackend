@@ -4,6 +4,7 @@ import Xeva.productiveApp.appUser.ApplicationUser;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -46,10 +47,22 @@ public class UserRelation {
     @Enumerated(EnumType.STRING)
     private RelationState state = RelationState.WAITING;
 
+    private LocalDateTime lastUpdated;
+
     private boolean user1Permission = false;
     private boolean user2Permission = false;
     private boolean user1AskForPermission = false;
     private boolean user2AskForPermission = false;
+
+    @PrePersist
+    public void onInsert() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     public UserRelation(ApplicationUser user1, ApplicationUser user2) {
         this.user1 = user1;
