@@ -292,7 +292,7 @@ public class UserRelationService {
                 user2Name = relation.getUser2().getFirstName() + " " + relation.getUser2().getLastName();
             }
 
-            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), user1Name, user2Name, relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission());
+            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), user1Name, user2Name, relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission(), relation.getLastUpdated());
 
             result.add(newEntry);
 
@@ -392,7 +392,7 @@ public class UserRelationService {
             user2 = this.appUserService.findByEmail(collaboratorName).get();
         }
 
-        return this.userRelationRepository.findByUser1AndUser2(user1, user2).isPresent();
+        return this.userRelationRepository.findByUser1AndUser2(user1, user2).isPresent() || this.userRelationRepository.findByUser1AndUser2(user2, user1).isPresent();
     }
 
     public UserRelation findById(Long id) {

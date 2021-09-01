@@ -10,6 +10,7 @@ import Xeva.productiveApp.tags.TagRepository;
 import Xeva.productiveApp.tags.TagService;
 import Xeva.productiveApp.userRelation.RelationState;
 import Xeva.productiveApp.userRelation.UserRelation;
+import Xeva.productiveApp.userRelation.UserRelationRepository;
 import Xeva.productiveApp.userRelation.UserRelationService;
 import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
 import lombok.AllArgsConstructor;
@@ -27,20 +28,32 @@ public class SynchronizationService {
     private final TagRepository tagRepository;
     private final LocalizationService localizationService;
     private final UserRelationService userRelationService;
+    private final UserRelationRepository userRelationRepository;
     private final AppUserService appUserService;
 
     public Set<AllCollaboratorsResponse>synchronizeCollaborators(String mail, SynchronizeCollaboratorsRequestList requestList){
-        for(SynchronizeCollaboratorsRequest collaborator : requestList.getCollaboratorList()){
-            if(!this.userRelationService.relationAlreadyExist(mail, collaborator.getCollaboratorName())){
+        List<String> collaboratorEmails = new ArrayList<>();
+        ApplicationUser user1 = this.appUserService.findByEmail(mail).get();
 
-                ApplicationUser user1 = this.appUserService.findByEmail(mail).get();
+        for(SynchronizeCollaboratorsRequest collaborator : requestList.getCollaboratorList()){
+            if(!this.userRelationService.relationAlreadyExist(mail, collaborator.getEmail())){
+
                 ApplicationUser user2 = this.appUserService.findByEmail(collaborator.getEmail()).get();
 
                 UserRelation userRelation = new UserRelation(user1, user2);
 
+                collaboratorEmails.add(collaborator.getEmail());
+
                 this.userRelationService.save(userRelation);
             }else{
-                UserRelation existingRelation = this.userRelationService.findById(collaborator.getId());
+                ApplicationUser user2 = this.appUserService.findByEmail(collaborator.getEmail()).get();
+                UserRelation existingRelation;
+
+                if(this.userRelationRepository.findByUser1AndUser2(user1, user2).isPresent()){
+                    existingRelation = this.userRelationRepository.findByUser1AndUser2(user1, user2).get();
+                }else{
+                    existingRelation = this.userRelationRepository.findByUser1AndUser2(user2, user1).get();
+                }
 
                 if(existingRelation.getLastUpdated().isBefore(collaborator.getLastUpdated())){
 
@@ -70,6 +83,15 @@ public class SynchronizationService {
 
                     this.userRelationService.save(existingRelation);
                 }
+
+                collaboratorEmails.add(collaborator.getEmail());
+            }
+        }
+        Set<UserRelation> updatedRelations = this.userRelationRepository.findAllByUser1OrUser2(user1, user1).get();
+
+        for(UserRelation relation : updatedRelations){
+            if(!collaboratorEmails.contains(relation.getUser1().getEmail()) && !collaboratorEmails.contains(relation.getUser2().getEmail())){
+                this.userRelationService.deleteRelation(relation.getId());
             }
         }
 
@@ -77,11 +99,15 @@ public class SynchronizationService {
     }
 
     public List<Localization> synchronizeLocations(String mail, SynchronizeLocationsRequestList requestList){
+        List<String> locationNames = new ArrayList<>();
+
         for(SynchronizeLocationsRequest location : requestList.getLocationList()){
             if(!this.localizationService.localizationAlreadyExist(mail, location.getId())){
                 ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
                 Localization newLocalization = new Localization(location.getLocalizationName(), location.getStreet(), location.getLocality(),location.getCountry(), location.getLongitude(),location.getLatitude(), user);
+
+                locationNames.add(newLocalization.getLocalizationName());
 
                 this.localizationService.save(newLocalization);
             }else{
@@ -98,6 +124,16 @@ public class SynchronizationService {
 
                     this.localizationService.save(existingLocalization);
                 }
+
+                locationNames.add(existingLocalization.getLocalizationName());
+            }
+        }
+
+        List<Localization> updatedLocalizations = this.localizationService.getLocalizations(mail);
+
+        for(Localization loc : updatedLocalizations){
+            if(!locationNames.contains(loc.getLocalizationName())){
+                this.localizationService.deleteLocalization(loc.getId());
             }
         }
 
@@ -109,11 +145,12 @@ public class SynchronizationService {
         List<String> namesFromDevice = new ArrayList<>();
 
         for(SynchronizeTagsRequest tag : requestList.getTagList()){
-            namesFromDevice.add(tag.getName());
 
             if(!this.tagService.tagAlreadyExist(mail, tag.getId())){
 
                 Tag newTag = new Tag(mail, tag.getName());
+
+                namesFromDevice.add(newTag.getName());
 
                 this.tagService.save(newTag);
             }else{
@@ -124,6 +161,8 @@ public class SynchronizationService {
 
                     this.tagService.save(existingTag);
                 }
+
+                namesFromDevice.add(existingTag.getName());
             }
         }
 
