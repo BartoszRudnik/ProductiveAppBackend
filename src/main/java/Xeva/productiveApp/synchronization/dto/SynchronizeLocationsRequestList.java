@@ -13,5 +13,6 @@ import java.util.List;
 public class SynchronizeLocationsRequestList {
 
     private List<SynchronizeLocationsRequest> locationList;
+    private List<DeleteLocation> deleteList;
 
 }

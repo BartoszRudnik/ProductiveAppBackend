@@ -2,16 +2,17 @@ package Xeva.productiveApp.synchronization.dto;
 
 import lombok.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class SynchronizeTagsRequestList {
+public class SynchronizeLocaleRequest {
 
-    List<SynchronizeTagsRequest> tagList;
-    List<DeleteTag> deleteList;
+    String locale;
+    LocalDateTime lastUpdated;
 
 }

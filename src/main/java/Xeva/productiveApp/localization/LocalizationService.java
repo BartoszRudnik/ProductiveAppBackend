@@ -150,13 +150,13 @@ public class LocalizationService {
 
     }
 
-    public boolean localizationAlreadyExist(String mail, long id) {
+    public boolean localizationAlreadyExist(String mail, String localizationName) {
         ApplicationUser applicationUser = new ApplicationUser();
 
         if(this.appUserService.findByEmail(mail).isPresent()){
             applicationUser = this.appUserService.findByEmail(mail).get();
         }
 
-        return this.localizationRepository.findByIdAndUser(id, applicationUser).isPresent();
+        return this.localizationRepository.findByLocalizationNameAndUser(localizationName, applicationUser).isPresent();
     }
 }

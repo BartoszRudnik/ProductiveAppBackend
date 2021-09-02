@@ -36,6 +36,21 @@ public class LocaleService {
 
     }
 
+    public void setLocale(String languageCode, ApplicationUser user){
+        Locale locale;
+
+        if(this.localeRepository.findByLanguageCode(languageCode).isPresent()){
+            locale = this.localeRepository.findByLanguageCode(languageCode).get();
+        }else{
+            locale = new Locale(languageCode);
+        }
+
+        locale.addUser(user);
+
+        this.localeRepository.save(locale);
+
+    }
+
     public LocaleRequest getLocale(String email){
 
         boolean userExists = this.appUserService.findByEmail(email).isPresent();

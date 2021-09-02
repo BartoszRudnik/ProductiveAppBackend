@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,6 +80,18 @@ public class ApplicationUser implements UserDetails {
     @JoinColumn(name = "graphic_background_id")
     @JsonIgnore
     private GraphicBackground graphicBackground;
+
+    private LocalDateTime lastUpdated;
+
+    @PrePersist
+    public void onInsert() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 

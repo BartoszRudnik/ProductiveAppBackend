@@ -13,5 +13,6 @@ import java.util.List;
 public class SynchronizeCollaboratorsRequestList {
 
     private List<SynchronizeCollaboratorsRequest> collaboratorList;
+    private List<DeleteCollaborator> deleteList;
 
 }

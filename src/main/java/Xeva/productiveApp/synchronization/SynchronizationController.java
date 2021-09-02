@@ -1,10 +1,7 @@
 package Xeva.productiveApp.synchronization;
 
 import Xeva.productiveApp.localization.Localization;
-import Xeva.productiveApp.synchronization.dto.SynchronizeCollaboratorsRequestList;
-import Xeva.productiveApp.synchronization.dto.SynchronizeLocationsRequestList;
-import Xeva.productiveApp.synchronization.dto.SynchronizeTagsRequest;
-import Xeva.productiveApp.synchronization.dto.SynchronizeTagsRequestList;
+import Xeva.productiveApp.synchronization.dto.*;
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
 import lombok.AllArgsConstructor;
@@ -21,19 +18,24 @@ public class SynchronizationController {
 
     private final SynchronizationService synchronizationService;
 
+    @PostMapping("/synchronizeLocale/{mail}")
+    public void synchronizeLocale(@PathVariable String mail, @RequestBody SynchronizeLocaleRequest request){
+        this.synchronizationService.synchronizeLocale(mail, request);
+    }
+
     @PostMapping("/synchronizeTags/{mail}")
-    public Set<Tag> synchronizeTags(@PathVariable String mail, @RequestBody SynchronizeTagsRequestList requestList){
-        return this.synchronizationService.synchronizeTags(mail, requestList);
+    public void synchronizeTags(@PathVariable String mail, @RequestBody SynchronizeTagsRequestList requestList){
+        this.synchronizationService.synchronizeTags(mail, requestList);
     }
 
     @PostMapping("/synchronizeLocations/{mail}")
-    public List<Localization> synchronizeLocations(@PathVariable String mail, @RequestBody SynchronizeLocationsRequestList requestList){
-        return this.synchronizationService.synchronizeLocations(mail, requestList);
+    public void synchronizeLocations(@PathVariable String mail, @RequestBody SynchronizeLocationsRequestList requestList){
+       this.synchronizationService.synchronizeLocations(mail, requestList);
     }
 
     @PostMapping("/synchronizeCollaborators/{mail}")
-    public Set<AllCollaboratorsResponse> synchronizeCollaborators(@PathVariable String mail, @RequestBody SynchronizeCollaboratorsRequestList requestList){
-        return this.synchronizationService.synchronizeCollaborators(mail, requestList);
+    public void synchronizeCollaborators(@PathVariable String mail, @RequestBody SynchronizeCollaboratorsRequestList requestList){
+       this.synchronizationService.synchronizeCollaborators(mail, requestList);
     }
 
 }

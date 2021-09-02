@@ -1,8 +1,10 @@
 package Xeva.productiveApp.synchronization;
-
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.locale.Locale;
+import Xeva.productiveApp.locale.LocaleService;
 import Xeva.productiveApp.localization.Localization;
+import Xeva.productiveApp.localization.LocalizationRepository;
 import Xeva.productiveApp.localization.LocalizationService;
 import Xeva.productiveApp.synchronization.dto.*;
 import Xeva.productiveApp.tags.Tag;
@@ -12,13 +14,9 @@ import Xeva.productiveApp.userRelation.RelationState;
 import Xeva.productiveApp.userRelation.UserRelation;
 import Xeva.productiveApp.userRelation.UserRelationRepository;
 import Xeva.productiveApp.userRelation.UserRelationService;
-import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -27,12 +25,25 @@ public class SynchronizationService {
     private final TagService tagService;
     private final TagRepository tagRepository;
     private final LocalizationService localizationService;
+    private final LocalizationRepository localizationRepository;
     private final UserRelationService userRelationService;
     private final UserRelationRepository userRelationRepository;
     private final AppUserService appUserService;
+    private final LocaleService localeService;
 
-    public Set<AllCollaboratorsResponse>synchronizeCollaborators(String mail, SynchronizeCollaboratorsRequestList requestList){
-        List<String> collaboratorEmails = new ArrayList<>();
+    public void synchronizeLocale(String mail, SynchronizeLocaleRequest request){
+        ApplicationUser applicationUser = this.appUserService.findByEmail(mail).get();
+
+        if(applicationUser.getLocale() == null){
+            this.localeService.setLocale(request.getLocale(), applicationUser);
+        }else{
+            if(applicationUser.getLastUpdated().isBefore(request.getLastUpdated())){
+                this.localeService.setLocale(request.getLocale(), applicationUser);
+            }
+        }
+    }
+
+    public void synchronizeCollaborators(String mail, SynchronizeCollaboratorsRequestList requestList){
         ApplicationUser user1 = this.appUserService.findByEmail(mail).get();
 
         for(SynchronizeCollaboratorsRequest collaborator : requestList.getCollaboratorList()){
@@ -40,11 +51,10 @@ public class SynchronizationService {
 
                 ApplicationUser user2 = this.appUserService.findByEmail(collaborator.getEmail()).get();
 
-                UserRelation userRelation = new UserRelation(user1, user2);
-
-                collaboratorEmails.add(collaborator.getEmail());
-
-                this.userRelationService.save(userRelation);
+                if(user1 != user2) {
+                    UserRelation userRelation = new UserRelation(user1, user2);
+                    this.userRelationService.save(userRelation);
+                }
             }else{
                 ApplicationUser user2 = this.appUserService.findByEmail(collaborator.getEmail()).get();
                 UserRelation existingRelation;
@@ -83,31 +93,28 @@ public class SynchronizationService {
 
                     this.userRelationService.save(existingRelation);
                 }
-
-                collaboratorEmails.add(collaborator.getEmail());
-            }
-        }
-        Set<UserRelation> updatedRelations = this.userRelationRepository.findAllByUser1OrUser2(user1, user1).get();
-
-        for(UserRelation relation : updatedRelations){
-            if(!collaboratorEmails.contains(relation.getUser1().getEmail()) && !collaboratorEmails.contains(relation.getUser2().getEmail())){
-                this.userRelationService.deleteRelation(relation.getId());
             }
         }
 
-        return this.userRelationService.getAllCollaborators(mail);
+        List<DeleteCollaborator> toDelete = requestList.getDeleteList();
+
+        for(DeleteCollaborator delete : toDelete){
+            ApplicationUser appUser1 = this.appUserService.findByEmail(delete.getUser1Mail()).get();
+            ApplicationUser appUser2 = this.appUserService.findByEmail(delete.getUser2Mail()).get();
+            if(this.userRelationRepository.findByUser1AndUser2(appUser1, appUser2).isPresent()){
+                this.userRelationRepository.deleteByUser1AndUser2(appUser1, appUser2);
+            }else if(this.userRelationRepository.findByUser1AndUser2(appUser2, appUser1).isPresent()){
+                this.userRelationRepository.deleteByUser1AndUser2(appUser2, appUser1);
+            }
+        }
     }
 
-    public List<Localization> synchronizeLocations(String mail, SynchronizeLocationsRequestList requestList){
-        List<String> locationNames = new ArrayList<>();
-
+    public void synchronizeLocations(String mail, SynchronizeLocationsRequestList requestList){
         for(SynchronizeLocationsRequest location : requestList.getLocationList()){
-            if(!this.localizationService.localizationAlreadyExist(mail, location.getId())){
+            if(!this.localizationService.localizationAlreadyExist(mail, location.getLocalizationName())){
                 ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
                 Localization newLocalization = new Localization(location.getLocalizationName(), location.getStreet(), location.getLocality(),location.getCountry(), location.getLongitude(),location.getLatitude(), user);
-
-                locationNames.add(newLocalization.getLocalizationName());
 
                 this.localizationService.save(newLocalization);
             }else{
@@ -124,34 +131,23 @@ public class SynchronizationService {
 
                     this.localizationService.save(existingLocalization);
                 }
-
-                locationNames.add(existingLocalization.getLocalizationName());
             }
         }
 
-        List<Localization> updatedLocalizations = this.localizationService.getLocalizations(mail);
+        List<DeleteLocation> listToDelete = requestList.getDeleteList();
 
-        for(Localization loc : updatedLocalizations){
-            if(!locationNames.contains(loc.getLocalizationName())){
-                this.localizationService.deleteLocalization(loc.getId());
-            }
+        for(DeleteLocation toDelete : listToDelete){
+            ApplicationUser user = this.appUserService.findByEmail(toDelete.getOwnerEmail()).get();
+            this.localizationRepository.deleteByUserAndLocalizationName(user, toDelete.getLocationName());
         }
-
-        return this.localizationService.getLocalizations(mail);
     }
 
-    public Set<Tag> synchronizeTags(String mail, SynchronizeTagsRequestList requestList){
-
-        List<String> namesFromDevice = new ArrayList<>();
-
+    public void synchronizeTags(String mail, SynchronizeTagsRequestList requestList){
         for(SynchronizeTagsRequest tag : requestList.getTagList()){
 
             if(!this.tagService.tagAlreadyExist(mail, tag.getId())){
 
                 Tag newTag = new Tag(mail, tag.getName());
-
-                namesFromDevice.add(newTag.getName());
-
                 this.tagService.save(newTag);
             }else{
                 Tag existingTag = this.tagRepository.findById(tag.getId()).get();
@@ -161,20 +157,14 @@ public class SynchronizationService {
 
                     this.tagService.save(existingTag);
                 }
-
-                namesFromDevice.add(existingTag.getName());
             }
         }
 
-        Set<Tag> updatedTags = this.tagService.findAllByEmail(mail);
+        List<DeleteTag> listToDelete = requestList.getDeleteList();
 
-        for(Tag tag : updatedTags){
-            if(!namesFromDevice.contains(tag.getName())){
-                this.tagService.deleteById(tag.getId());
-            }
+        for(DeleteTag toDelete : listToDelete){
+            this.tagService.deleteByName(toDelete.getTagName(), toDelete.getOwnerEmail());
         }
-
-        return this.tagService.findAllByEmail(mail);
     }
 
 }

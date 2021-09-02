@@ -2,16 +2,16 @@ package Xeva.productiveApp.synchronization.dto;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
+@Setter
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class SynchronizeTagsRequestList {
 
-    List<SynchronizeTagsRequest> tagList;
-    List<DeleteTag> deleteList;
+public class DeleteTag {
+
+    String ownerEmail;
+    String tagName;
 
 }

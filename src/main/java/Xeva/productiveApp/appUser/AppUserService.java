@@ -89,6 +89,10 @@ public class AppUserService implements UserDetailsService {
 
     }
 
+    public void save(ApplicationUser applicationUser){
+        this.appUserRepository.save(applicationUser);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
