@@ -18,6 +18,11 @@ public class SynchronizationController {
 
     private final SynchronizationService synchronizationService;
 
+    @PostMapping("/synchronizeGraphic/{mail}")
+    public void synchronizeGraphic(@PathVariable String mail,@RequestBody SynchronizeGraphicRequest request){
+        this.synchronizationService.synchronizeGraphic(mail, request);
+    }
+
     @PostMapping("/synchronizeLocale/{mail}")
     public void synchronizeLocale(@PathVariable String mail, @RequestBody SynchronizeLocaleRequest request){
         this.synchronizationService.synchronizeLocale(mail, request);

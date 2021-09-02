@@ -6,6 +6,8 @@ import Xeva.productiveApp.locale.dto.LocaleRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @AllArgsConstructor
 public class LocaleService {
@@ -14,7 +16,6 @@ public class LocaleService {
     private final AppUserService appUserService;
 
     public void setLocale(LocaleRequest request, String email){
-
         boolean userExists = this.appUserService.findByEmail(email).isPresent();
 
         if(!userExists){
@@ -30,10 +31,11 @@ public class LocaleService {
             locale = new Locale(request.getLanguageCode());
         }
 
+        user.setLastUpdatedLocale(LocalDateTime.now());
+
         locale.addUser(user);
 
         this.localeRepository.save(locale);
-
     }
 
     public void setLocale(String languageCode, ApplicationUser user){
@@ -45,14 +47,14 @@ public class LocaleService {
             locale = new Locale(languageCode);
         }
 
+        user.setLastUpdatedLocale(LocalDateTime.now());
+
         locale.addUser(user);
 
         this.localeRepository.save(locale);
-
     }
 
     public LocaleRequest getLocale(String email){
-
         boolean userExists = this.appUserService.findByEmail(email).isPresent();
 
         if(!userExists){
@@ -70,7 +72,6 @@ public class LocaleService {
         }
 
         return result;
-
     }
 
 }

@@ -81,17 +81,8 @@ public class ApplicationUser implements UserDetails {
     @JsonIgnore
     private GraphicBackground graphicBackground;
 
-    private LocalDateTime lastUpdated;
-
-    @PrePersist
-    public void onInsert() {
-        this.lastUpdated = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.lastUpdated = LocalDateTime.now();
-    }
+    private LocalDateTime lastUpdatedLocale = LocalDateTime.now();
+    private LocalDateTime lastUpdatedGraphic = LocalDateTime.now();
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 

@@ -10,9 +10,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class SynchronizeLocaleRequest {
 
-    private String locale;
+public class SynchronizeGraphicRequest {
+
+    private String mode;
     private LocalDateTime lastUpdated;
 
 }

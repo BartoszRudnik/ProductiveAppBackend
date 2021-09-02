@@ -1,7 +1,7 @@
 package Xeva.productiveApp.synchronization;
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
-import Xeva.productiveApp.locale.Locale;
+import Xeva.productiveApp.graphicBackground.GraphicBackgroundService;
 import Xeva.productiveApp.locale.LocaleService;
 import Xeva.productiveApp.localization.Localization;
 import Xeva.productiveApp.localization.LocalizationRepository;
@@ -30,6 +30,19 @@ public class SynchronizationService {
     private final UserRelationRepository userRelationRepository;
     private final AppUserService appUserService;
     private final LocaleService localeService;
+    private final GraphicBackgroundService graphicBackgroundService;
+
+    public void synchronizeGraphic(String mail, SynchronizeGraphicRequest request) {
+        ApplicationUser applicationUser = this.appUserService.findByEmail(mail).get();
+
+        if(applicationUser.getGraphicBackground() == null){
+            this.graphicBackgroundService.saveBackground(request.getMode(), applicationUser);
+        }else{
+            if(applicationUser.getLastUpdatedGraphic().isBefore(request.getLastUpdated())){
+                this.graphicBackgroundService.saveBackground(request.getMode(), applicationUser);
+            }
+        }
+    }
 
     public void synchronizeLocale(String mail, SynchronizeLocaleRequest request){
         ApplicationUser applicationUser = this.appUserService.findByEmail(mail).get();
@@ -37,7 +50,7 @@ public class SynchronizationService {
         if(applicationUser.getLocale() == null){
             this.localeService.setLocale(request.getLocale(), applicationUser);
         }else{
-            if(applicationUser.getLastUpdated().isBefore(request.getLastUpdated())){
+            if(applicationUser.getLastUpdatedLocale().isBefore(request.getLastUpdated())){
                 this.localeService.setLocale(request.getLocale(), applicationUser);
             }
         }
@@ -166,5 +179,4 @@ public class SynchronizationService {
             this.tagService.deleteByName(toDelete.getTagName(), toDelete.getOwnerEmail());
         }
     }
-
 }

@@ -6,6 +6,7 @@ import Xeva.productiveApp.graphicBackground.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,7 +38,6 @@ public class GraphicBackgroundService {
     }
 
     public void saveBackground(BackgroundRequest body){
-
         boolean isUser = appUserService.findByEmail(body.getUserMail()).isPresent();
 
         if(!isUser){
@@ -54,10 +54,27 @@ public class GraphicBackgroundService {
             background = new GraphicBackground(this.getBackgroundType(body.getBackgroundType()));
         }
 
+        user.setLastUpdatedGraphic(LocalDateTime.now());
+
         background.addUser(user);
         graphicBackgroundRepository.save(background);
-
     }
+
+    public void saveBackground(String mode, ApplicationUser user){
+        GraphicBackground background;
+
+        if(this.graphicBackgroundRepository.findByBackgroundType(this.getBackgroundType(mode)).isPresent()){
+            background = this.graphicBackgroundRepository.findByBackgroundType(this.getBackgroundType(mode)).get();
+        }else{
+            background = new GraphicBackground(this.getBackgroundType(mode));
+        }
+
+        user.setLastUpdatedGraphic(LocalDateTime.now());
+
+        background.addUser(user);
+        graphicBackgroundRepository.save(background);
+    }
+
 
     private BackgroundType getBackgroundType(String type){
 
