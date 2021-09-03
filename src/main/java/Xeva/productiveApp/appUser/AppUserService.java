@@ -71,6 +71,15 @@ public class AppUserService implements UserDetailsService {
 
     }
 
+    public void updateUserData(ApplicationUser user, String firstName, String lastName){
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+
+        user.setLastUpdateName(LocalDateTime.now());
+
+        this.appUserRepository.save(user);
+    }
+
     //Zaktualizuj dane użytkownika
     public void updateUserData(String userMail, UpdateUserRequest request){
 
@@ -84,6 +93,8 @@ public class AppUserService implements UserDetailsService {
 
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
+
+        user.setLastUpdateName(LocalDateTime.now());
 
         appUserRepository.save(user);
 
@@ -150,6 +161,8 @@ public class AppUserService implements UserDetailsService {
             }
 
             ApplicationUser user = new ApplicationUser(request.getFirstName(), request.getLastName(), request.getEmail(), userRole);
+
+            user.setLastUpdateName(LocalDateTime.now());
 
             this.appUserRepository.save(user);
         }

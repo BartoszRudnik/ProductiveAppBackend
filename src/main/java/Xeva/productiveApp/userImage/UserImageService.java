@@ -17,6 +17,10 @@ public class UserImageService {
     private final UserImageRepository userImageRepository;
     private final AppUserRepository appUserRepository;
 
+    public UserImage getUserImage(ApplicationUser user){
+        return this.userImageRepository.findUserImageByUser(user);
+    }
+
     public boolean checkIfExists(String userEmail){
         boolean isValid = appUserRepository.findByEmail(userEmail).isPresent();
 
@@ -28,7 +32,7 @@ public class UserImageService {
 
         UserImage userImage = userImageRepository.findUserImageByUser(user);
 
-        if(userImage == null){
+        if(userImage == null || userImage.getImage() == null){
             return false;
         }
 
@@ -53,6 +57,19 @@ public class UserImageService {
         }else{
             return null;
         }
+    }
+
+    public void setImage(byte [] bytes, ApplicationUser user){
+        UserImage userImage = userImageRepository.findUserImageByUser(user);
+
+        if(userImage == null) {
+            userImage = new UserImage();
+            userImage.setUser(user);
+        }
+
+        userImage.setImage(bytes);
+
+        userImageRepository.save(userImage);
     }
 
     public void setImage(MultipartFile multipartFile, String userEmail) throws IOException {

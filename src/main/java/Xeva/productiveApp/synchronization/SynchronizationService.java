@@ -10,6 +10,8 @@ import Xeva.productiveApp.synchronization.dto.*;
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.tags.TagRepository;
 import Xeva.productiveApp.tags.TagService;
+import Xeva.productiveApp.userImage.UserImage;
+import Xeva.productiveApp.userImage.UserImageService;
 import Xeva.productiveApp.userRelation.RelationState;
 import Xeva.productiveApp.userRelation.UserRelation;
 import Xeva.productiveApp.userRelation.UserRelationRepository;
@@ -31,6 +33,27 @@ public class SynchronizationService {
     private final AppUserService appUserService;
     private final LocaleService localeService;
     private final GraphicBackgroundService graphicBackgroundService;
+    private final UserImageService userImageService;
+
+    public void synchronizeUser(SynchronizeUserRequest request){
+        System.out.println("dupa");
+        System.out.println(request.getEmail());
+        ApplicationUser user = this.appUserService.findByEmail(request.getEmail()).get();
+
+        if(!this.userImageService.checkIfExists(request.getEmail())){
+            this.userImageService.setImage(request.getLocalImage(), user);
+        }else{
+            UserImage userImage = this.userImageService.getUserImage(user);
+
+            if(userImage.getLastUpdated().isBefore(request.getLastUpdatedImage())){
+                this.userImageService.setImage(request.getLocalImage(), user);
+            }
+        }
+
+        if(user.getLastUpdateName().isBefore(request.getLastUpdatedName()) || (user.getLastName() == null && user.getFirstName() == null)){
+            this.appUserService.updateUserData(user, request.getFirstName(), request.getLastName());
+        }
+    }
 
     public void synchronizeGraphic(String mail, SynchronizeGraphicRequest request) {
         ApplicationUser applicationUser = this.appUserService.findByEmail(mail).get();

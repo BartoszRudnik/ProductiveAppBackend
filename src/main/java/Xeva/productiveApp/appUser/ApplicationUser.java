@@ -83,6 +83,7 @@ public class ApplicationUser implements UserDetails {
 
     private LocalDateTime lastUpdatedLocale = LocalDateTime.now();
     private LocalDateTime lastUpdatedGraphic = LocalDateTime.now();
+    private LocalDateTime lastUpdateName = LocalDateTime.now();
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 

@@ -1,14 +1,7 @@
 package Xeva.productiveApp.synchronization;
-
-import Xeva.productiveApp.localization.Localization;
 import Xeva.productiveApp.synchronization.dto.*;
-import Xeva.productiveApp.tags.Tag;
-import Xeva.productiveApp.userRelation.dto.AllCollaboratorsResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Set;
 
 @RestController
 @CrossOrigin
@@ -17,6 +10,11 @@ import java.util.Set;
 public class SynchronizationController {
 
     private final SynchronizationService synchronizationService;
+
+    @PostMapping("/synchronizeUser")
+    public void synchronizeUser(@RequestBody SynchronizeUserRequest request){
+        this.synchronizationService.synchronizeUser(request);
+    }
 
     @PostMapping("/synchronizeGraphic/{mail}")
     public void synchronizeGraphic(@PathVariable String mail,@RequestBody SynchronizeGraphicRequest request){
