@@ -4,6 +4,7 @@ import Xeva.productiveApp.appUser.ApplicationUser;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,18 @@ public class FilterSettings {
 
     private int sortingMode;
 
+    private LocalDateTime lastUpdated;
+
+    @PrePersist
+    public void onInsert() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
     public FilterSettings(ApplicationUser user, boolean showUnfinished, boolean showDelegated, boolean showWithLocation){
         this.user = user;
         this.showUnfinished = showUnfinished;
@@ -59,6 +72,18 @@ public class FilterSettings {
         this.tags = new ArrayList<>();
         this.locations = new ArrayList<>();
         this.sortingMode = 0;
+    }
+
+    public FilterSettings(ApplicationUser user, boolean showUnfinished, boolean showDelegated, boolean showWithLocation, List<String> collaboratorEmail, List<String> priorities, List<String> tags, List<Integer> locations, int sortingMode){
+        this.user = user;
+        this.showUnfinished = showUnfinished;
+        this.showDelegated = showDelegated;
+        this.showWithLocation = showWithLocation;
+        this.collaboratorEmail = collaboratorEmail;
+        this.priorities = priorities;
+        this.tags = tags;
+        this.locations = locations;
+        this.sortingMode = sortingMode;
     }
 
 }

@@ -11,6 +11,11 @@ public class SynchronizationController {
 
     private final SynchronizationService synchronizationService;
 
+    @PostMapping("/synchronizeSettings/{mail}")
+    public void synchronizeSettings(@PathVariable String mail, @RequestBody SynchronizeSettingsRequest request){
+        this.synchronizationService.synchronizeSettings(mail, request);
+    }
+
     @PostMapping("/synchronizeUser")
     public void synchronizeUser(@RequestBody SynchronizeUserRequest request){
         this.synchronizationService.synchronizeUser(request);

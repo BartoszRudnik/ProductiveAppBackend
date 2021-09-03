@@ -13,6 +13,22 @@ public class FilterSettingsService {
     private final AppUserService appUserService;
     private final FilterSettingsRepository filterSettingsRepository;
 
+    public void save(FilterSettings filterSettings){
+        this.filterSettingsRepository.save(filterSettings);
+    }
+
+    public FilterSettings findByUser(ApplicationUser user){
+        if(this.filterSettingsRepository.findByUser(user).isPresent()){
+            return this.filterSettingsRepository.findByUser(user).get();
+        }else{
+            return null;
+        }
+    }
+
+    public boolean settingsExist(ApplicationUser user){
+        return this.filterSettingsRepository.findByUser(user).isPresent();
+    }
+
     private ApplicationUser validateRequest(String mail) {
         boolean isValidUser = appUserService.findByEmail(mail).isPresent();
 

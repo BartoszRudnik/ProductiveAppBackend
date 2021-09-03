@@ -1,6 +1,8 @@
 package Xeva.productiveApp.synchronization;
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.filterSettings.FilterSettings;
+import Xeva.productiveApp.filterSettings.FilterSettingsService;
 import Xeva.productiveApp.graphicBackground.GraphicBackgroundService;
 import Xeva.productiveApp.locale.LocaleService;
 import Xeva.productiveApp.localization.Localization;
@@ -34,10 +36,34 @@ public class SynchronizationService {
     private final LocaleService localeService;
     private final GraphicBackgroundService graphicBackgroundService;
     private final UserImageService userImageService;
+    private final FilterSettingsService filterSettingsService;
+
+    public void synchronizeSettings(String mail, SynchronizeSettingsRequest request){
+        ApplicationUser user = this.appUserService.findByEmail(mail).get();
+
+        if(!this.filterSettingsService.settingsExist(user)){
+            FilterSettings filterSettings = new FilterSettings(user, request.isShowOnlyUnfinished(), request.isShowOnlyDelegated(), request.isShowOnlyWithLocation(), request.getCollaborators(), request.getPriorities(), request.getTags(), request.getLocations(), request.getSortingMode());
+
+            this.filterSettingsService.save(filterSettings);
+        }else{
+            FilterSettings filterSettings = this.filterSettingsService.findByUser(user);
+
+            if(filterSettings != null && filterSettings.getLastUpdated().isBefore(request.getLastUpdated())){
+                filterSettings.setShowDelegated(request.isShowOnlyDelegated());
+                filterSettings.setShowUnfinished(request.isShowOnlyUnfinished());
+                filterSettings.setShowWithLocation(request.isShowOnlyWithLocation());
+                filterSettings.setSortingMode(request.getSortingMode());
+                filterSettings.setCollaboratorEmail(request.getCollaborators());
+                filterSettings.setPriorities(request.getPriorities());
+                filterSettings.setTags(request.getTags());
+                filterSettings.setLocations(request.getLocations());
+
+                this.filterSettingsService.save(filterSettings);
+            }
+        }
+    }
 
     public void synchronizeUser(SynchronizeUserRequest request){
-        System.out.println("dupa");
-        System.out.println(request.getEmail());
         ApplicationUser user = this.appUserService.findByEmail(request.getEmail()).get();
 
         if(!this.userImageService.checkIfExists(request.getEmail())){
