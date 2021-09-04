@@ -32,6 +32,22 @@ public class TaskService {
     private final LocalizationService localizationService;
     private final AttachmentRepository attachmentRepository;
 
+    public Task findById(Long id){
+        if(this.taskRepository.findById(id).isPresent()){
+            return this.taskRepository.findById(id).get();
+        }else{
+            return null;
+        }
+    }
+
+    public void save(Task task){
+        this.taskRepository.save(task);
+    }
+
+    public boolean findByIdAndUser(Long id, ApplicationUser user){
+        return this.taskRepository.findByIdAndUser(id, user).isPresent();
+    }
+
     public GetTasksResponse getSingleTaskFull(String mail, Long taskId){
 
         boolean isUser = userService.findByEmail(mail).isPresent();
@@ -94,13 +110,13 @@ public class TaskService {
 
     }
 
-    private void saveTask(Task task){
+    public void saveTask(Task task){
         taskRepository.save(task);
         task.setPosition(task.getId() + 1000.0);
         taskRepository.save(task);
     }
 
-    private void setTags(Task task, List<Tag> tags){
+    public void setTags(Task task, List<Tag> tags){
         for(Tag tag : tags){
             if(tag.getTaskId() == null) {
                 tag.setId(null);
@@ -358,7 +374,7 @@ public class TaskService {
 
     }
 
-    private TaskPriority getPriority(String priorityName){
+    public TaskPriority getPriority(String priorityName){
         System.out.println(priorityName);
         switch (priorityName) {
             case "LOW":
@@ -373,7 +389,7 @@ public class TaskService {
 		return TaskPriority.NORMAL;
     }
 
-    private TaskList getLocalization(String localizationName){
+    public TaskList getLocalization(String localizationName){
         switch(localizationName){
             case "INBOX":
                 return TaskList.INBOX;

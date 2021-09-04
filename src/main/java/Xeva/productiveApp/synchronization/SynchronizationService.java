@@ -12,6 +12,10 @@ import Xeva.productiveApp.synchronization.dto.*;
 import Xeva.productiveApp.tags.Tag;
 import Xeva.productiveApp.tags.TagRepository;
 import Xeva.productiveApp.tags.TagService;
+import Xeva.productiveApp.task.Task;
+import Xeva.productiveApp.task.TaskList;
+import Xeva.productiveApp.task.TaskPriority;
+import Xeva.productiveApp.task.TaskService;
 import Xeva.productiveApp.userImage.UserImage;
 import Xeva.productiveApp.userImage.UserImageService;
 import Xeva.productiveApp.userRelation.RelationState;
@@ -37,6 +41,65 @@ public class SynchronizationService {
     private final GraphicBackgroundService graphicBackgroundService;
     private final UserImageService userImageService;
     private final FilterSettingsService filterSettingsService;
+    private final TaskService taskService;
+
+    public void synchronizeTasks(String mail, SynchronizeTaskRequestList request){
+        List<SynchronizeTaskRequest> taskToSynchronize = request.getTaskList();
+
+        ApplicationUser user = this.appUserService.findByEmail(mail).get();
+
+        for(SynchronizeTaskRequest t : taskToSynchronize){
+            ApplicationUser delegatedUser = null;
+            Localization localization = null;
+
+            if(t.getDelegatedEmail() != null){
+                delegatedUser = this.appUserService.findByEmail(t.getDelegatedEmail()).get();
+            }
+
+            if(t.getNotificationLocalizationId() != null){
+                localization = this.localizationService.findById(t.getNotificationLocalizationId()).get();
+            }
+
+            TaskList taskList = this.taskService.getLocalization(t.getLocalization());
+            TaskPriority taskPriority = this.taskService.getPriority(t.getPriority());
+
+            if(!this.taskService.findByIdAndUser(t.getId(), user)){
+
+                Task newTask = new Task(t.getTitle(), t.getDescription(), user, taskList, taskPriority, t.isDone(), t.getStartDate(), t.getEndDate(), delegatedUser, t.getDelegatedEmail(), localization, t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
+
+                this.taskService.saveTask(newTask);
+                if(t.getTags() != null) {
+                    this.taskService.setTags(newTask, t.getTags());
+                }
+            }else{
+                Task existingTask = this.taskService.findById(t.getId());
+
+                if(existingTask != null && existingTask.getLastUpdated().isBefore(t.getLastUpdated())){
+                    existingTask.setDescription(t.getDescription());
+                    existingTask.setDelegatedEmail(t.getDelegatedEmail());
+                    existingTask.setEndDate(t.getEndDate());
+                    existingTask.setStartDate(t.getStartDate());
+                    existingTask.setIfDone(t.isDone());
+                    existingTask.setIsCanceled(t.isCanceled());
+                    existingTask.setIsDelegated(t.isDelegated());
+                    existingTask.setLocalizationRadius(t.getNotificationLocalizationRadius());
+                    existingTask.setNotificationLocalization(localization);
+                    existingTask.setNotificationOnExit(t.isNotificationOnExit());
+                    existingTask.setNotificationOnEnter(t.isNotificationOnEnter());
+                    existingTask.setPriority(taskPriority);
+                    existingTask.setTaskList(taskList);
+                    existingTask.setTaskName(t.getTitle());
+                    existingTask.setPosition(t.getPosition());
+                    existingTask.setTaskStatus(t.getTaskStatus());
+
+                    if(t.getTags() != null) {
+                        this.taskService.setTags(existingTask, t.getTags());
+                    }
+                    this.taskService.save(existingTask);
+                }
+            }
+        }
+    }
 
     public void synchronizeSettings(String mail, SynchronizeSettingsRequest request){
         ApplicationUser user = this.appUserService.findByEmail(mail).get();

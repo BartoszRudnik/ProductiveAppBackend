@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -62,7 +63,7 @@ public class Task {
     private String description;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "application_user_id")
+    @JoinColumn(name = "application_user_id")
     private ApplicationUser user;
 
     @Enumerated(EnumType.STRING)
@@ -71,19 +72,10 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskPriority priority = TaskPriority.NORMAL;
 
-    @Column(
-            nullable = false
-    )
     private Boolean ifDone = false;
 
-    @Column(
-            nullable = false
-    )
     private Date startDate;
 
-    @Column(
-            nullable = false
-    )
     private Date endDate;
 
     private double position;
@@ -122,8 +114,17 @@ public class Task {
 
     private Boolean notificationOnExit;
 
-    @UpdateTimestamp
-    private Date lastUpdated;
+    private LocalDateTime lastUpdated;
+
+    @PrePersist
+    public void onInsert() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     //Tworzenie tasku nadrzędnego
     public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail) {
