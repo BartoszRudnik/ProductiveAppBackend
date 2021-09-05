@@ -13,5 +13,6 @@ import java.util.List;
 public class SynchronizeTaskRequestList {
 
     private List<SynchronizeTaskRequest> taskList;
+    private List<DeleteTask> deleteList;
 
 }

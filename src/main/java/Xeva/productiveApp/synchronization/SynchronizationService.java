@@ -99,6 +99,12 @@ public class SynchronizationService {
                 }
             }
         }
+
+        for(DeleteTask taskToDelete : request.getDeleteList()){
+            if(this.taskService.findByIdAndUser(taskToDelete.getTaskId(), user)) {
+                this.taskService.deleteTask(taskToDelete.getTaskId());
+            }
+        }
     }
 
     public void synchronizeSettings(String mail, SynchronizeSettingsRequest request){
