@@ -24,6 +24,8 @@ import Xeva.productiveApp.userRelation.UserRelationRepository;
 import Xeva.productiveApp.userRelation.UserRelationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,6 +51,13 @@ public class SynchronizationService {
         ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
         for(SynchronizeTaskRequest t : taskToSynchronize){
+
+            List<String> tagList = new ArrayList<>();
+
+            if(t.getTags() != null){
+                tagList = List.of(t.getTags().split("\\|"));
+            }
+
             ApplicationUser delegatedUser = null;
             Localization localization = null;
 
@@ -69,7 +78,7 @@ public class SynchronizationService {
 
                 this.taskService.saveTask(newTask);
                 if(t.getTags() != null) {
-                    this.taskService.setTags(newTask, t.getTags());
+                    this.taskService.setTagsFromNames(newTask, tagList);
                 }
             }else{
                 Task existingTask = this.taskService.findById(t.getId());
@@ -93,7 +102,7 @@ public class SynchronizationService {
                     existingTask.setTaskStatus(t.getTaskStatus());
 
                     if(t.getTags() != null) {
-                        this.taskService.setTags(existingTask, t.getTags());
+                        this.taskService.setTagsFromNames(existingTask, tagList);
                     }
                     this.taskService.save(existingTask);
                 }
@@ -284,9 +293,7 @@ public class SynchronizationService {
                 Tag existingTag = this.tagRepository.findById(tag.getId()).get();
 
                 if(existingTag.getLastUpdated().isBefore(tag.getLastUpdated())){
-                    existingTag.setName(tag.getName());
-
-                    this.tagService.save(existingTag);
+                    this.tagService.updateTag(mail, existingTag.getName(), tag.getName());
                 }
             }
         }

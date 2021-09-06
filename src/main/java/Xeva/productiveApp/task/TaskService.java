@@ -116,6 +116,16 @@ public class TaskService {
         taskRepository.save(task);
     }
 
+    public void setTagsFromNames(Task task, List<String> tagNames){
+        this.tagService.deleteByTaskId(task.getId());
+
+        for(String tagName : tagNames){
+            Tag tag = new Tag(task.getUser().getEmail(), tagName, task.getId());
+
+            this.tagService.save(tag);
+        }
+    }
+
     public void setTags(Task task, List<Tag> tags){
         for(Tag tag : tags){
             if(tag.getTaskId() == null) {

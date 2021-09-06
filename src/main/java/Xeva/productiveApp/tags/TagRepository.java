@@ -14,10 +14,11 @@ import java.util.Set;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
-    Optional<Tag> findByNameAndOwnerEmail(String name, String ownerEmail);
+    List<Tag> findAllByNameAndOwnerEmail(String name, String ownerEmail);
 
     Optional<Tag> findByOwnerEmailAndId(String ownerEmail, Long id);
 
+   List<Tag> findAllByName(String name);
 
     Optional<List<Tag>> findAllByTaskId(Long id);
 
@@ -28,6 +29,9 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("UPDATE Tag tag " +
             "SET tag.taskId = null where tag.id = ?1")
     void deleteById(Long id);
+
+    @Transactional
+    void deleteAllByTaskId(Long taskId);
 
     @Transactional
     void deleteByNameAndOwnerEmail(String name, String ownerEmail);

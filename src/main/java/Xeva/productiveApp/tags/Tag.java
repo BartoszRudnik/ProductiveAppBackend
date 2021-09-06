@@ -71,6 +71,12 @@ public class Tag {
         this.name = name;
     }
 
+    public Tag(String ownerEmail, String name, Long taskId){
+        this.ownerEmail = ownerEmail;
+        this.name = name;
+        this.taskId = taskId;
+    }
+
     public Tag(Long id, String name){
         this.id = id;
         this.name = name;

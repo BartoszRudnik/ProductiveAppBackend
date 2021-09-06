@@ -23,6 +23,10 @@ public class TagService {
         tagRepository.save(tag);
     }
 
+    public List<Tag> findByTagName(String tagName){
+        return this.tagRepository.findAllByName(tagName);
+    }
+
     public List<Tag> findAllByTaskId(Long id){
         return tagRepository.findAllByTaskId(id).get();
     }
@@ -38,14 +42,32 @@ public class TagService {
 
     }
 
+    public void deleteByTaskId(Long taskId){
+        this.tagRepository.deleteAllByTaskId(taskId);
+    }
+
+    public void updateTag(String mail, String oldName, String newName){
+        List<Tag> tagsToEdit = this.tagRepository.findAllByNameAndOwnerEmail(oldName, mail);
+
+        if(tagsToEdit != null) {
+            for(Tag tagToEdit : tagsToEdit) {
+                tagToEdit.setName(newName);
+
+                this.tagRepository.save(tagToEdit);
+            }
+        }
+    }
+
     public void updateTag(String mail, UpdateRequest request){
-       if(this.tagRepository.findByNameAndOwnerEmail(request.getOldName(), mail).isPresent()){
-           Tag tagToEdit = this.tagRepository.findByNameAndOwnerEmail(request.getOldName(), mail).get();
+           List<Tag> tagsToEdit = this.tagRepository.findAllByNameAndOwnerEmail(request.getOldName(), mail);
 
-           tagToEdit.setName(request.getNewName());
+           if(tagsToEdit != null) {
+               for(Tag tagToEdit : tagsToEdit) {
+                   tagToEdit.setName(request.getNewName());
 
-           this.tagRepository.save(tagToEdit);
-       }
+                   this.tagRepository.save(tagToEdit);
+               }
+           }
     }
 
     public boolean tagAlreadyExist(String mail, Long id){

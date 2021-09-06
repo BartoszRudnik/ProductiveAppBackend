@@ -26,7 +26,7 @@ public class SynchronizeTaskRequest {
     private String supervisorEmail;
     private Date startDate;
     private Date endDate;
-    private List<Tag> tags;
+    private String tags;
     private boolean done;
     private boolean isDelegated;
     private boolean isCanceled;
