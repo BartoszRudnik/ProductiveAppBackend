@@ -251,7 +251,7 @@ public class SynchronizationService {
 
     public void synchronizeLocations(String mail, SynchronizeLocationsRequestList requestList){
         for(SynchronizeLocationsRequest location : requestList.getLocationList()){
-            if(!this.localizationService.localizationAlreadyExist(mail, location.getLocalizationName())){
+            if(!this.localizationService.localizationAlreadyExist(mail, location.getId())){
                 ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
                 Localization newLocalization = new Localization(location.getLocalizationName(), location.getStreet(), location.getLocality(),location.getCountry(), location.getLongitude(),location.getLatitude(), user);

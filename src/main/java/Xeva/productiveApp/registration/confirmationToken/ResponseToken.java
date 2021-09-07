@@ -13,5 +13,6 @@ public class ResponseToken {
 
     private String token;
     private Long tokenDuration;
+    private Long userId;
 
 }
