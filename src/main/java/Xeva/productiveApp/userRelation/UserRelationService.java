@@ -363,7 +363,8 @@ public class UserRelationService {
 
             relation = userRelationRepository.findById(id).get();
 
-            relation.setState(RelationState.DECLINED);
+            //relation.setState(RelationState.DECLINED);
+            userRelationRepository.delete(relation);
 
             userRelationRepository.save(relation);
 
