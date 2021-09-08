@@ -44,8 +44,8 @@ public class TaskService {
         this.taskRepository.save(task);
     }
 
-    public boolean findByIdAndUser(Long id, ApplicationUser user){
-        return this.taskRepository.findByIdAndUser(id, user).isPresent();
+    public boolean findByIdAndUserAndTaskname(Long id, ApplicationUser user, String taskName){
+        return this.taskRepository.findByIdAndUserAndTaskName(id, user, taskName).isPresent();
     }
 
     public GetTasksResponse getSingleTaskFull(String mail, Long taskId){
@@ -110,10 +110,12 @@ public class TaskService {
 
     }
 
-    public void saveTask(Task task){
+    public Long saveTask(Task task){
         taskRepository.save(task);
         task.setPosition(task.getId() + 1000.0);
-        taskRepository.save(task);
+        task = taskRepository.save(task);
+
+        return task.getId();
     }
 
     public void setTagsFromNames(Task task, List<String> tagNames){

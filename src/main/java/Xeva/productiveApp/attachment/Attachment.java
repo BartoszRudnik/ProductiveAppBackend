@@ -5,6 +5,7 @@ import Xeva.productiveApp.task.Task;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -38,6 +39,18 @@ public class Attachment {
     private ApplicationUser applicationUser;
 
     String fileName;
+
+    LocalDateTime lastUpdated;
+
+    @PrePersist
+    public void onInsert() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     Attachment(byte[] file, Task task, ApplicationUser applicationUser, String fileName){
         this.file = file;

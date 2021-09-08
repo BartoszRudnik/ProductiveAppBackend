@@ -25,10 +25,17 @@ public class AttachmentService {
     private final TaskRepository taskRepository;
     private final AppUserRepository appUserRepository;
 
+    @Transactional
+    public void deleteByAttachmentId(Long attachmentId){
+        this.attachmentRepository.deleteByAttachmentId(attachmentId);
+    }
+
+    @Transactional
+    public boolean alreadyExist(Long attachmentId, String fileName, ApplicationUser user){
+        return this.attachmentRepository.findByAttachmentIdAndFileNameAndApplicationUser(attachmentId, fileName, user).isPresent();
+    }
+
     public Long addAttachment(MultipartFile multipartFile, Long taskId, String userMail, String fileName) throws IOException {
-
-        System.out.println(userMail);
-
         if(this.appUserRepository.findByEmail(userMail).isEmpty()){
             throw new IllegalStateException("User doesn't exist");
         }
@@ -41,14 +48,30 @@ public class AttachmentService {
 
         Task task = this.taskRepository.findById(taskId).get();
 
-        System.out.println(task.getTaskName());
+        Attachment attachment = new Attachment(multipartFile.getBytes(), null, applicationUser, fileName);
 
-        Attachment attachment = new Attachment(multipartFile.getBytes(), task, applicationUser, fileName);
+        task.addAttachment(attachment);
 
-        attachment = this.attachmentRepository.save(attachment);
+        this.taskRepository.save(task);
+        this.attachmentRepository.save(attachment);
 
         return attachment.getAttachmentId();
+    }
 
+    @Transactional
+    public void addAttachment(byte [] fileBytes, Long taskId, ApplicationUser user, String fileName) {
+        if(this.taskRepository.findById(taskId).isEmpty()){
+            throw new IllegalStateException("Task doesn't exist");
+        }
+
+        Task task = this.taskRepository.findById(taskId).get();
+
+        Attachment attachment = new Attachment(fileBytes, null, user, fileName);
+
+        task.addAttachment(attachment);
+
+        this.attachmentRepository.save(attachment);
+        this.taskRepository.save(task);
     }
 
     public Resource getAttachment(Long attachmentId){

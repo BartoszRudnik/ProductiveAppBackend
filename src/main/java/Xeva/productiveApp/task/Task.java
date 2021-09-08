@@ -1,6 +1,7 @@
 package Xeva.productiveApp.task;
 
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.attachment.Attachment;
 import Xeva.productiveApp.localization.Localization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -8,7 +9,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -115,6 +118,20 @@ public class Task {
     private Boolean notificationOnExit;
 
     private LocalDateTime lastUpdated;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "task")
+    private List<Attachment> attachments;
+
+    public void addAttachment(Attachment attachment){
+        if(this.attachments == null){
+            this.attachments = new ArrayList<>();
+        }
+
+        this.attachments.add(attachment);
+
+        attachment.setTask(this);
+    }
 
     @PrePersist
     public void onInsert() {

@@ -8,10 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DeleteTask {
+public class DeleteAttachment {
 
-    private Long taskId;
-    private String ownerEmail;
-    private String taskName;
+    private Long attachmentId;
+    private String fileName;
 
 }

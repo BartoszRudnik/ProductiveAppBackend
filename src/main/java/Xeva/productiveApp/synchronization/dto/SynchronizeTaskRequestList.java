@@ -13,6 +13,8 @@ import java.util.List;
 public class SynchronizeTaskRequestList {
 
     private List<SynchronizeTaskRequest> taskList;
+    private List<SynchronizeAttachmentRequest> attachmentList;
     private List<DeleteTask> deleteList;
+    private List<DeleteAttachment> deleteListAttachments;
 
 }

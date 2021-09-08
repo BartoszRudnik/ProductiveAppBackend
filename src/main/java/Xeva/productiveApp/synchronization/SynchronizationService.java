@@ -1,6 +1,7 @@
 package Xeva.productiveApp.synchronization;
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.attachment.AttachmentService;
 import Xeva.productiveApp.filterSettings.FilterSettings;
 import Xeva.productiveApp.filterSettings.FilterSettingsService;
 import Xeva.productiveApp.graphicBackground.GraphicBackgroundService;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -44,9 +46,11 @@ public class SynchronizationService {
     private final UserImageService userImageService;
     private final FilterSettingsService filterSettingsService;
     private final TaskService taskService;
+    private final AttachmentService attachmentService;
 
     public void synchronizeTasks(String mail, SynchronizeTaskRequestList request){
         List<SynchronizeTaskRequest> taskToSynchronize = request.getTaskList();
+        List<SynchronizeAttachmentRequest> attachments = request.getAttachmentList();
 
         ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
@@ -72,13 +76,23 @@ public class SynchronizationService {
             TaskList taskList = this.taskService.getLocalization(t.getLocalization());
             TaskPriority taskPriority = this.taskService.getPriority(t.getPriority());
 
-            if(!this.taskService.findByIdAndUser(t.getId(), user)){
+            if(!this.taskService.findByIdAndUserAndTaskname(t.getId(), user, t.getTitle())){
+
+                Long oldId = t.getId();
 
                 Task newTask = new Task(t.getTitle(), t.getDescription(), user, taskList, taskPriority, t.isDone(), t.getStartDate(), t.getEndDate(), delegatedUser, t.getDelegatedEmail(), localization, t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
 
-                this.taskService.saveTask(newTask);
+                Long id = this.taskService.saveTask(newTask);
                 if(t.getTags() != null) {
                     this.taskService.setTagsFromNames(newTask, tagList);
+                }
+
+                if(!Objects.equals(id, oldId)){
+                    for(SynchronizeAttachmentRequest attachment : attachments){
+                        if(Objects.equals(attachment.getTaskId(), oldId)){
+                            attachment.setTaskId(id);
+                        }
+                    }
                 }
             }else{
                 Task existingTask = this.taskService.findById(t.getId());
@@ -110,8 +124,22 @@ public class SynchronizationService {
         }
 
         for(DeleteTask taskToDelete : request.getDeleteList()){
-            if(this.taskService.findByIdAndUser(taskToDelete.getTaskId(), user)) {
+            if(this.taskService.findByIdAndUserAndTaskname(taskToDelete.getTaskId(), user, taskToDelete.getTaskName())) {
                 this.taskService.deleteTask(taskToDelete.getTaskId());
+            }
+        }
+
+
+
+        for(SynchronizeAttachmentRequest attachment : attachments){
+            if(!this.attachmentService.alreadyExist(attachment.getId(), attachment.getFileName(), user)){
+                this.attachmentService.addAttachment(attachment.getLocalFile(), attachment.getTaskId(), user, attachment.getFileName());
+            }
+        }
+
+        for(DeleteAttachment deleteAttachment : request.getDeleteListAttachments()){
+           if(this.attachmentService.alreadyExist(deleteAttachment.getAttachmentId(), deleteAttachment.getFileName(), user)){
+                this.attachmentService.deleteByAttachmentId(deleteAttachment.getAttachmentId());
             }
         }
     }
