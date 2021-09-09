@@ -15,6 +15,7 @@ public class SynchronizeAttachmentRequest {
     private Long id;
     private Long taskId;
     private String fileName;
+    private String uuid;
     private boolean toDelete;
     private LocalDateTime lastUpdated;
     private byte [] localFile;

@@ -10,8 +10,6 @@ import lombok.*;
 @ToString
 public class DeleteTask {
 
-    private Long taskId;
-    private String ownerEmail;
-    private String taskName;
+    private String uuid;
 
 }

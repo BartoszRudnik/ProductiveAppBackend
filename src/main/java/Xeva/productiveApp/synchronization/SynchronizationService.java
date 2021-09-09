@@ -76,16 +76,10 @@ public class SynchronizationService {
             TaskList taskList = this.taskService.getLocalization(t.getLocalization());
             TaskPriority taskPriority = this.taskService.getPriority(t.getPriority());
 
-            if(!this.taskService.findByIdAndUserAndTaskname(t.getId(), user, t.getTitle())){
-
+            if(!this.taskService.isPresent(t.getUuid())){
                 Long oldId = t.getId();
 
-                Task newTask = new Task(t.getTitle(), t.getDescription(), user, taskList, taskPriority, t.isDone(), t.getStartDate(), t.getEndDate(), delegatedUser, t.getDelegatedEmail(), localization, t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
-
-                Long id = this.taskService.saveTask(newTask);
-                if(t.getTags() != null) {
-                    this.taskService.setTagsFromNames(newTask, tagList);
-                }
+                Long id = this.taskService.addTask(user, taskPriority, taskList, tagList, t.getDelegatedEmail(), t.getNotificationLocalizationId(), t.getTitle(), t.getDescription(), t.isDone(), t.getStartDate(), t.getEndDate(), t.getUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
 
                 if(!Objects.equals(id, oldId)){
                     for(SynchronizeAttachmentRequest attachment : attachments){
@@ -98,6 +92,7 @@ public class SynchronizationService {
                 Task existingTask = this.taskService.findById(t.getId());
 
                 if(existingTask != null && existingTask.getLastUpdated().isBefore(t.getLastUpdated())){
+                    existingTask.setUuid(t.getUuid());
                     existingTask.setDescription(t.getDescription());
                     existingTask.setDelegatedEmail(t.getDelegatedEmail());
                     existingTask.setEndDate(t.getEndDate());
@@ -124,22 +119,21 @@ public class SynchronizationService {
         }
 
         for(DeleteTask taskToDelete : request.getDeleteList()){
-            if(this.taskService.findByIdAndUserAndTaskname(taskToDelete.getTaskId(), user, taskToDelete.getTaskName())) {
-                this.taskService.deleteTask(taskToDelete.getTaskId());
+            if(this.taskService.isPresent(taskToDelete.getUuid())) {
+                this.taskService.deleteTaskByUuid(taskToDelete.getUuid());
             }
         }
 
 
-
         for(SynchronizeAttachmentRequest attachment : attachments){
-            if(!this.attachmentService.alreadyExist(attachment.getId(), attachment.getFileName(), user)){
-                this.attachmentService.addAttachment(attachment.getLocalFile(), attachment.getTaskId(), user, attachment.getFileName());
+            if(!this.attachmentService.alreadyExist(attachment.getUuid())){
+                this.attachmentService.addAttachment(attachment.getLocalFile(), attachment.getTaskId(), user, attachment.getFileName(), attachment.getUuid());
             }
         }
 
         for(DeleteAttachment deleteAttachment : request.getDeleteListAttachments()){
-           if(this.attachmentService.alreadyExist(deleteAttachment.getAttachmentId(), deleteAttachment.getFileName(), user)){
-                this.attachmentService.deleteByAttachmentId(deleteAttachment.getAttachmentId());
+           if(this.attachmentService.alreadyExist(deleteAttachment.getUuid())){
+                this.attachmentService.deleteByUuid(deleteAttachment.getUuid());
             }
         }
     }
@@ -148,7 +142,7 @@ public class SynchronizationService {
         ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
         if(!this.filterSettingsService.settingsExist(user)){
-            FilterSettings filterSettings = new FilterSettings(user, request.isShowOnlyUnfinished(), request.isShowOnlyDelegated(), request.isShowOnlyWithLocation(), request.getCollaborators(), request.getPriorities(), request.getTags(), request.getLocations(), request.getSortingMode());
+            FilterSettings filterSettings = new FilterSettings(user, request.isShowOnlyUnfinished(), request.isShowOnlyDelegated(), request.isShowOnlyWithLocalization(), request.getCollaborators(), request.getPriorities(), request.getTags(), request.getLocations(), request.getSortingMode());
 
             this.filterSettingsService.save(filterSettings);
         }else{
@@ -157,7 +151,7 @@ public class SynchronizationService {
             if(filterSettings != null && filterSettings.getLastUpdated().isBefore(request.getLastUpdated())){
                 filterSettings.setShowDelegated(request.isShowOnlyDelegated());
                 filterSettings.setShowUnfinished(request.isShowOnlyUnfinished());
-                filterSettings.setShowWithLocation(request.isShowOnlyWithLocation());
+                filterSettings.setShowWithLocation(request.isShowOnlyWithLocalization());
                 filterSettings.setSortingMode(request.getSortingMode());
                 filterSettings.setCollaboratorEmail(request.getCollaborators());
                 filterSettings.setPriorities(request.getPriorities());
@@ -215,23 +209,14 @@ public class SynchronizationService {
         ApplicationUser user1 = this.appUserService.findByEmail(mail).get();
 
         for(SynchronizeCollaboratorsRequest collaborator : requestList.getCollaboratorList()){
-            if(!this.userRelationService.relationAlreadyExist(mail, collaborator.getEmail())){
-
-                ApplicationUser user2 = this.appUserService.findByEmail(collaborator.getEmail()).get();
-
+            ApplicationUser user2 = this.appUserService.findByEmail(collaborator.getEmail()).get();
+            if(!this.userRelationService.relationAlreadyExist(collaborator.getUuid())){
                 if(user1 != user2) {
-                    UserRelation userRelation = new UserRelation(user1, user2);
+                    UserRelation userRelation = new UserRelation(user1, user2, collaborator.getUuid());
                     this.userRelationService.save(userRelation);
                 }
             }else{
-                ApplicationUser user2 = this.appUserService.findByEmail(collaborator.getEmail()).get();
-                UserRelation existingRelation;
-
-                if(this.userRelationRepository.findByUser1AndUser2(user1, user2).isPresent()){
-                    existingRelation = this.userRelationRepository.findByUser1AndUser2(user1, user2).get();
-                }else{
-                    existingRelation = this.userRelationRepository.findByUser1AndUser2(user2, user1).get();
-                }
+                UserRelation existingRelation = this.userRelationService.findByUuid(collaborator.getUuid());
 
                 if(existingRelation.getLastUpdated().isBefore(collaborator.getLastUpdated())){
 
@@ -267,26 +252,20 @@ public class SynchronizationService {
         List<DeleteCollaborator> toDelete = requestList.getDeleteList();
 
         for(DeleteCollaborator delete : toDelete){
-            ApplicationUser appUser1 = this.appUserService.findByEmail(delete.getUser1Mail()).get();
-            ApplicationUser appUser2 = this.appUserService.findByEmail(delete.getUser2Mail()).get();
-            if(this.userRelationRepository.findByUser1AndUser2(appUser1, appUser2).isPresent()){
-                this.userRelationRepository.deleteByUser1AndUser2(appUser1, appUser2);
-            }else if(this.userRelationRepository.findByUser1AndUser2(appUser2, appUser1).isPresent()){
-                this.userRelationRepository.deleteByUser1AndUser2(appUser2, appUser1);
-            }
+            this.userRelationService.deleteByUuid(delete.getUuid());
         }
     }
 
     public void synchronizeLocations(String mail, SynchronizeLocationsRequestList requestList){
         for(SynchronizeLocationsRequest location : requestList.getLocationList()){
-            if(!this.localizationService.localizationAlreadyExist(mail, location.getId())){
+            if(!this.localizationService.localizationAlreadyExist(location.getUuid())){
                 ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
-                Localization newLocalization = new Localization(location.getLocalizationName(), location.getStreet(), location.getLocality(),location.getCountry(), location.getLongitude(),location.getLatitude(), user);
+                Localization newLocalization = new Localization(location.getLocalizationName(), location.getStreet(), location.getLocality(),location.getCountry(), location.getLongitude(),location.getLatitude(), user, location.getUuid());
 
                 this.localizationService.save(newLocalization);
             }else{
-                Localization existingLocalization = this.localizationService.findById(location.getId()).get();
+                Localization existingLocalization = this.localizationService.findByUuid(location.getUuid());
 
                 if(existingLocalization.getLastUpdated().isBefore(location.getLastUpdated())){
 
@@ -305,8 +284,8 @@ public class SynchronizationService {
         List<DeleteLocation> listToDelete = requestList.getDeleteList();
 
         for(DeleteLocation toDelete : listToDelete){
-            ApplicationUser user = this.appUserService.findByEmail(toDelete.getOwnerEmail()).get();
-            this.localizationRepository.deleteByUserAndLocalizationName(user, toDelete.getLocationName());
+
+            this.localizationService.deleteByUuid(toDelete.getUuid());
         }
     }
 
@@ -315,7 +294,7 @@ public class SynchronizationService {
 
             if(!this.tagService.tagAlreadyExist(mail, tag.getId())){
 
-                Tag newTag = new Tag(mail, tag.getName());
+                Tag newTag = new Tag(mail, tag.getName(), tag.getUuid());
                 this.tagService.save(newTag);
             }else{
                 Tag existingTag = this.tagRepository.findById(tag.getId()).get();

@@ -12,12 +12,11 @@ import java.util.List;
 @RequestMapping(path = "api/v1/localization")
 @AllArgsConstructor
 public class LocalizationController {
-
     private final LocalizationService localizationService;
 
-    @GetMapping("/getCoordinates/{id}")
-    public GetCoordinates getCoordinates(@PathVariable Long id){
-        return localizationService.getCoordinates(id);
+    @GetMapping("/getCoordinates/{uuid}")
+    public GetCoordinates getCoordinates(@PathVariable String uuid){
+        return localizationService.getCoordinates(uuid);
     }
 
     @GetMapping("/getLocalizations/{mail}")
@@ -25,9 +24,9 @@ public class LocalizationController {
         return localizationService.getLocalizations(mail);
     }
 
-    @GetMapping("/getLocalization/{id}")
-    public Localization getLocalization(@PathVariable Long id) {
-        return localizationService.getLocalization(id);
+    @GetMapping("/getLocalization/{uuid}")
+    public Localization getLocalization(@PathVariable String uuid) {
+        return localizationService.findByUuid(uuid);
     }
 
     @PostMapping("/addLocalization/{mail}")
@@ -35,14 +34,13 @@ public class LocalizationController {
         return localizationService.addLocalization(mail, addLocalization);
     }
 
-    @DeleteMapping("/deleteLocalization/{id}")
-    public void deleteLocalization(@PathVariable Long id){
-        localizationService.deleteLocalization(id);
+    @DeleteMapping("/deleteLocalization/{uuid}")
+    public void deleteLocalization(@PathVariable String uuid){
+        localizationService.deleteByUuid(uuid);
     }
 
-    @PutMapping("/updateLocalization/{id}")
-    public void updateLocalization(@PathVariable Long id, @RequestBody AddLocalization addLocalization){
-        localizationService.updateLocalization(id, addLocalization);
+    @PutMapping("/updateLocalization/{uuid}")
+    public void updateLocalization(@PathVariable String uuid, @RequestBody AddLocalization addLocalization){
+        localizationService.updateLocalization(uuid, addLocalization);
     }
-
 }

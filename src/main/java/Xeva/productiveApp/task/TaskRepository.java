@@ -14,6 +14,11 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
+    @Transactional
+    void deleteByUuid(String uuid);
+
+    Optional<Task> findByUuid(String uuid);
+
     Optional<Task> findByIdAndUserAndTaskName(Long id, ApplicationUser user, String taskName);
 
     Optional<List<Task>> findAllByUserEmail(String email);

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -119,6 +120,9 @@ public class Task {
 
     private LocalDateTime lastUpdated;
 
+    @Column(nullable = false)
+    private String uuid;
+
     @JsonIgnore
     @OneToMany(mappedBy = "task")
     private List<Attachment> attachments;
@@ -144,7 +148,7 @@ public class Task {
     }
 
     //Tworzenie tasku nadrzędnego
-    public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail) {
+    public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail, String uuid) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -155,12 +159,13 @@ public class Task {
         this.endDate = endDate;
         this.delegatedEmail = delegatedEmail;
         this.taskStatus = "Sent";
-        this.childTask = new Task(taskName, description, userDelegated, priority, ifDone, startDate, endDate, this);
+        this.childTask = new Task(taskName, description, userDelegated, priority, ifDone, startDate, endDate, this, UUID.randomUUID().toString());
         this.isCanceled = false;
+        this.uuid = uuid;
     }
 
     //Tworzenie tasku podrzędnego
-    public Task(String taskName, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask) {
+    public Task(String taskName, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask, String uuid) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -171,10 +176,12 @@ public class Task {
         this.parentTask = parentTask;
         this.isDelegated = true;
         this.isCanceled = false;
+        this.uuid = uuid;
     }
 
     //Tworzenie tasku nadrzędnego z powiadomieniem
-    public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
+    public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, ApplicationUser userDelegated, String delegatedEmail, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter,
+                boolean notificationOnExit, String uuid) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -189,12 +196,13 @@ public class Task {
         this.notificationOnEnter = notificationOnEnter;
         this.notificationOnExit = notificationOnExit;
         this.localizationRadius = localizationRadius;
-        this.childTask = new Task(taskName, description, userDelegated, priority, ifDone, startDate, endDate, this, notificationLocalization, localizationRadius, notificationOnEnter, notificationOnExit);
+        this.childTask = new Task(taskName, description, userDelegated, priority, ifDone, startDate, endDate, this, notificationLocalization, localizationRadius, notificationOnEnter, notificationOnExit, UUID.randomUUID().toString());
         this.isCanceled = false;
+        this.uuid = uuid;
     }
 
     //Tworzenie tasku podrzędnego z powiadomieniem
-    public Task(String taskName, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
+    public Task(String taskName, String description, ApplicationUser user, TaskPriority priority, Boolean ifDone, Date startDate, Date endDate, Task parentTask, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit, String uuid) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -209,10 +217,11 @@ public class Task {
         this.notificationLocalization = notificationLocalization;
         this.notificationOnEnter = notificationOnEnter;
         this.notificationOnExit = notificationOnExit;
+        this.uuid = uuid;
     }
 
 
-    public Task(String taskName, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail) {
+    public Task(String taskName, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail, String uuid) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -223,9 +232,10 @@ public class Task {
         this.taskList = taskList;
         this.delegatedEmail = delegatedEmail;
         this.taskStatus = "Sent";
+        this.uuid = uuid;
     }
 
-    public Task(String taskName, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail, Localization notificationLocalization, boolean notificationOnEnter, double localizationRadius, boolean notificationOnExit) {
+    public Task(String taskName, String description, ApplicationUser user, Date startDate, Date endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail, Localization notificationLocalization, boolean notificationOnEnter, double localizationRadius, boolean notificationOnExit, String uuid) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -240,6 +250,7 @@ public class Task {
         this.localizationRadius = localizationRadius;
         this.notificationOnEnter = notificationOnEnter;
         this.notificationOnExit = notificationOnExit;
+        this.uuid = uuid;
     }
 
 }

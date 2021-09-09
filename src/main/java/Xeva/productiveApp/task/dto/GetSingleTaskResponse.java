@@ -19,5 +19,6 @@ public class GetSingleTaskResponse {
     private String priority;
     private Date startDate;
     private Date endDate;
+    private String uuid;
 
 }

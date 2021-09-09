@@ -10,7 +10,6 @@ import lombok.*;
 @ToString
 public class DeleteLocation {
 
-    String ownerEmail;
-    String locationName;
+    private String uuid;
 
 }

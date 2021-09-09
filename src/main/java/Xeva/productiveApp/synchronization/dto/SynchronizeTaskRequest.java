@@ -24,6 +24,7 @@ public class SynchronizeTaskRequest {
     private String delegatedEmail;
     private String taskStatus;
     private String supervisorEmail;
+    private String uuid;
     private Date startDate;
     private Date endDate;
     private String tags;

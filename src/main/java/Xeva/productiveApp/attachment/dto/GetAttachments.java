@@ -12,5 +12,6 @@ public class GetAttachments {
     Long id;
     Long taskId;
     String fileName;
+    String uuid;
 
 }

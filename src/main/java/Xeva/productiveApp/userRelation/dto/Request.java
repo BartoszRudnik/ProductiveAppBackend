@@ -11,5 +11,6 @@ public class Request {
 
     String userEmail;
     String collaboratorEmail;
+    String uuid;
 
 }

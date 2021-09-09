@@ -18,14 +18,14 @@ public class AttachmentController {
 
     private final AttachmentService attachmentService;
 
-    @PostMapping("/addAttachment/{userMail}/{taskId}/{fileName}")
-    public Long addAttachment(@PathVariable Long taskId, @PathVariable String fileName, @PathVariable String userMail , @RequestParam MultipartFile multipartFile) throws IOException {
-        return this.attachmentService.addAttachment(multipartFile, taskId, userMail, fileName);
+    @PostMapping("/addAttachment/{userMail}/{taskId}/{fileName}/{uuid}")
+    public Long addAttachment(@PathVariable Long taskId, @PathVariable String uuid, @PathVariable String fileName, @PathVariable String userMail , @RequestParam MultipartFile multipartFile) throws IOException {
+        return this.attachmentService.addAttachment(multipartFile, taskId, userMail, fileName, uuid);
     }
 
-    @GetMapping("/getAttachment/{attachmentId}")
-    public Resource getAttachment(@PathVariable Long attachmentId){
-        return this.attachmentService.getAttachment(attachmentId);
+    @GetMapping("/getAttachment/{uuid}")
+    public Resource getAttachment(@PathVariable String uuid){
+        return this.attachmentService.getAttachment(uuid);
     }
 
     @PostMapping("/getDelegatedAttachments")
@@ -38,9 +38,9 @@ public class AttachmentController {
         return this.attachmentService.getUserAttachments(userMail);
     }
 
-    @DeleteMapping("/deleteAttachment/{attachmentId}")
-    public void deleteAttachment(@PathVariable Long attachmentId){
-        this.attachmentService.deleteAttachment(attachmentId);
+    @DeleteMapping("/deleteAttachment/{uuid}")
+    public void deleteAttachment(@PathVariable String uuid){
+        this.attachmentService.deleteByUuid(uuid);
     }
 
 }

@@ -22,5 +22,6 @@ public class SynchronizeCollaboratorsRequest {
     private boolean receivedPermission;
     private boolean received;
     private LocalDateTime lastUpdated;
+    private String uuid;
 
 }

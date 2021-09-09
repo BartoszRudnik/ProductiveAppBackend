@@ -38,9 +38,11 @@ public class Attachment {
     @JoinColumn(nullable = false, name = "application_user_id")
     private ApplicationUser applicationUser;
 
-    String fileName;
+    private String fileName;
 
-    LocalDateTime lastUpdated;
+    private LocalDateTime lastUpdated;
+
+    private String uuid;
 
     @PrePersist
     public void onInsert() {
@@ -52,11 +54,12 @@ public class Attachment {
         this.lastUpdated = LocalDateTime.now();
     }
 
-    Attachment(byte[] file, Task task, ApplicationUser applicationUser, String fileName){
+    Attachment(byte[] file, Task task, ApplicationUser applicationUser, String fileName, String uuid){
         this.file = file;
         this.task = task;
         this.applicationUser = applicationUser;
         this.fileName = fileName;
+        this.uuid = uuid;
     }
 
 }

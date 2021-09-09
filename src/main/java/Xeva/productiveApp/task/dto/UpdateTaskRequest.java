@@ -13,6 +13,7 @@ import java.util.List;
 @ToString
 public class UpdateTaskRequest {
 
+    private String uuid;
     private String taskName;
     private String taskDescription;
     private String userEmail;

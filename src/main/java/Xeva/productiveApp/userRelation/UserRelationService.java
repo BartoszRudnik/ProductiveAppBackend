@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -246,7 +247,7 @@ public class UserRelationService {
         ApplicationUser user1 = appUserService.findByEmail(request.getUserEmail()).get();
         ApplicationUser user2 = appUserService.findByEmail(request.getCollaboratorEmail()).get();
 
-        UserRelation newRelation = new UserRelation(user1, user2);
+        UserRelation newRelation = new UserRelation(user1, user2, request.getUuid());
 
         userRelationRepository.save(newRelation);
 
@@ -254,11 +255,11 @@ public class UserRelationService {
 
     }
 
-    public void deleteRelation(Long id){
+    public void deleteRelation(String uuid){
 
-        if(userRelationRepository.findById(id).isPresent()) {
+        if(userRelationRepository.findByUuid(uuid).isPresent()) {
 
-            UserRelation relationToDelete = userRelationRepository.findById(id).get();
+            UserRelation relationToDelete = userRelationRepository.findByUuid(uuid).get();
 
             userRelationRepository.delete(relationToDelete);
 
@@ -292,7 +293,7 @@ public class UserRelationService {
                 user2Name = relation.getUser2().getFirstName() + " " + relation.getUser2().getLastName();
             }
 
-            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), user1Name, user2Name, relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission(), relation.getLastUpdated());
+            AllCollaboratorsResponse newEntry = new AllCollaboratorsResponse(relation.getId(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), user1Name, user2Name, relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission(), relation.getLastUpdated(), relation.getUuid());
 
             result.add(newEntry);
 
@@ -337,17 +338,17 @@ public class UserRelationService {
 
     }
 
-    public void acceptInvitation(Long id){
+    public void acceptInvitation(String uuid){
 
         UserRelation relation;
 
-        if(userRelationRepository.findById(id).isPresent()) {
+        if(userRelationRepository.findByUuid(uuid).isPresent()) {
 
-            relation = userRelationRepository.findById(id).get();
+            relation = userRelationRepository.findByUuid(uuid).get();
 
             relation.setState(RelationState.ACCEPTED);
 
-            userRelationRepository.save(relation);
+            this.userRelationRepository.save(relation);
 
         }else{
             throw new IllegalStateException("Given relation doesn't exists");
@@ -355,13 +356,13 @@ public class UserRelationService {
 
     }
 
-    public void declineInvitation(Long id){
+    public void declineInvitation(String uuid){
 
         UserRelation relation;
 
-        if(userRelationRepository.findById(id).isPresent()){
+        if(userRelationRepository.findByUuid(uuid).isPresent()){
 
-            relation = userRelationRepository.findById(id).get();
+            relation = userRelationRepository.findByUuid(uuid).get();
 
             //relation.setState(RelationState.DECLINED);
             userRelationRepository.delete(relation);
@@ -382,18 +383,21 @@ public class UserRelationService {
         this.userRelationRepository.save(userRelation);
     }
 
-    public boolean relationAlreadyExist(String mail, String collaboratorName) {
-        ApplicationUser user1 = new ApplicationUser();
-        ApplicationUser user2 = new ApplicationUser();
-
-        if(this.appUserService.findByEmail(mail).isPresent()){
-            user1 = this.appUserService.findByEmail(mail).get();
-        }
-        if(this.appUserService.findByEmail(collaboratorName).isPresent()){
-            user2 = this.appUserService.findByEmail(collaboratorName).get();
+    public UserRelation findByUuid(String uuid){
+        if(this.userRelationRepository.findByUuid(uuid).isEmpty()){
+            throw new IllegalStateException("Relation doesn't exist");
         }
 
-        return this.userRelationRepository.findByUser1AndUser2(user1, user2).isPresent() || this.userRelationRepository.findByUser1AndUser2(user2, user1).isPresent();
+        return this.userRelationRepository.findByUuid(uuid).get();
+    }
+
+    public boolean relationAlreadyExist(String uuid) {
+        return this.userRelationRepository.findByUuid(uuid).isPresent();
+    }
+
+    @Transactional
+    public void deleteByUuid(String uuid){
+        this.userRelationRepository.deleteByUuid(uuid);
     }
 
     public UserRelation findById(Long id) {

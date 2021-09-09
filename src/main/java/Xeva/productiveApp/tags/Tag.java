@@ -21,7 +21,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @Entity
 public class Tag {
@@ -56,6 +55,8 @@ public class Tag {
 
     private LocalDateTime lastUpdated;
 
+    private String uuid;
+
     @PrePersist
     public void onInsert() {
         this.lastUpdated = LocalDateTime.now();
@@ -66,12 +67,12 @@ public class Tag {
         this.lastUpdated = LocalDateTime.now();
     }
 
-    public Tag(String ownerEmail, String name){
+    public Tag(String ownerEmail, String name, String uuid){
         this.ownerEmail = ownerEmail;
         this.name = name;
     }
 
-    public Tag(String ownerEmail, String name, Long taskId){
+    public Tag(String ownerEmail, String name, Long taskId, String uuid){
         this.ownerEmail = ownerEmail;
         this.name = name;
         this.taskId = taskId;

@@ -17,5 +17,6 @@ public class SynchronizeTagsRequest {
     private Long id;
     private String name;
     private LocalDateTime lastUpdated;
+    private String uuid;
 
 }

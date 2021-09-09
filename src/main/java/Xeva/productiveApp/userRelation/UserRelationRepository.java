@@ -22,4 +22,8 @@ public interface UserRelationRepository extends JpaRepository<UserRelation, Long
     @Transactional
     void deleteByUser1OrUser2(ApplicationUser user1, ApplicationUser user2);
 
+    Optional<UserRelation> findByUuid(String uuid);
+
+    @Transactional
+    void deleteByUuid(String uuid);
 }

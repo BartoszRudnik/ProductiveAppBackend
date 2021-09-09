@@ -9,6 +9,7 @@ import Xeva.productiveApp.task.TaskRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,13 +21,13 @@ public class LocalizationService {
     private final LocalizationRepository localizationRepository;
     private final TaskRepository taskRepository;
 
-    public GetCoordinates getCoordinates(Long id){
+    public GetCoordinates getCoordinates(String uuid){
 
         GetCoordinates coordinates = new GetCoordinates();
 
-        if(this.localizationRepository.findById(id).isPresent()) {
+        if(this.localizationRepository.findByUuid(uuid).isPresent()) {
 
-            Localization localization = this.localizationRepository.findById(id).get();
+            Localization localization = this.localizationRepository.findByUuid(uuid).get();
 
             coordinates.setLatitude(localization.getLatitude());
             coordinates.setLongitude(localization.getLongitude());
@@ -80,7 +81,7 @@ public class LocalizationService {
 
         ApplicationUser user = appUserService.findByEmail(mail).get();
 
-        Localization localization = new Localization(addLocalization.getLocalizationName(), addLocalization.getStreet(), addLocalization.getLocality(), addLocalization.getCountry(), addLocalization.getLongitude(), addLocalization.getLatitude(), user);
+        Localization localization = new Localization(addLocalization.getLocalizationName(), addLocalization.getStreet(), addLocalization.getLocality(), addLocalization.getCountry(), addLocalization.getLongitude(), addLocalization.getLatitude(), user, addLocalization.getUuid());
 
         this.localizationRepository.save(localization);
 
@@ -116,15 +117,15 @@ public class LocalizationService {
 
     }
 
-    public void updateLocalization(Long id, AddLocalization addLocalization){
+    public void updateLocalization(String uuid, AddLocalization addLocalization){
 
-        boolean isValidLocalization = this.localizationRepository.findById(id).isPresent();
+        boolean isValidLocalization = this.localizationRepository.findByUuid(uuid).isPresent();
 
         if(!isValidLocalization){
             throw new IllegalStateException("Localization doesn't exists");
         }
 
-        Localization localizationToEdit = this.localizationRepository.findById(id).get();
+        Localization localizationToEdit = this.localizationRepository.findByUuid(uuid).get();
 
         localizationToEdit.setLocalizationName(addLocalization.getLocalizationName());
         localizationToEdit.setLatitude(addLocalization.getLatitude());
@@ -150,13 +151,20 @@ public class LocalizationService {
 
     }
 
-    public boolean localizationAlreadyExist(String mail, Long id) {
-        ApplicationUser applicationUser = new ApplicationUser();
+    public boolean localizationAlreadyExist(String uuid) {
+        return this.localizationRepository.findByUuid(uuid).isPresent();
+    }
 
-        if(this.appUserService.findByEmail(mail).isPresent()){
-            applicationUser = this.appUserService.findByEmail(mail).get();
+    @Transactional
+    public void deleteByUuid(String uuid) {
+        this.localizationRepository.deleteByUuid(uuid);
+    }
+
+    public Localization findByUuid(String uuid) {
+        if(this.localizationRepository.findByUuid(uuid).isEmpty()){
+            throw new IllegalStateException("Localization doesn't exist");
         }
 
-        return this.localizationRepository.findByIdAndUser(id, applicationUser).isPresent();
+        return this.localizationRepository.findByUuid(uuid).get();
     }
 }

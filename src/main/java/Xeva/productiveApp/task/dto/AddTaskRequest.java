@@ -23,6 +23,7 @@ public class AddTaskRequest {
     private Date startDate;
     private Date endDate;
     private List<Tag> tags;
+    private String uuid;
 
     private Long localizationId;
     private double localizationRadius;

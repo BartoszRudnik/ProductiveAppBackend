@@ -11,6 +11,9 @@ import java.util.Optional;
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
 
     @Transactional
+    Optional<Attachment> findByUuid(String uuid);
+
+    @Transactional
     Optional<Attachment> findByAttachmentIdAndFileNameAndApplicationUser(Long attachmentId, String fileName, ApplicationUser applicationUser);
 
     @Transactional
@@ -26,6 +29,6 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     void deleteAllByTaskId(Long taskId);
 
     @Transactional
-    void deleteByAttachmentId(Long attachmentId);
+    void deleteByUuid(String uuid);
 
 }

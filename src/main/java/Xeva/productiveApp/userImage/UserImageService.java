@@ -50,7 +50,7 @@ public class UserImageService {
 
         UserImage userImage = userImageRepository.findUserImageByUser(user);
 
-        if(userImage != null) {
+        if(userImage != null && userImage.getImage() != null) {
             byte[] image = userImage.getImage();
 
             return new ByteArrayResource(image);

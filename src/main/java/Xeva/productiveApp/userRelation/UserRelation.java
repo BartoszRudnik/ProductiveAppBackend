@@ -53,6 +53,7 @@ public class UserRelation {
     private boolean user2Permission = false;
     private boolean user1AskForPermission = false;
     private boolean user2AskForPermission = false;
+    private String uuid;
 
     @PrePersist
     public void onInsert() {
@@ -64,9 +65,10 @@ public class UserRelation {
         this.lastUpdated = LocalDateTime.now();
     }
 
-    public UserRelation(ApplicationUser user1, ApplicationUser user2) {
+    public UserRelation(ApplicationUser user1, ApplicationUser user2, String uuid) {
         this.user1 = user1;
         this.user2 = user2;
+        this.uuid = uuid;
     }
 
     public UserRelation(ApplicationUser user1, ApplicationUser user2, RelationState state) {

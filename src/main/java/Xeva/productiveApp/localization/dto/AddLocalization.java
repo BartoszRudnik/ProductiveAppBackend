@@ -9,11 +9,12 @@ import lombok.*;
 @ToString
 public class AddLocalization {
 
-    String localizationName;
-    String street;
-    String locality;
-    String country;
-    Float longitude;
-    Float latitude;
+    private String localizationName;
+    private String street;
+    private String locality;
+    private String country;
+    private Float longitude;
+    private Float latitude;
+    private String uuid;
 
 }

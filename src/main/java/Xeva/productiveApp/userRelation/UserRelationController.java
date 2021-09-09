@@ -23,14 +23,14 @@ public class UserRelationController {
         return userRelationService.addRelation(request);
     }
 
-    @PutMapping("/acceptInvitation/{id}")
-    public void acceptInvitation(@PathVariable Long id){
-        userRelationService.acceptInvitation(id);
+    @PutMapping("/acceptInvitation/{uuid}")
+    public void acceptInvitation(@PathVariable String uuid){
+        userRelationService.acceptInvitation(uuid);
     }
 
-    @PutMapping("/declineInvitation/{id}")
-    public void declineInvitation(@PathVariable Long id){
-        userRelationService.declineInvitation(id);
+    @PutMapping("/declineInvitation/{uuid}")
+    public void declineInvitation(@PathVariable String uuid){
+        userRelationService.declineInvitation(uuid);
     }
 
     @PostMapping("/changePermission/{userMail}/{collaboratorMail}")
@@ -96,9 +96,9 @@ public class UserRelationController {
         return userRelationService.getAllCollaborators(mail);
     }
 
-    @DeleteMapping("/deleteCollaborator/{id}")
-    public void deleteCollaborator(@PathVariable Long id){
-        userRelationService.deleteRelation(id);
+    @DeleteMapping("/deleteCollaborator/{uuid}")
+    public void deleteCollaborator(@PathVariable String uuid){
+        userRelationService.deleteRelation(uuid);
     }
 
 }

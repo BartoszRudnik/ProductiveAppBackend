@@ -10,7 +10,6 @@ import lombok.*;
 @ToString
 public class DeleteAttachment {
 
-    private Long attachmentId;
-    private String fileName;
+    private String uuid;
 
 }

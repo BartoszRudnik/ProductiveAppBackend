@@ -26,16 +26,20 @@ public class AttachmentService {
     private final AppUserRepository appUserRepository;
 
     @Transactional
-    public void deleteByAttachmentId(Long attachmentId){
-        this.attachmentRepository.deleteByAttachmentId(attachmentId);
+    public void deleteByUuid(String uuid){
+        if(this.attachmentRepository.findByUuid(uuid).isEmpty()){
+            throw new IllegalStateException("Attachment doesn't exist");
+        }
+
+        this.attachmentRepository.deleteByUuid(uuid);
     }
 
     @Transactional
-    public boolean alreadyExist(Long attachmentId, String fileName, ApplicationUser user){
-        return this.attachmentRepository.findByAttachmentIdAndFileNameAndApplicationUser(attachmentId, fileName, user).isPresent();
+    public boolean alreadyExist(String uuid){
+        return this.attachmentRepository.findByUuid(uuid).isPresent();
     }
 
-    public Long addAttachment(MultipartFile multipartFile, Long taskId, String userMail, String fileName) throws IOException {
+    public Long addAttachment(MultipartFile multipartFile, Long taskId, String userMail, String fileName, String uuid) throws IOException {
         if(this.appUserRepository.findByEmail(userMail).isEmpty()){
             throw new IllegalStateException("User doesn't exist");
         }
@@ -48,7 +52,7 @@ public class AttachmentService {
 
         Task task = this.taskRepository.findById(taskId).get();
 
-        Attachment attachment = new Attachment(multipartFile.getBytes(), null, applicationUser, fileName);
+        Attachment attachment = new Attachment(multipartFile.getBytes(), null, applicationUser, fileName, uuid);
 
         task.addAttachment(attachment);
 
@@ -59,14 +63,14 @@ public class AttachmentService {
     }
 
     @Transactional
-    public void addAttachment(byte [] fileBytes, Long taskId, ApplicationUser user, String fileName) {
+    public void addAttachment(byte [] fileBytes, Long taskId, ApplicationUser user, String fileName, String uuid) {
         if(this.taskRepository.findById(taskId).isEmpty()){
             throw new IllegalStateException("Task doesn't exist");
         }
 
         Task task = this.taskRepository.findById(taskId).get();
 
-        Attachment attachment = new Attachment(fileBytes, null, user, fileName);
+        Attachment attachment = new Attachment(fileBytes, null, user, fileName, uuid);
 
         task.addAttachment(attachment);
 
@@ -74,13 +78,13 @@ public class AttachmentService {
         this.taskRepository.save(task);
     }
 
-    public Resource getAttachment(Long attachmentId){
+    public Resource getAttachment(String uuid){
 
-        if(this.attachmentRepository.findById(attachmentId).isEmpty()){
+        if(this.attachmentRepository.findByUuid(uuid).isEmpty()){
             throw new IllegalStateException("Attachment doesn't exist");
         }
 
-        Attachment attachment = this.attachmentRepository.findById(attachmentId).get();
+        Attachment attachment = this.attachmentRepository.findByUuid(uuid).get();
 
         return new ByteArrayResource(attachment.getFile());
 
@@ -99,7 +103,7 @@ public class AttachmentService {
         List<GetAttachments> result = new ArrayList<>();
 
         for(Attachment attachment : attachments){
-            GetAttachments getAttachments = new GetAttachments(attachment.getAttachmentId(), attachment.getTask().getId(), attachment.getFileName());
+            GetAttachments getAttachments = new GetAttachments(attachment.getAttachmentId(), attachment.getTask().getId(), attachment.getFileName(), attachment.getUuid());
 
             result.add(getAttachments);
         }
@@ -109,7 +113,6 @@ public class AttachmentService {
     }
 
     public List<GetAttachments> getDelegatedAttachments(DelegatedAttachments attachments){
-
         List<GetAttachments> result = new ArrayList<>();
 
         for(int i = 0; i < attachments.getTasksId().size(); i++){
@@ -117,14 +120,13 @@ public class AttachmentService {
 
               if(attachment != null) {
                   for(Attachment singleAttachment: attachment) {
-                      GetAttachments getAttachments = new GetAttachments(singleAttachment.getAttachmentId(), singleAttachment.getTask().getId(), singleAttachment.getFileName());
+                      GetAttachments getAttachments = new GetAttachments(singleAttachment.getAttachmentId(), singleAttachment.getTask().getId(), singleAttachment.getFileName(), singleAttachment.getUuid());
                       result.add(getAttachments);
                   }
               }
         }
 
         return result;
-
     }
 
     public void deleteUserAttachments(ApplicationUser applicationUser){

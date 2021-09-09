@@ -23,5 +23,6 @@ public class AllCollaboratorsResponse {
     private boolean user1AskForPermission;
     private boolean user2AskForPermission;
     private LocalDateTime lastUpdated;
+    private String uuid;
 
 }

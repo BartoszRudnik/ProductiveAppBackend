@@ -15,7 +15,7 @@ public class SynchronizeSettingsRequest {
 
     private boolean showOnlyUnfinished;
     private boolean showOnlyDelegated;
-    private boolean showOnlyWithLocation;
+    private boolean showOnlyWithLocalization;
     private List<String> collaborators;
     private List<String> priorities;
     private List<Integer> locations;

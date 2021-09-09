@@ -10,7 +10,6 @@ import lombok.*;
 @ToString
 public class DeleteCollaborator {
 
-    String user1Mail;
-    String user2Mail;
+   private String uuid;
 
 }
