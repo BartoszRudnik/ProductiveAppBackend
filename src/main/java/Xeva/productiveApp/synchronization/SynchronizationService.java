@@ -81,13 +81,6 @@ public class SynchronizationService {
 
                 Long id = this.taskService.addTask(user, taskPriority, taskList, tagList, t.getDelegatedEmail(), t.getNotificationLocalizationId(), t.getTitle(), t.getDescription(), t.isDone(), t.getStartDate(), t.getEndDate(), t.getUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
 
-                if(!Objects.equals(id, oldId)){
-                    for(SynchronizeAttachmentRequest attachment : attachments){
-                        if(Objects.equals(attachment.getTaskId(), oldId)){
-                            attachment.setTaskId(id);
-                        }
-                    }
-                }
             }else{
                 Task existingTask = this.taskService.findById(t.getId());
 
@@ -127,7 +120,7 @@ public class SynchronizationService {
 
         for(SynchronizeAttachmentRequest attachment : attachments){
             if(!this.attachmentService.alreadyExist(attachment.getUuid())){
-                this.attachmentService.addAttachment(attachment.getLocalFile(), attachment.getTaskId(), user, attachment.getFileName(), attachment.getUuid());
+                this.attachmentService.addAttachment(attachment.getLocalFile(), attachment.getTaskUuid(), user, attachment.getFileName(), attachment.getUuid());
             }
         }
 

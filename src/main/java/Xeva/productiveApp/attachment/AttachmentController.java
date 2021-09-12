@@ -18,9 +18,9 @@ public class AttachmentController {
 
     private final AttachmentService attachmentService;
 
-    @PostMapping("/addAttachment/{userMail}/{taskId}/{fileName}/{uuid}")
-    public Long addAttachment(@PathVariable Long taskId, @PathVariable String uuid, @PathVariable String fileName, @PathVariable String userMail , @RequestParam MultipartFile multipartFile) throws IOException {
-        return this.attachmentService.addAttachment(multipartFile, taskId, userMail, fileName, uuid);
+    @PostMapping("/addAttachment/{userMail}/{taskUuid}/{fileName}/{uuid}")
+    public Long addAttachment(@PathVariable String taskUuid, @PathVariable String uuid, @PathVariable String fileName, @PathVariable String userMail , @RequestParam MultipartFile multipartFile) throws IOException {
+        return this.attachmentService.addAttachment(multipartFile, taskUuid, userMail, fileName, uuid);
     }
 
     @GetMapping("/getAttachment/{uuid}")

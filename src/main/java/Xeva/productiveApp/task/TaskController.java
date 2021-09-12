@@ -54,9 +54,9 @@ public class TaskController {
         taskService.updateTaskPosition(request, taskId);
     }
 
-    @PostMapping("/done/{taskId}")
-    public String changeTaskStatus(@PathVariable long taskId){
-        return taskService.changeTaskStatus(taskId);
+    @PostMapping("/done/{taskUuid}")
+    public String changeTaskStatus(@PathVariable String taskUuid){
+        return taskService.changeTaskStatus(taskUuid);
     }
 
     @GetMapping("/priorities")

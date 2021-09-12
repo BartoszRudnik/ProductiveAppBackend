@@ -402,9 +402,13 @@ public class TaskService {
         task.setChildTask(childTask);
     }
 
-    public String changeTaskStatus(long id){
+    public String changeTaskStatus(String uuid){
 
-        Task task = taskRepository.getOne(id);
+        Task task = new Task();
+
+        if(this.taskRepository.findByUuid(uuid).isPresent()) {
+            task = this.taskRepository.findByUuid(uuid).get();
+        }
 
         task.setIfDone(!task.getIfDone());
 

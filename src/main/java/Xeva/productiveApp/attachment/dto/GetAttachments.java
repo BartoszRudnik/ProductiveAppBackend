@@ -10,7 +10,7 @@ import lombok.*;
 public class GetAttachments {
 
     Long id;
-    Long taskId;
+    String taskUuid;
     String fileName;
     String uuid;
 

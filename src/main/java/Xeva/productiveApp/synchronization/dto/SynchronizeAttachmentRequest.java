@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class SynchronizeAttachmentRequest {
 
     private Long id;
-    private Long taskId;
+    private String taskUuid;
     private String fileName;
     private String uuid;
     private boolean toDelete;
