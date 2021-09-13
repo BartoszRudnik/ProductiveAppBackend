@@ -36,7 +36,7 @@ public class LocalizationController {
 
     @DeleteMapping("/deleteLocalization/{uuid}")
     public void deleteLocalization(@PathVariable String uuid){
-        localizationService.deleteByUuid(uuid);
+        this.localizationService.deleteLocalization(uuid);
     }
 
     @PutMapping("/updateLocalization/{uuid}")

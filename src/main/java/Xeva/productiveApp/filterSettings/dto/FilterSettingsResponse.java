@@ -11,6 +11,7 @@ import java.util.List;
 @ToString
 public class FilterSettingsResponse {
 
+    private Long id;
     private boolean showOnlyUnfinished;
     private boolean showOnlyDelegated;
     private boolean showOnlyWithLocalization;

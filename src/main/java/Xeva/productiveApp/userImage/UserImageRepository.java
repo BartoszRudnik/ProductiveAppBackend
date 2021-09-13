@@ -9,6 +9,9 @@ import java.util.Optional;
 
 public interface UserImageRepository extends JpaRepository<UserImage, Long> {
 
+    @Transactional
+    void deleteAllByUser(ApplicationUser user);
+
     Optional<List<UserImage>> findAllByUser(ApplicationUser user);
 
     UserImage findUserImageByUser(ApplicationUser user);

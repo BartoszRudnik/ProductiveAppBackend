@@ -220,12 +220,12 @@ public class TaskService {
 
     }
 
-    public void deleteTask(long id){
+    public void deleteTask(String uuid, Long id){
         if(!this.attachmentRepository.findAllByTaskId(id).isEmpty()){
             this.attachmentRepository.deleteAllByTaskId(id);
         }
 
-        taskRepository.deleteById(id);
+        taskRepository.deleteByUuid(uuid);
     }
 
     @Transactional
@@ -277,6 +277,14 @@ public class TaskService {
 
     }
 
+    public Task findByUuid(String uuid){
+        if(this.taskRepository.findByUuid(uuid).isPresent()) {
+            return this.taskRepository.findByUuid(uuid).get();
+        }else{
+            return null;
+        }
+    }
+
     public void updateTaskPosition(UpdateTaskPositionRequest request, long id){
         Task task = taskRepository.findById(id).get();
 
@@ -285,9 +293,13 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public void updateTask(UpdateTaskRequest request, long id){
+    public void updateTask(UpdateTaskRequest request){
 
-        Task task = taskRepository.findById(id).get();
+        if(this.taskRepository.findByUuid(request.getUuid()).isEmpty()){
+            throw new IllegalStateException("Task doesn't exist");
+        }
+
+        Task task = this.taskRepository.findByUuid(request.getUuid()).get();
 
         task.setUuid(request.getUuid());
         task.setDescription(request.getTaskDescription());
@@ -352,7 +364,7 @@ public class TaskService {
         }
 
         List<Tag> tags = request.getTags();
-        List<Tag> existingTags = tagService.findAllByTaskId(id);
+        List<Tag> existingTags = tagService.findAllByTaskId(task.getId());
         List<Tag> tagsToAdd = new ArrayList<>();
 
         for(Tag tag : tags){

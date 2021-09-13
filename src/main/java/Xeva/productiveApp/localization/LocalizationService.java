@@ -89,10 +89,10 @@ public class LocalizationService {
 
     }
 
-    public void deleteLocalization(Long id){
+    public void deleteLocalization(String uuid){
 
-        if(this.localizationRepository.findById(id).isPresent()) {
-            Localization localization = this.localizationRepository.findById(id).get();
+        if(this.localizationRepository.findByUuid(uuid).isPresent()) {
+            Localization localization = this.localizationRepository.findByUuid(uuid).get();
 
             if(this.taskRepository.findAllByNotificationLocalization(localization).isPresent()) {
 
@@ -112,7 +112,7 @@ public class LocalizationService {
             this.localizationRepository.delete(localization);
 
         }else{
-            throw new IllegalStateException("Given localization doesn't exist");
+            throw new IllegalStateException("Localization doesn't exist");
         }
 
     }
@@ -153,11 +153,6 @@ public class LocalizationService {
 
     public boolean localizationAlreadyExist(String uuid) {
         return this.localizationRepository.findByUuid(uuid).isPresent();
-    }
-
-    @Transactional
-    public void deleteByUuid(String uuid) {
-        this.localizationRepository.deleteByUuid(uuid);
     }
 
     public Localization findByUuid(String uuid) {

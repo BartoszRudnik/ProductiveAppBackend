@@ -289,7 +289,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.isShowUnfinished(), userSettings.isShowDelegated(), userSettings.isShowWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getLocations(), userSettings.getSortingMode());
+        return new FilterSettingsResponse(userSettings.getId(), userSettings.isShowUnfinished(), userSettings.isShowDelegated(), userSettings.isShowWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getLocations(), userSettings.getSortingMode());
 
     }
 

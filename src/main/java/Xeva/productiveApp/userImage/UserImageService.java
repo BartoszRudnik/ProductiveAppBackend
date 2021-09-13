@@ -34,7 +34,7 @@ public class UserImageService {
         if (this.userImageRepository.findAllByUser(user).isPresent()) {
             List<UserImage> userImage = this.userImageRepository.findAllByUser(user).get();
 
-            if (userImage.get(0).getImage() == null) {
+            if (userImage.size() == 0 || userImage.get(0).getImage() == null) {
                 return false;
             }
 
@@ -66,20 +66,17 @@ public class UserImageService {
     }
 
     public void setImage(byte [] bytes, ApplicationUser user){
-        UserImage userImage = userImageRepository.findUserImageByUser(user);
 
-        if(userImage == null) {
-            userImage = new UserImage();
-            userImage.setUser(user);
-        }
+        this.userImageRepository.deleteAllByUser(user);
 
+        UserImage userImage = new UserImage();
+        userImage.setUser(user);
         userImage.setImage(bytes);
 
-        userImageRepository.save(userImage);
+        this.userImageRepository.save(userImage);
     }
 
     public void setImage(MultipartFile multipartFile, String userEmail) throws IOException {
-
         boolean isValid = appUserRepository.findByEmail(userEmail).isPresent();
 
         if(!isValid){
@@ -88,17 +85,13 @@ public class UserImageService {
 
         ApplicationUser user = appUserRepository.findByEmail(userEmail).get();
 
-        UserImage userImage = userImageRepository.findUserImageByUser(user);
+        this.userImageRepository.deleteAllByUser(user);
 
-        if(userImage == null) {
-            userImage = new UserImage();
-            userImage.setUser(user);
-        }
-
+        UserImage userImage = new UserImage();
+        userImage.setUser(user);
         userImage.setImage(multipartFile.getBytes());
 
         userImageRepository.save(userImage);
-
     }
 
     public void deleteImage(String userEmail){
@@ -110,7 +103,7 @@ public class UserImageService {
 
         ApplicationUser user = appUserRepository.findByEmail(userEmail).get();
 
-        userImageRepository.deleteByUser(user);
+        userImageRepository.deleteAllByUser(user);
     }
 
 }

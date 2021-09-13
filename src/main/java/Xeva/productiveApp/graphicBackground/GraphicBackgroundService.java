@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -48,8 +47,8 @@ public class GraphicBackgroundService {
 
         GraphicBackground background;
 
-        if(this.graphicBackgroundRepository.findByBackgroundType(this.getBackgroundType(body.getBackgroundType())).isPresent()){
-            background = this.graphicBackgroundRepository.findByBackgroundType(this.getBackgroundType(body.getBackgroundType())).get();
+        if(this.graphicBackgroundRepository.findTopByBackgroundType(this.getBackgroundType(body.getBackgroundType())).isPresent()){
+            background = this.graphicBackgroundRepository.findTopByBackgroundType(this.getBackgroundType(body.getBackgroundType())).get();
         }else{
             background = new GraphicBackground(this.getBackgroundType(body.getBackgroundType()));
         }
@@ -63,8 +62,8 @@ public class GraphicBackgroundService {
     public void saveBackground(String mode, ApplicationUser user){
         GraphicBackground background;
 
-        if(this.graphicBackgroundRepository.findByBackgroundType(this.getBackgroundType(mode)).isPresent()){
-            background = this.graphicBackgroundRepository.findByBackgroundType(this.getBackgroundType(mode)).get();
+        if(this.graphicBackgroundRepository.findTopByBackgroundType(this.getBackgroundType(mode)).isPresent()){
+            background = this.graphicBackgroundRepository.findTopByBackgroundType(this.getBackgroundType(mode)).get();
         }else{
             background = new GraphicBackground(this.getBackgroundType(mode));
         }

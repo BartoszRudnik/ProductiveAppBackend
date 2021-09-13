@@ -10,7 +10,6 @@ import java.util.Optional;
 @Repository
 public interface GraphicBackgroundRepository extends JpaRepository<GraphicBackground, Long> {
 
-    Optional<GraphicBackground> findByBackgroundType(BackgroundType backgroundType);
-
+    Optional<GraphicBackground> findTopByBackgroundType(BackgroundType backgroundType);
 
 }

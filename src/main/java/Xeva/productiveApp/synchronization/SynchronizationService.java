@@ -33,13 +33,10 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class SynchronizationService {
-
     private final TagService tagService;
     private final TagRepository tagRepository;
     private final LocalizationService localizationService;
-    private final LocalizationRepository localizationRepository;
     private final UserRelationService userRelationService;
-    private final UserRelationRepository userRelationRepository;
     private final AppUserService appUserService;
     private final LocaleService localeService;
     private final GraphicBackgroundService graphicBackgroundService;
@@ -62,12 +59,7 @@ public class SynchronizationService {
                 tagList = List.of(t.getTags().split("\\|"));
             }
 
-            ApplicationUser delegatedUser = null;
             Localization localization = null;
-
-            if(t.getDelegatedEmail() != null){
-                delegatedUser = this.appUserService.findByEmail(t.getDelegatedEmail()).get();
-            }
 
             if(t.getNotificationLocalizationId() != null){
                 localization = this.localizationService.findById(t.getNotificationLocalizationId()).get();
@@ -77,12 +69,11 @@ public class SynchronizationService {
             TaskPriority taskPriority = this.taskService.getPriority(t.getPriority());
 
             if(!this.taskService.isPresent(t.getUuid())){
-                Long oldId = t.getId();
 
-                Long id = this.taskService.addTask(user, taskPriority, taskList, tagList, t.getDelegatedEmail(), t.getNotificationLocalizationId(), t.getTitle(), t.getDescription(), t.isDone(), t.getStartDate(), t.getEndDate(), t.getUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
+                this.taskService.addTask(user, taskPriority, taskList, tagList, t.getDelegatedEmail(), t.getNotificationLocalizationId(), t.getTitle(), t.getDescription(), t.isDone(), t.getStartDate(), t.getEndDate(), t.getUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
 
             }else{
-                Task existingTask = this.taskService.findById(t.getId());
+                Task existingTask = this.taskService.findByUuid(t.getUuid());
 
                 if(existingTask != null && existingTask.getLastUpdated().isBefore(t.getLastUpdated())){
                     existingTask.setUuid(t.getUuid());
@@ -277,8 +268,7 @@ public class SynchronizationService {
         List<DeleteLocation> listToDelete = requestList.getDeleteList();
 
         for(DeleteLocation toDelete : listToDelete){
-
-            this.localizationService.deleteByUuid(toDelete.getUuid());
+            this.localizationService.deleteLocalization(toDelete.getUuid());
         }
     }
 
