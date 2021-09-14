@@ -7,7 +7,6 @@ import Xeva.productiveApp.filterSettings.FilterSettingsService;
 import Xeva.productiveApp.graphicBackground.GraphicBackgroundService;
 import Xeva.productiveApp.locale.LocaleService;
 import Xeva.productiveApp.localization.Localization;
-import Xeva.productiveApp.localization.LocalizationRepository;
 import Xeva.productiveApp.localization.LocalizationService;
 import Xeva.productiveApp.synchronization.dto.*;
 import Xeva.productiveApp.tags.Tag;
@@ -21,14 +20,11 @@ import Xeva.productiveApp.userImage.UserImage;
 import Xeva.productiveApp.userImage.UserImageService;
 import Xeva.productiveApp.userRelation.RelationState;
 import Xeva.productiveApp.userRelation.UserRelation;
-import Xeva.productiveApp.userRelation.UserRelationRepository;
 import Xeva.productiveApp.userRelation.UserRelationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -59,12 +55,6 @@ public class SynchronizationService {
                 tagList = List.of(t.getTags().split("\\|"));
             }
 
-            Localization localization = null;
-
-            if(t.getNotificationLocalizationId() != null){
-                localization = this.localizationService.findById(t.getNotificationLocalizationId()).get();
-            }
-
             TaskList taskList = this.taskService.getLocalization(t.getLocalization());
             TaskPriority taskPriority = this.taskService.getPriority(t.getPriority());
 
@@ -76,28 +66,7 @@ public class SynchronizationService {
                 Task existingTask = this.taskService.findByUuid(t.getUuid());
 
                 if(existingTask != null && existingTask.getLastUpdated().isBefore(t.getLastUpdated())){
-                    existingTask.setUuid(t.getUuid());
-                    existingTask.setDescription(t.getDescription());
-                    existingTask.setDelegatedEmail(t.getDelegatedEmail());
-                    existingTask.setEndDate(t.getEndDate());
-                    existingTask.setStartDate(t.getStartDate());
-                    existingTask.setIfDone(t.isDone());
-                    existingTask.setIsCanceled(t.isCanceled());
-                    existingTask.setIsDelegated(t.isDelegated());
-                    existingTask.setLocalizationRadius(t.getNotificationLocalizationRadius());
-                    existingTask.setNotificationLocalization(localization);
-                    existingTask.setNotificationOnExit(t.isNotificationOnExit());
-                    existingTask.setNotificationOnEnter(t.isNotificationOnEnter());
-                    existingTask.setPriority(taskPriority);
-                    existingTask.setTaskList(taskList);
-                    existingTask.setTaskName(t.getTitle());
-                    existingTask.setPosition(t.getPosition());
-                    existingTask.setTaskStatus(t.getTaskStatus());
-
-                    if(t.getTags() != null) {
-                        this.taskService.setTagsFromNames(existingTask, tagList);
-                    }
-                    this.taskService.save(existingTask);
+                    this.taskService.updateTask(tagList, t.getPosition(), t.getUuid(), t.getDescription(), t.getTitle(), t.getStartDate(), t.getEndDate(), t.getPriority(), t.isDone(), t.getLocalization(), t.isCanceled(), t.getNotificationLocalizationId(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit(), t.getDelegatedEmail());
                 }
             }
         }
@@ -151,11 +120,13 @@ public class SynchronizationService {
         ApplicationUser user = this.appUserService.findByEmail(request.getEmail()).get();
 
         if(!this.userImageService.checkIfExists(request.getEmail())){
+
             this.userImageService.setImage(request.getLocalImage(), user);
         }else{
             UserImage userImage = this.userImageService.getUserImage(user);
 
             if(userImage.getLastUpdated().isBefore(request.getLastUpdatedImage())){
+
                 this.userImageService.setImage(request.getLocalImage(), user);
             }
         }

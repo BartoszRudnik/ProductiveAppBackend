@@ -1,11 +1,13 @@
 package Xeva.productiveApp.userImage;
 
+import Xeva.productiveApp.userImage.dto.LastUpdatedResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @RestController
 @CrossOrigin
@@ -15,9 +17,14 @@ public class UserImageController {
 
     private final UserImageService userImageService;
 
+    @GetMapping("/getLastUpdated/{userMail}")
+    public LastUpdatedResponse getLastUpdated(@PathVariable String userMail) {
+        return this.userImageService.getLastUpdated(userMail);
+    }
+
     @PostMapping("/setImage/{userMail}")
-    public void setImage(@RequestParam MultipartFile multipartFile, @PathVariable String userMail) throws IOException {
-        userImageService.setImage(multipartFile, userMail);
+    public LocalDateTime setImage(@RequestParam MultipartFile multipartFile, @PathVariable String userMail) throws IOException {
+        return this.userImageService.setImage(multipartFile, userMail);
     }
 
     @PostMapping("/deleteImage/{userMail}")

@@ -31,17 +31,7 @@ public class UserImage {
     @Type(type = "org.hibernate.type.ImageType")
     private byte[] image;
 
-    private LocalDateTime lastUpdated;
-
-    @PrePersist
-    public void onInsert() {
-        this.lastUpdated = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.lastUpdated = LocalDateTime.now();
-    }
+    private LocalDateTime lastUpdated = LocalDateTime.now();
 
     @OneToOne
     @JoinColumn(nullable = false, name = "application_user_id")
