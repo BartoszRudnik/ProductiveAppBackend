@@ -25,9 +25,9 @@ public class LocalizationService {
 
         GetCoordinates coordinates = new GetCoordinates();
 
-        if(this.localizationRepository.findByUuid(uuid).isPresent()) {
+        if(this.taskRepository.findByUuid(uuid).isPresent()) {
 
-            Localization localization = this.localizationRepository.findByUuid(uuid).get();
+            Localization localization = this.taskRepository.findByUuid(uuid).get().getNotificationLocalization();
 
             coordinates.setLatitude(localization.getLatitude());
             coordinates.setLongitude(localization.getLongitude());

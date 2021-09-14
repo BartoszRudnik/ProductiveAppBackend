@@ -38,10 +38,10 @@ public class FilterSettingsService {
 
         ApplicationUser applicationUser = appUserService.findByEmail(mail).get();
 
-        if(filterSettingsRepository.findByUser(applicationUser).isEmpty()){
+        if(this.filterSettingsRepository.findByUser(applicationUser).isEmpty()){
 
             FilterSettings newSettings = new FilterSettings(applicationUser, false, false, false);
-            filterSettingsRepository.save(newSettings);
+            this.filterSettingsRepository.save(newSettings);
 
         }
 

@@ -75,11 +75,11 @@ public class TaskService {
                 this.setParentTaskInformation(task, task.getParentTask());
                 this.taskRepository.save(task);
 
-                taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getId());
+                taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getUuid());
             }
 
         }else if(task.getChildTask() != null){
-            taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), null, task.getChildTask().getId(), null);
+            taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), null, task.getChildTask().getUuid(), null);
         }
         else {
             taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()));
@@ -264,11 +264,11 @@ public class TaskService {
                     this.setParentTaskInformation(task, task.getParentTask());
                     this.taskRepository.save(task);
 
-                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getId()));
+                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getUuid()));
                 }
 
             }else if(task.getChildTask() != null){
-                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), null, task.getChildTask().getId(), null));
+                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), null, task.getChildTask().getUuid(), null));
             }
             else {
                 tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId())));

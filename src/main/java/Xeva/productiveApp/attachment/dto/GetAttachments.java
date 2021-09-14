@@ -9,9 +9,10 @@ import lombok.*;
 @ToString
 public class GetAttachments {
 
-    Long id;
-    String taskUuid;
-    String fileName;
-    String uuid;
+    private Long id;
+    private String taskUuid;
+    private String fileName;
+    private String uuid;
+    private byte[] localFile;
 
 }

@@ -30,7 +30,8 @@ public class UserImageService {
 
                 return new LastUpdatedResponse(userImage.getLastUpdated());
             }else{
-             return null;
+                return new LastUpdatedResponse(LocalDateTime.of(
+                        1981, 04, 24, 14, 33, 48, 123456789));
             }
         }else{
             throw new IllegalStateException("User doesn't exist");

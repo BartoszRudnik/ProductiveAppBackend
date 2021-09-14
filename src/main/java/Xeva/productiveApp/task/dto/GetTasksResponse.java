@@ -18,8 +18,8 @@ public class GetTasksResponse {
     private Task tasks;
     private List<Tag> tags;
     private String supervisorEmail;
-    private Long childId;
-    private Long parentId;
+    private String childUuid;
+    private String parentUuid;
 
     public GetTasksResponse(Task task, List<Tag> tags){
         this.tasks = task;

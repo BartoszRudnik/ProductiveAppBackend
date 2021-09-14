@@ -32,4 +32,6 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     @Transactional
     void deleteByUuid(String uuid);
 
+    @Transactional
+    List<Attachment> findAllByTaskUuid(String taskUuid);
 }

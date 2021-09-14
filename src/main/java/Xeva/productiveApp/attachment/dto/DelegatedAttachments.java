@@ -11,6 +11,6 @@ import java.util.List;
 @ToString
 public class DelegatedAttachments {
 
-    List<Long> tasksId;
+    List<String> tasksUuid;
 
 }

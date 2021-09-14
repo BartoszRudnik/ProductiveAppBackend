@@ -103,7 +103,7 @@ public class AttachmentService {
         List<GetAttachments> result = new ArrayList<>();
 
         for(Attachment attachment : attachments){
-            GetAttachments getAttachments = new GetAttachments(attachment.getAttachmentId(), attachment.getTask().getUuid(), attachment.getFileName(), attachment.getUuid());
+            GetAttachments getAttachments = new GetAttachments(attachment.getAttachmentId(), attachment.getTask().getUuid(), attachment.getFileName(), attachment.getUuid(), attachment.getFile());
 
             result.add(getAttachments);
         }
@@ -115,12 +115,12 @@ public class AttachmentService {
     public List<GetAttachments> getDelegatedAttachments(DelegatedAttachments attachments){
         List<GetAttachments> result = new ArrayList<>();
 
-        for(int i = 0; i < attachments.getTasksId().size(); i++){
-              List<Attachment> attachment = this.attachmentRepository.findAllByTaskId(attachments.getTasksId().get(i));
+        for(int i = 0; i < attachments.getTasksUuid().size(); i++){
+              List<Attachment> attachment = this.attachmentRepository.findAllByTaskUuid(attachments.getTasksUuid().get(i));
 
               if(attachment != null) {
                   for(Attachment singleAttachment: attachment) {
-                      GetAttachments getAttachments = new GetAttachments(singleAttachment.getAttachmentId(), singleAttachment.getTask().getUuid(), singleAttachment.getFileName(), singleAttachment.getUuid());
+                      GetAttachments getAttachments = new GetAttachments(singleAttachment.getAttachmentId(), singleAttachment.getTask().getUuid(), singleAttachment.getFileName(), singleAttachment.getUuid(), singleAttachment.getFile());
                       result.add(getAttachments);
                   }
               }

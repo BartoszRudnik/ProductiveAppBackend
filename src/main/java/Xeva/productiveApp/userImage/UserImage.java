@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EqualsAndHashCode
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity(name="UserImage")
 public class UserImage {
@@ -31,11 +30,15 @@ public class UserImage {
     @Type(type = "org.hibernate.type.ImageType")
     private byte[] image;
 
-    private LocalDateTime lastUpdated = LocalDateTime.now();
+    private LocalDateTime lastUpdated;
 
     @OneToOne
     @JoinColumn(nullable = false, name = "application_user_id")
     private ApplicationUser user;
+
+    public UserImage(){
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     UserImage(byte[] image, ApplicationUser user){
         this.image = image;
