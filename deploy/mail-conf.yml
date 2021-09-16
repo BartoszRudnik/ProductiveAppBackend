@@ -1,24 +1,24 @@
 host: smtp.yandex.com
-  port: 465
-  username: productiveAppDev
-  password: KAD$Kz>SoFb5N#AQ1?=91
-  from: productiveAppDev@yandex.com
-  protocol: smtp
+port: 465
+username: productiveAppDev
+password: KAD$Kz>SoFb5N#AQ1?=91
+from: productiveAppDev@yandex.com
+protocol: smtp
 
-  properties:
-    mail:
-      transport:
-        protocol: smtp
-      smtp:
-        starttls:
-          enable: true
-        auth: true
-        ssl:
-          enable: true
-        socketFactory:
-          port: 465
-          class: javax.net.ssl.SSLSocketFactory
-          fallback: false
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000
+properties:
+  mail:
+    transport:
+      protocol: smtp
+    smtp:
+      starttls:
+        enable: true
+      auth: true
+      ssl:
+        enable: true
+      socketFactory:
+        port: 465
+        class: javax.net.ssl.SSLSocketFactory
+        fallback: false
+      connectiontimeout: 5000
+      timeout: 3000
+      writetimeout: 5000

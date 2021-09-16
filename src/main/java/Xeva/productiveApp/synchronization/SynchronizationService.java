@@ -77,9 +77,9 @@ public class SynchronizationService {
             }
         }
 
-
         for(SynchronizeAttachmentRequest attachment : attachments){
             if(!this.attachmentService.alreadyExist(attachment.getUuid())){
+                System.out.println(attachment.getTaskUuid());
                 this.attachmentService.addAttachment(attachment.getLocalFile(), attachment.getTaskUuid(), user, attachment.getFileName(), attachment.getUuid());
             }
         }
