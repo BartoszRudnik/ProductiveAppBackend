@@ -2,6 +2,7 @@ package Xeva.productiveApp.task;
 
 import Xeva.productiveApp.appUser.AppUserService;
 import Xeva.productiveApp.appUser.ApplicationUser;
+import Xeva.productiveApp.attachment.Attachment;
 import Xeva.productiveApp.attachment.AttachmentRepository;
 import Xeva.productiveApp.localization.Localization;
 import Xeva.productiveApp.localization.LocalizationService;
@@ -230,14 +231,46 @@ public class TaskService {
         taskRepository.deleteByUuid(uuid);
     }
 
-    @Transactional
-    public void deleteAllFromList(DeleteAllRequest request){
-        for(Long i : request.getTasks()){
-            if(!this.attachmentRepository.findAllByTaskId(i).isEmpty()){
-                this.attachmentRepository.deleteAllByTaskId(i);
+    private void clearTask(String uuid){
+        if(this.taskRepository.findByUuid(uuid).isPresent()){
+            Task taskToClear = this.taskRepository.findByUuid(uuid).get();
+
+            if(taskToClear.getChildTask() != null){
+                taskToClear.getChildTask().setParentTask(null);
+                taskToClear.setChildTask(null);
             }
 
-            this.taskRepository.deleteById(i);
+            if(taskToClear.getParentTask() != null){
+                taskToClear.getParentTask().setChildTask(null);
+                taskToClear.setParentTask(null);
+            }
+
+            if(taskToClear.getAttachments() != null){
+                taskToClear.setAttachments(null);
+            }
+
+            this.taskRepository.save(taskToClear);
+        }
+    }
+
+    @Transactional
+    public void deleteAllFromList(DeleteAllRequest request){
+        for(String uuid : request.getTasks()){
+            this.clearTask(uuid);
+
+            if(this.attachmentRepository.findAllByTaskUuid(uuid).isPresent()){
+
+                List<Attachment> attachments = this.attachmentRepository.findAllByTaskUuid(uuid).get();
+
+                for(Attachment attachment : attachments){
+                    attachment.setTask(null);
+                    this.attachmentRepository.save(attachment);
+                }
+
+                this.attachmentRepository.deleteAllByUuid(uuid);
+            }
+
+            this.taskRepository.deleteByUuid(uuid);
         }
     }
 
@@ -617,4 +650,51 @@ public class TaskService {
         this.taskRepository.deleteByUuid(uuid);
     }
 
+    public List<GetTasksResponse> getTaskFromCollaborator(String userMail, String collaboratorMail) {
+        if(this.userService.findByEmail(collaboratorMail).isEmpty()){
+            throw new IllegalStateException("Collaborator doesn't exist");
+        }
+
+        if(this.userService.findByEmail(userMail).isEmpty()){
+            throw new IllegalStateException("User doesn't exist");
+        }
+
+        ApplicationUser user= this.userService.findByEmail(userMail).get();
+        ApplicationUser collaborator = this.userService.findByEmail(collaboratorMail).get();
+
+        List<Task> tasks = new ArrayList<>();
+        List<Task> childTasks = new ArrayList<>();
+        List<GetTasksResponse> tasksResponse = new ArrayList<>();
+
+        if(this.taskRepository.findAllByUserAndDelegatedEmail(collaborator, userMail).isPresent()){
+            tasks = this.taskRepository.findAllByUserAndDelegatedEmail(collaborator, userMail).get();
+        }
+
+        for(Task task : tasks){
+            if(task.getChildTask() != null){
+                childTasks.add(task.getChildTask());
+            }
+        }
+
+        for(Task task : childTasks){
+            if(task.getParentTask() != null){
+                UserRelation relation = userRelationService.getUsersRelation(user, collaborator);
+
+                if(relation != null && (relation.getState() == RelationState.WAITING || relation.getState() == RelationState.ACCEPTED)){
+                    this.setParentTaskInformation(task, task.getParentTask());
+                    this.taskRepository.save(task);
+
+                    tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), task.getParentTask().getUser().getEmail(), null, task.getParentTask().getUuid()));
+                }
+
+            }else if(task.getChildTask() != null){
+                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()), null, task.getChildTask().getUuid(), null));
+            }
+            else {
+                tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId())));
+            }
+        }
+
+        return tasksResponse;
+    }
 }

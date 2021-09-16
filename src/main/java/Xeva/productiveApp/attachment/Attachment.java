@@ -31,7 +31,7 @@ public class Attachment {
     private byte[] file;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "task_id")
+    @JoinColumn(name = "task_id")
     private Task task;
 
     @ManyToOne

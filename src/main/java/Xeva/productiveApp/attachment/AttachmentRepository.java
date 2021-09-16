@@ -3,6 +3,7 @@ package Xeva.productiveApp.attachment;
 import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.task.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
@@ -33,5 +34,9 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     void deleteByUuid(String uuid);
 
     @Transactional
-    List<Attachment> findAllByTaskUuid(String taskUuid);
+    Optional<List<Attachment>> findAllByTaskUuid(String taskUuid);
+
+    @Transactional
+    void deleteAllByUuid(String uuid);
+
 }

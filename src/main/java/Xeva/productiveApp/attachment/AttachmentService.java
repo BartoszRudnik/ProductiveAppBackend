@@ -116,14 +116,12 @@ public class AttachmentService {
         List<GetAttachments> result = new ArrayList<>();
 
         for(int i = 0; i < attachments.getTasksUuid().size(); i++){
-              List<Attachment> attachment = this.attachmentRepository.findAllByTaskUuid(attachments.getTasksUuid().get(i));
+              List<Attachment> attachment = this.attachmentRepository.findAllByTaskUuid(attachments.getTasksUuid().get(i)).get();
 
-              if(attachment != null) {
-                  for(Attachment singleAttachment: attachment) {
-                      GetAttachments getAttachments = new GetAttachments(singleAttachment.getAttachmentId(), singleAttachment.getTask().getUuid(), singleAttachment.getFileName(), singleAttachment.getUuid(), singleAttachment.getFile());
-                      result.add(getAttachments);
-                  }
-              }
+            for(Attachment singleAttachment: attachment) {
+                GetAttachments getAttachments = new GetAttachments(singleAttachment.getAttachmentId(), singleAttachment.getTask().getUuid(), singleAttachment.getFileName(), singleAttachment.getUuid(), singleAttachment.getFile());
+                result.add(getAttachments);
+            }
         }
 
         return result;

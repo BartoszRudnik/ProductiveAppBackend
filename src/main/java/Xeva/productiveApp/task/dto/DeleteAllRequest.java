@@ -11,6 +11,6 @@ import java.util.List;
 @ToString
 public class DeleteAllRequest {
 
-    List<Long> tasks;
+    List<String> tasks;
 
 }

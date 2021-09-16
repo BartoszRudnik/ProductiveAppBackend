@@ -64,4 +64,9 @@ public class TaskController {
         return taskService.getPriorities();
     }
 
+    @GetMapping("/fromCollaborator/{userMail}/{collaboratorMail}")
+    public List<GetTasksResponse> getTasksFromCollaborator(@PathVariable String userMail, @PathVariable String collaboratorMail){
+        return this.taskService.getTaskFromCollaborator(userMail, collaboratorMail);
+    }
+
 }

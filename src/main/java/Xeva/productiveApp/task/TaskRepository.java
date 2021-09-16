@@ -14,6 +14,8 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
+    Optional<List<Task>> findAllByUserAndDelegatedEmail(ApplicationUser user, String delegatedEmail);
+
     @Transactional
     void deleteByUuid(String uuid);
 
