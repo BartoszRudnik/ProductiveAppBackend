@@ -1,4 +1,4 @@
-version: "3.8"
+vversion: "3.8"
 services:
   rest:
     build:
@@ -9,6 +9,7 @@ services:
     ports:
       - 8080:8080
     depends_on:
+       - db
       db:
         condition: service_healthy
   db:
@@ -28,3 +29,4 @@ services:
       retries: 5
 volumes:
   db-data:
+ 
