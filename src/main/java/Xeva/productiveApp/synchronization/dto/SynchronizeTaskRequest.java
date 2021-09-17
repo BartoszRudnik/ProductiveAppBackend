@@ -25,15 +25,15 @@ public class SynchronizeTaskRequest {
     private String taskStatus;
     private String supervisorEmail;
     private String uuid;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String tags;
     private boolean done;
     private boolean isDelegated;
     private boolean isCanceled;
     private int parentId;
     private int childId;
-    private Long notificationLocalizationId;
+    private String notificationLocalizationUuid;
     private double notificationLocalizationRadius;
     private boolean notificationOnEnter;
     private boolean notificationOnExit;

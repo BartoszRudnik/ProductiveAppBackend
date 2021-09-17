@@ -3,6 +3,7 @@ package Xeva.productiveApp.task.dto;
 import Xeva.productiveApp.tags.Tag;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -21,13 +22,12 @@ public class UpdateTaskRequest {
     private String localization;
     private String delegatedEmail;
     private boolean ifDone;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private List<Tag> tags;
     private Double position;
     private boolean isCanceled;
-
-    private Long localizationId;
+    private String localizationUuid;
     private double localizationRadius;
     private boolean notificationOnEnter;
     private boolean notificationOnExit;

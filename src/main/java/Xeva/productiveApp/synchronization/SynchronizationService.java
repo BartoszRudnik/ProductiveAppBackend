@@ -60,13 +60,13 @@ public class SynchronizationService {
 
             if(!this.taskService.isPresent(t.getUuid())){
 
-                this.taskService.addTask(user, taskPriority, taskList, tagList, t.getDelegatedEmail(), t.getNotificationLocalizationId(), t.getTitle(), t.getDescription(), t.isDone(), t.getStartDate(), t.getEndDate(), t.getUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
+                this.taskService.addTask(user, taskPriority, taskList, tagList, t.getDelegatedEmail(), t.getNotificationLocalizationUuid(), t.getTitle(), t.getDescription(), t.isDone(), t.getStartDate(), t.getEndDate(), t.getUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
 
             }else{
                 Task existingTask = this.taskService.findByUuid(t.getUuid());
 
                 if(existingTask != null && existingTask.getLastUpdated().isBefore(t.getLastUpdated())){
-                    this.taskService.updateTask(tagList, t.getPosition(), t.getUuid(), t.getDescription(), t.getTitle(), t.getStartDate(), t.getEndDate(), t.getPriority(), t.isDone(), t.getLocalization(), t.isCanceled(), t.getNotificationLocalizationId(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit(), t.getDelegatedEmail());
+                    this.taskService.updateTask(tagList, t.getPosition(), t.getUuid(), t.getDescription(), t.getTitle(), t.getStartDate(), t.getEndDate(), t.getPriority(), t.isDone(), t.getLocalization(), t.isCanceled(), t.getNotificationLocalizationUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit(), t.getDelegatedEmail());
                 }
             }
         }

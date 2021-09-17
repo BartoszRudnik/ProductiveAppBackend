@@ -5,6 +5,7 @@ import Xeva.productiveApp.appUser.ApplicationUser;
 import Xeva.productiveApp.attachment.Attachment;
 import Xeva.productiveApp.attachment.AttachmentRepository;
 import Xeva.productiveApp.localization.Localization;
+import Xeva.productiveApp.localization.LocalizationRepository;
 import Xeva.productiveApp.localization.LocalizationService;
 import Xeva.productiveApp.localization.dto.AddLocalization;
 import Xeva.productiveApp.tags.Tag;
@@ -17,8 +18,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class TaskService {
     private final TagService tagService;
     private final LocalizationService localizationService;
     private final AttachmentRepository attachmentRepository;
+    private final LocalizationRepository localizationRepository;
 
     public Task findById(Long id){
         if(this.taskRepository.findById(id).isPresent()){
@@ -144,17 +146,17 @@ public class TaskService {
         tagService.saveAll(tags);
     }
 
-    public long addTask(ApplicationUser user, TaskPriority priority, TaskList localization, List<String> tags, String delegatedEmail, Long localizationId, String taskName, String taskDescription, boolean isDone, Date startDate, Date endDate, String uuid, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit){
+    public void addTask(ApplicationUser user, TaskPriority priority, TaskList localization, List<String> tags, String delegatedEmail, String localizationUuid, String taskName, String taskDescription, boolean isDone, LocalDateTime startDate, LocalDateTime endDate, String uuid, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit){
         Task task;
 
         if(localization == TaskList.DELEGATED && delegatedEmail != null && delegatedEmail.length() > 1){
 
-            ApplicationUser delegatedUser = userService.findByEmail(delegatedEmail).get();
+            ApplicationUser delegatedUser = this.userService.findByEmail(delegatedEmail).get();
 
-            if(localizationId == null) {
+            if(localizationUuid == null) {
                 task = new Task(taskName, taskDescription, user, localization, priority, isDone, startDate, endDate, delegatedUser, delegatedEmail, uuid);
             }else{
-                Localization notificationLocalization = this.localizationService.findById(localizationId).get();
+                Localization notificationLocalization = this.localizationService.findByUuid(localizationUuid);
 
                 task = new Task(taskName, taskDescription, user, localization, priority,isDone, startDate, endDate, delegatedUser, delegatedEmail, notificationLocalization, localizationRadius, notificationOnEnter,
                         notificationOnExit, uuid);
@@ -162,10 +164,10 @@ public class TaskService {
 
         }else{
 
-            if(localizationId == null) {
+            if(localizationUuid == null) {
                 task = new Task(taskName, taskDescription, user, startDate, endDate, isDone, priority, localization, delegatedEmail, uuid);
             }else{
-                Localization notificationLocalization = this.localizationService.findById(localizationId).get();
+                Localization notificationLocalization = this.localizationService.findByUuid(localizationUuid);
                 task = new Task(taskName, taskDescription, user, startDate, endDate, isDone, priority, localization, delegatedEmail, notificationLocalization,notificationOnEnter, localizationRadius,
                        notificationOnExit, uuid);
             }
@@ -173,8 +175,6 @@ public class TaskService {
         }
         this.saveTask(task);
         this.setTagsFromNames(task, tags);
-
-        return task.getId();
 
     }
 
@@ -197,20 +197,20 @@ public class TaskService {
 
             ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
 
-            if(request.getLocalizationId() == null) {
+            if(request.getLocalizationUuid() == null) {
                 task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail(), request.getUuid());
             }else{
-                Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
+                Localization notificationLocalization = this.localizationService.findByUuid(request.getLocalizationUuid());
                 task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail(), notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter(),
                         request.isNotificationOnExit(), request.getUuid());
             }
 
         }else{
 
-            if(request.getLocalizationId() == null) {
+            if(request.getLocalizationUuid() == null) {
                 task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail(), request.getUuid());
             }else{
-                Localization notificationLocalization = this.localizationService.findById(request.getLocalizationId()).get();
+                Localization notificationLocalization = this.localizationService.findByUuid(request.getLocalizationUuid());
                 task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail(), notificationLocalization, request.isNotificationOnEnter(), request.getLocalizationRadius(),
                         request.isNotificationOnExit(), request.getUuid());
             }
@@ -328,7 +328,7 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public void updateTask(List<String> tags, double position, String uuid, String description, String taskName, Date startDate, Date endDate, String priority, boolean isDone, String taskList, boolean isCanceled, Long localizationId, double notificationRadius, boolean notificationOnEnter, boolean notificationOnExit, String delegatedEmail){
+    public void updateTask(List<String> tags, double position, String uuid, String description, String taskName, LocalDateTime startDate, LocalDateTime endDate, String priority, boolean isDone, String taskList, boolean isCanceled, String localizationUuid, double notificationRadius, boolean notificationOnEnter, boolean notificationOnExit, String delegatedEmail){
 
         if(this.taskRepository.findByUuid(uuid).isEmpty()){
             throw new IllegalStateException("Task doesn't exist");
@@ -346,11 +346,7 @@ public class TaskService {
         task.setTaskList(this.getLocalization(taskList));
         task.setPosition(position);
         task.setIsCanceled(isCanceled);
-        if(this.localizationService.findById(localizationId).isEmpty()){
-            task.setNotificationLocalization(null);
-        }else {
-            task.setNotificationLocalization(this.localizationService.findById(localizationId).get());
-        }
+        task.setNotificationLocalization(this.localizationService.findByUuid(uuid));
         task.setLocalizationRadius(notificationRadius);
         task.setNotificationOnEnter(notificationOnEnter);
         task.setNotificationOnExit(notificationOnExit);
@@ -369,7 +365,7 @@ public class TaskService {
 
                 ApplicationUser delegatedUser = userService.findByEmail(delegatedEmail).get();
 
-                this.setLocalizationNotification(task, delegatedUser, localizationId, taskName, description, priority, isDone, startDate, endDate, notificationRadius, notificationOnEnter, notificationOnExit);
+                this.setLocalizationNotification(task, delegatedUser, localizationUuid, taskName, description, priority, isDone, startDate, endDate, notificationRadius, notificationOnEnter, notificationOnExit);
 
             }else if(!task.getDelegatedEmail().equals(delegatedEmail)){
 
@@ -379,11 +375,27 @@ public class TaskService {
                     task.getChildTask().setIsCanceled(true);
                     task.getChildTask().setParentTask(null);
 
-                    this.setLocalizationNotification(task, delegatedUser, localizationId, taskName, description, priority, isDone, startDate, endDate, notificationRadius, notificationOnEnter, notificationOnExit);
+                    this.setLocalizationNotification(task, delegatedUser, localizationUuid, taskName, description, priority, isDone, startDate, endDate, notificationRadius, notificationOnEnter, notificationOnExit);
 
                 }
-
             }
+        else if(task.getChildTask() != null && task.getDelegatedEmail().equals(delegatedEmail)){
+            ApplicationUser delegatedUser = this.userService.findByEmail(delegatedEmail).get();
+
+            Localization existingLocalization = this.localizationService.findByUuid(localizationUuid);
+            Localization newLocalization = new Localization(existingLocalization.getLocalizationName(), existingLocalization.getStreet(), existingLocalization.getLocality(), existingLocalization.getCountry(), existingLocalization.getLongitude(), existingLocalization.getLatitude(), delegatedUser, UUID.randomUUID().toString());
+
+            if(this.localizationRepository.findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(existingLocalization.getCountry(), existingLocalization.getLocality(), existingLocalization.getStreet(), existingLocalization.getLatitude(), existingLocalization.getLongitude(), delegatedUser).isEmpty()) {
+                this.localizationRepository.save(newLocalization);
+            }else{
+                newLocalization = this.localizationRepository.findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(existingLocalization.getCountry(), existingLocalization.getLocality(), existingLocalization.getStreet(), existingLocalization.getLatitude(), existingLocalization.getLongitude(), delegatedUser).get();
+            }
+
+            task.getChildTask().setNotificationLocalization(newLocalization);
+            task.getChildTask().setNotificationOnExit(notificationOnExit);
+            task.getChildTask().setNotificationOnEnter(notificationOnEnter);
+            task.getChildTask().setLocalizationRadius(notificationRadius);
+        }
 
         }else if(task.getChildTask() != null){
             task.getChildTask().setIsCanceled(true);
@@ -421,10 +433,11 @@ public class TaskService {
         task.setTaskList(this.getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
         task.setIsCanceled(request.isCanceled());
-        if(this.localizationService.findById(request.getLocalizationId()).isEmpty()){
+
+        if(request.getLocalizationUuid() != null) {
+            task.setNotificationLocalization(this.localizationService.findByUuid(request.getLocalizationUuid()));
+        }else{
             task.setNotificationLocalization(null);
-        }else {
-            task.setNotificationLocalization(this.localizationService.findById(request.getLocalizationId()).get());
         }
         task.setLocalizationRadius(request.getLocalizationRadius());
         task.setNotificationOnEnter(request.isNotificationOnEnter());
@@ -438,26 +451,42 @@ public class TaskService {
 
             task.setChildTask(null);
         }
-        else if(userService.findByEmail(request.getDelegatedEmail()).isPresent()) {
+        else if(this.userService.findByEmail(request.getDelegatedEmail()).isPresent()) {
 
             if(task.getChildTask() == null) {
 
-                ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
+                ApplicationUser delegatedUser = this.userService.findByEmail(request.getDelegatedEmail()).get();
 
-                setLocalizationNotification(request, task, delegatedUser);
+                this.setLocalizationNotification(request, task, delegatedUser);
 
             }else if(!task.getDelegatedEmail().equals(request.getDelegatedEmail())){
 
-                if(userService.findByEmail(request.getDelegatedEmail()).isPresent()){
+                if(this.userService.findByEmail(request.getDelegatedEmail()).isPresent()){
 
-                    ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
+                    ApplicationUser delegatedUser = this.userService.findByEmail(request.getDelegatedEmail()).get();
                     task.getChildTask().setIsCanceled(true);
                     task.getChildTask().setParentTask(null);
 
-                    setLocalizationNotification(request, task, delegatedUser);
+                    this.setLocalizationNotification(request, task, delegatedUser);
 
                 }
 
+            }else if(task.getChildTask() != null && task.getDelegatedEmail().equals(request.getDelegatedEmail())){
+               ApplicationUser delegatedUser = this.userService.findByEmail(request.getDelegatedEmail()).get();
+
+               Localization existingLocalization = this.localizationService.findByUuid(request.getLocalizationUuid());
+               Localization newLocalization = new Localization(existingLocalization.getLocalizationName(), existingLocalization.getStreet(), existingLocalization.getLocality(), existingLocalization.getCountry(), existingLocalization.getLongitude(), existingLocalization.getLatitude(), delegatedUser, UUID.randomUUID().toString());
+
+                if(this.localizationRepository.findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(existingLocalization.getCountry(), existingLocalization.getLocality(), existingLocalization.getStreet(), existingLocalization.getLatitude(), existingLocalization.getLongitude(), delegatedUser).isEmpty()) {
+                    this.localizationRepository.save(newLocalization);
+                }else{
+                    newLocalization = this.localizationRepository.findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(existingLocalization.getCountry(), existingLocalization.getLocality(), existingLocalization.getStreet(), existingLocalization.getLatitude(), existingLocalization.getLongitude(), delegatedUser).get();
+                }
+
+               task.getChildTask().setNotificationLocalization(newLocalization);
+               task.getChildTask().setNotificationOnExit(request.isNotificationOnExit());
+               task.getChildTask().setNotificationOnEnter(request.isNotificationOnEnter());
+               task.getChildTask().setLocalizationRadius(request.getLocalizationRadius());
             }
 
         }else if(task.getChildTask() != null){
@@ -474,7 +503,7 @@ public class TaskService {
         }
 
         List<Tag> tags = request.getTags();
-        List<Tag> existingTags = tagService.findAllByTaskId(task.getId());
+        List<Tag> existingTags = this.tagService.findAllByTaskId(task.getId());
         List<Tag> tagsToAdd = new ArrayList<>();
 
         for(Tag tag : tags){
@@ -483,7 +512,7 @@ public class TaskService {
 
         for(Tag tag : existingTags){
             if(!tags.contains(tag)){
-                tagService.deleteById(tag.getId());
+                this.tagService.deleteById(tag.getId());
             }
         }
 
@@ -499,15 +528,15 @@ public class TaskService {
             }
         }
 
-        tagService.saveAll(tagsToAdd);
+        this.tagService.saveAll(tagsToAdd);
 
-        taskRepository.save(task);
+        this.taskRepository.save(task);
     }
 
-    private void setLocalizationNotification(Task task, ApplicationUser delegatedUser, Long localizationId, String taskName, String description, String priority, boolean isDone, Date startDate, Date endDate, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
+    private void setLocalizationNotification(Task task, ApplicationUser delegatedUser, String localizationUuid, String taskName, String description, String priority, boolean isDone, LocalDateTime startDate, LocalDateTime endDate, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {
         Task childTask;
 
-        if(localizationId == null) {
+        if(localizationUuid == null) {
             childTask = new Task(taskName, description, delegatedUser, this.getPriority(priority), isDone, startDate, endDate, task, UUID.randomUUID().toString());
         }else{
             Localization childTaskLocalization = setDelegatedTaskLocalization(task, delegatedUser);
@@ -521,7 +550,7 @@ public class TaskService {
     private void setLocalizationNotification(UpdateTaskRequest request, Task task, ApplicationUser delegatedUser) {
         Task childTask;
 
-        if(request.getLocalizationId() == null) {
+        if(request.getLocalizationUuid() == null) {
             childTask = new Task(request.getTaskName(), request.getTaskDescription(), delegatedUser, this.getPriority(request.getPriority()), request.isIfDone(), request.getStartDate(), request.getEndDate(), task, UUID.randomUUID().toString());
         }else{
             Localization childTaskLocalization = setDelegatedTaskLocalization(task, delegatedUser);

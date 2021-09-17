@@ -11,6 +11,6 @@ import java.util.List;
 @ToString
 public class LocationRequest {
 
-    private List<Integer> locations;
+    private List<String> locations;
 
 }

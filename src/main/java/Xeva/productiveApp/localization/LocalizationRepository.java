@@ -14,6 +14,8 @@ public interface LocalizationRepository extends JpaRepository<Localization, Long
 
     List<Localization> findAllByUser(ApplicationUser user);
 
+    Optional<Localization> findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(String country, String locality, String street, Float latitude, Float longitude, ApplicationUser user);
+
     Optional<Localization> findByIdAndUser(Long id, ApplicationUser user);
     Optional<Localization> findByLocalizationNameAndUser(String localizationName, ApplicationUser user);
 

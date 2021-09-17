@@ -9,6 +9,6 @@ import lombok.*;
 @ToString
 public class DeleteLocationRequest {
 
-    int locationId;
+    String locationUuid;
 
 }

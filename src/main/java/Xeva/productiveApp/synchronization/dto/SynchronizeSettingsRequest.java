@@ -18,7 +18,7 @@ public class SynchronizeSettingsRequest {
     private boolean showOnlyWithLocalization;
     private List<String> collaborators;
     private List<String> priorities;
-    private List<Integer> locations;
+    private List<String> locations;
     private List<String> tags;
     private int sortingMode;
     private String taskName;

@@ -16,12 +16,12 @@ public class TaskController {
 
     @GetMapping("/getAll/{mail}")
     public List<GetTasksResponse> getTasks(@PathVariable String mail){
-        return taskService.getTasks(mail);
+        return this.taskService.getTasks(mail);
     }
 
     @GetMapping("/getSingleTask/{mail}/{taskId}")
     public GetSingleTaskResponse getSingleTask(@PathVariable String mail, @PathVariable Long taskId){
-        return taskService.getSingleTask(mail, taskId);
+        return this.taskService.getSingleTask(mail, taskId);
     }
 
     @GetMapping("/getSingleTaskFull/{mail}/{taskId}")
@@ -46,22 +46,22 @@ public class TaskController {
 
     @PutMapping("/update")
     public void updateTask(@RequestBody UpdateTaskRequest request){
-        taskService.updateTask(request);
+        this.taskService.updateTask(request);
     }
 
     @PutMapping("/updatePosition/{taskId}")
     public void updateTaskPosition(@RequestBody UpdateTaskPositionRequest request, @PathVariable long taskId){
-        taskService.updateTaskPosition(request, taskId);
+        this.taskService.updateTaskPosition(request, taskId);
     }
 
     @PostMapping("/done/{taskUuid}")
     public String changeTaskStatus(@PathVariable String taskUuid){
-        return taskService.changeTaskStatus(taskUuid);
+        return this.taskService.changeTaskStatus(taskUuid);
     }
 
     @GetMapping("/priorities")
     public List<String> getPriorities(){
-        return taskService.getPriorities();
+        return this.taskService.getPriorities();
     }
 
     @GetMapping("/fromCollaborator/{userMail}/{collaboratorMail}")

@@ -199,7 +199,7 @@ public class FilterSettingsService {
 
         userSettings.getLocations().clear();
 
-        for(Integer location : locations.getLocations()){
+        for(String location : locations.getLocations()){
 
             if(!userSettings.getLocations().contains(location)){
 
@@ -253,7 +253,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        userSettings.getLocations().remove(deleteLocation.getLocationId());
+        userSettings.getLocations().remove(deleteLocation.getLocationUuid());
 
         filterSettingsRepository.save(userSettings);
 

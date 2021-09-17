@@ -2,6 +2,7 @@ package Xeva.productiveApp.task.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -17,8 +18,8 @@ public class GetSingleTaskResponse {
     private String taskName;
     private String description;
     private String priority;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String uuid;
 
 }

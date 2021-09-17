@@ -40,7 +40,7 @@ public class FilterSettings {
     private List<String> collaboratorEmail;
 
     @ElementCollection
-    private List<Integer> locations;
+    private List<String> locations;
 
     @ElementCollection
     private List<String> priorities;
@@ -74,7 +74,7 @@ public class FilterSettings {
         this.sortingMode = 0;
     }
 
-    public FilterSettings(ApplicationUser user, boolean showUnfinished, boolean showDelegated, boolean showWithLocation, List<String> collaboratorEmail, List<String> priorities, List<String> tags, List<Integer> locations, int sortingMode){
+    public FilterSettings(ApplicationUser user, boolean showUnfinished, boolean showDelegated, boolean showWithLocation, List<String> collaboratorEmail, List<String> priorities, List<String> tags, List<String> locations, int sortingMode){
         this.user = user;
         this.showUnfinished = showUnfinished;
         this.showDelegated = showDelegated;
