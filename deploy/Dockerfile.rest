@@ -14,13 +14,14 @@ RUN python ./patch-config.py
 FROM maven:3.6-openjdk-11-slim AS Builder
 RUN groupadd maven && useradd --gid maven --home-dir /maven maven
 RUN mkdir -p /maven/build && chown -R maven:maven /maven
+RUN chmod -R 777 /maven
 USER maven:maven
 WORKDIR /maven/build
-COPY pom.xml .
-RUN --mount=type=cache,target=/maven/.m2 mvn dependency:go-offline
+COPY pom.xml ./pom.xml
+RUN --mount=type=cache,target=/root/.m2 mvn dependency:go-offline -B
 COPY src ./src
 COPY --from=Patcher /patch/application.yml src/main/resources
-RUN --mount=type=cache,target=/maven/.m2 mvn package -DskipTests && mkdir target/layers
+RUN --mount=type=cache,target=/root/.m2 mvn package -DskipTests && mkdir target/layers
 WORKDIR target/layers
 RUN java -Djarmode=layertools -jar ../*.jar extract
 
