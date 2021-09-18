@@ -53,7 +53,7 @@ public class TaskService {
         return this.taskRepository.findByIdAndUserAndTaskName(id, user, taskName).isPresent();
     }
 
-    public GetTasksResponse getSingleTaskFull(String mail, Long taskId){
+    public GetTasksResponse getSingleTaskFull(String mail, String taskUuid){
 
         boolean isUser = userService.findByEmail(mail).isPresent();
 
@@ -63,8 +63,8 @@ public class TaskService {
 
         ApplicationUser user = userService.findByEmail(mail).get();
         Task task = new Task();
-        if(taskRepository.findById(taskId).isPresent()) {
-            task = taskRepository.findById(taskId).get();
+        if(taskRepository.findByUuid(taskUuid).isPresent()) {
+            task = taskRepository.findByUuid(taskUuid).get();
         }
 
         GetTasksResponse taskResponse = new GetTasksResponse();
@@ -91,15 +91,14 @@ public class TaskService {
         return taskResponse;
     }
 
-    public GetSingleTaskResponse getSingleTask(String mail, Long taskId){
-
+    public GetSingleTaskResponse getSingleTask(String mail, String taskUuid){
         boolean isUser = userService.findByEmail(mail).isPresent();
 
         if(!isUser){
             throw new IllegalStateException("Wrong user");
         }
 
-        Task task = taskRepository.getOne(taskId);
+        Task task = this.taskRepository.findByUuid(taskUuid).get();
 
         GetSingleTaskResponse result = new GetSingleTaskResponse();
 
@@ -112,7 +111,6 @@ public class TaskService {
         result.setOwnerEmail(task.getUser().getEmail());
 
         return result;
-
     }
 
     public Long saveTask(Task task){
@@ -346,10 +344,13 @@ public class TaskService {
         task.setTaskList(this.getLocalization(taskList));
         task.setPosition(position);
         task.setIsCanceled(isCanceled);
-        task.setNotificationLocalization(this.localizationService.findByUuid(uuid));
-        task.setLocalizationRadius(notificationRadius);
-        task.setNotificationOnEnter(notificationOnEnter);
-        task.setNotificationOnExit(notificationOnExit);
+
+        if(localizationUuid != null) {
+            task.setNotificationLocalization(this.localizationService.findByUuid(localizationUuid));
+            task.setLocalizationRadius(notificationRadius);
+            task.setNotificationOnEnter(notificationOnEnter);
+            task.setNotificationOnExit(notificationOnExit);
+        }
 
         if(task.getChildTask() != null && (taskList.equals("TRASH") || taskList.equals("COMPLETED"))){
             if(!task.getChildTask().getIfDone()) {
@@ -436,12 +437,10 @@ public class TaskService {
 
         if(request.getLocalizationUuid() != null) {
             task.setNotificationLocalization(this.localizationService.findByUuid(request.getLocalizationUuid()));
-        }else{
-            task.setNotificationLocalization(null);
+            task.setLocalizationRadius(request.getLocalizationRadius());
+            task.setNotificationOnEnter(request.isNotificationOnEnter());
+            task.setNotificationOnExit(request.isNotificationOnExit());
         }
-        task.setLocalizationRadius(request.getLocalizationRadius());
-        task.setNotificationOnEnter(request.isNotificationOnEnter());
-        task.setNotificationOnExit(request.isNotificationOnExit());
 
         if(task.getChildTask() != null && (request.getLocalization().equals("TRASH") || request.getLocalization().equals("COMPLETED"))){
             if(!task.getChildTask().getIfDone()) {

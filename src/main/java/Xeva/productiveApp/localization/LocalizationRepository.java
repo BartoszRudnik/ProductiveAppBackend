@@ -31,5 +31,5 @@ public interface LocalizationRepository extends JpaRepository<Localization, Long
     @Transactional
     void deleteByUuid(String uuid);
 
-    Optional<Localization> findByUuid(String uuid);
+    Optional<Localization> findTopByUuid(String uuid);
 }

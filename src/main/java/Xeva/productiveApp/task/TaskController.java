@@ -19,14 +19,14 @@ public class TaskController {
         return this.taskService.getTasks(mail);
     }
 
-    @GetMapping("/getSingleTask/{mail}/{taskId}")
-    public GetSingleTaskResponse getSingleTask(@PathVariable String mail, @PathVariable Long taskId){
-        return this.taskService.getSingleTask(mail, taskId);
+    @GetMapping("/getSingleTask/{mail}/{taskUuid}")
+    public GetSingleTaskResponse getSingleTask(@PathVariable String mail, @PathVariable String taskUuid){
+        return this.taskService.getSingleTask(mail, taskUuid);
     }
 
-    @GetMapping("/getSingleTaskFull/{mail}/{taskId}")
-    public GetTasksResponse getSingleTaskFull(@PathVariable String mail, @PathVariable Long taskId){
-        return this.taskService.getSingleTaskFull(mail, taskId);
+    @GetMapping("/getSingleTaskFull/{mail}/{taskUuid}")
+    public GetTasksResponse getSingleTaskFull(@PathVariable String mail, @PathVariable String taskUuid){
+        return this.taskService.getSingleTaskFull(mail, taskUuid);
     }
 
     @PostMapping("/deleteAllFromList")

@@ -91,8 +91,8 @@ public class LocalizationService {
 
     public void deleteLocalization(String uuid){
 
-        if(this.localizationRepository.findByUuid(uuid).isPresent()) {
-            Localization localization = this.localizationRepository.findByUuid(uuid).get();
+        if(this.localizationRepository.findTopByUuid(uuid).isPresent()) {
+            Localization localization = this.localizationRepository.findTopByUuid(uuid).get();
 
             if(this.taskRepository.findAllByNotificationLocalization(localization).isPresent()) {
 
@@ -119,13 +119,13 @@ public class LocalizationService {
 
     public void updateLocalization(String uuid, AddLocalization addLocalization){
 
-        boolean isValidLocalization = this.localizationRepository.findByUuid(uuid).isPresent();
+        boolean isValidLocalization = this.localizationRepository.findTopByUuid(uuid).isPresent();
 
         if(!isValidLocalization){
             throw new IllegalStateException("Localization doesn't exists");
         }
 
-        Localization localizationToEdit = this.localizationRepository.findByUuid(uuid).get();
+        Localization localizationToEdit = this.localizationRepository.findTopByUuid(uuid).get();
 
         localizationToEdit.setLocalizationName(addLocalization.getLocalizationName());
         localizationToEdit.setLatitude(addLocalization.getLatitude());
@@ -152,14 +152,14 @@ public class LocalizationService {
     }
 
     public boolean localizationAlreadyExist(String uuid) {
-        return this.localizationRepository.findByUuid(uuid).isPresent();
+        return this.localizationRepository.findTopByUuid(uuid).isPresent();
     }
 
     public Localization findByUuid(String uuid) {
-        if(this.localizationRepository.findByUuid(uuid).isEmpty()){
+        if(this.localizationRepository.findTopByUuid(uuid).isEmpty()){
             throw new IllegalStateException("Localization doesn't exist");
         }
 
-        return this.localizationRepository.findByUuid(uuid).get();
+        return this.localizationRepository.findTopByUuid(uuid).get();
     }
 }
