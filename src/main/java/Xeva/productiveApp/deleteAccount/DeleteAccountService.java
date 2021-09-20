@@ -84,9 +84,9 @@ public class DeleteAccountService {
         }
 
         attachmentService.deleteUserAttachments(user);
-        localizationService.deleteAllUserLocalizations(user);
         tagService.deleteByUser(userMail);
         taskService.deleteAll(user);
+        localizationService.deleteAllUserLocalizations(user);
         filterSettingsService.deleteUserFilters(user);
         userRelationService.deleteAllUserRelations(user);
         userImageService.deleteImage(userMail);
