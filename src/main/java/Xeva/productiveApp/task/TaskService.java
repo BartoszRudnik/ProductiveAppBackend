@@ -144,7 +144,7 @@ public class TaskService {
         tagService.saveAll(tags);
     }
 
-    public void addTask(ApplicationUser user, TaskPriority priority, TaskList localization, List<String> tags, String delegatedEmail, String localizationUuid, String taskName, String taskDescription, boolean isDone, LocalDateTime startDate, LocalDateTime endDate, String uuid, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit){
+    public void addTask(ApplicationUser user, TaskPriority priority, TaskList localization, List<String> tags, String delegatedEmail, String localizationUuid, String taskName, String taskDescription, boolean isDone, LocalDateTime startDate, LocalDateTime endDate, String uuid, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit, String taskState){
         Task task;
 
         if(localization == TaskList.DELEGATED && delegatedEmail != null && delegatedEmail.length() > 1){
@@ -152,22 +152,22 @@ public class TaskService {
             ApplicationUser delegatedUser = this.userService.findByEmail(delegatedEmail).get();
 
             if(localizationUuid == null) {
-                task = new Task(taskName, taskDescription, user, localization, priority, isDone, startDate, endDate, delegatedUser, delegatedEmail, uuid);
+                task = new Task(taskName, taskDescription, user, localization, priority, isDone, startDate, endDate, delegatedUser, delegatedEmail, uuid, taskState);
             }else{
                 Localization notificationLocalization = this.localizationService.findByUuid(localizationUuid);
 
                 task = new Task(taskName, taskDescription, user, localization, priority,isDone, startDate, endDate, delegatedUser, delegatedEmail, notificationLocalization, localizationRadius, notificationOnEnter,
-                        notificationOnExit, uuid);
+                        notificationOnExit, uuid, taskState);
             }
 
         }else{
 
             if(localizationUuid == null) {
-                task = new Task(taskName, taskDescription, user, startDate, endDate, isDone, priority, localization, delegatedEmail, uuid);
+                task = new Task(taskName, taskDescription, user, startDate, endDate, isDone, priority, localization, delegatedEmail, uuid, taskState);
             }else{
                 Localization notificationLocalization = this.localizationService.findByUuid(localizationUuid);
                 task = new Task(taskName, taskDescription, user, startDate, endDate, isDone, priority, localization, delegatedEmail, notificationLocalization,notificationOnEnter, localizationRadius,
-                       notificationOnExit, uuid);
+                       notificationOnExit, uuid, taskState);
             }
 
         }
@@ -196,21 +196,21 @@ public class TaskService {
             ApplicationUser delegatedUser = userService.findByEmail(request.getDelegatedEmail()).get();
 
             if(request.getLocalizationUuid() == null) {
-                task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail(), request.getUuid());
+                task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail(), request.getUuid(), request.getTaskState());
             }else{
                 Localization notificationLocalization = this.localizationService.findByUuid(request.getLocalizationUuid());
                 task = new Task(request.getTaskName(), request.getTaskDescription(), user, localization, priority, request.isIfDone(), request.getStartDate(), request.getEndDate(), delegatedUser, request.getDelegatedEmail(), notificationLocalization, request.getLocalizationRadius(), request.isNotificationOnEnter(),
-                        request.isNotificationOnExit(), request.getUuid());
+                        request.isNotificationOnExit(), request.getUuid(), request.getTaskState());
             }
 
         }else{
 
             if(request.getLocalizationUuid() == null) {
-                task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail(), request.getUuid());
+                task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail(), request.getUuid(), request.getTaskState());
             }else{
                 Localization notificationLocalization = this.localizationService.findByUuid(request.getLocalizationUuid());
                 task = new Task(request.getTaskName(), request.getTaskDescription(), user, request.getStartDate(), request.getEndDate(), request.isIfDone(), priority, localization, request.getDelegatedEmail(), notificationLocalization, request.isNotificationOnEnter(), request.getLocalizationRadius(),
-                        request.isNotificationOnExit(), request.getUuid());
+                        request.isNotificationOnExit(), request.getUuid(), request.getTaskState());
             }
 
         }

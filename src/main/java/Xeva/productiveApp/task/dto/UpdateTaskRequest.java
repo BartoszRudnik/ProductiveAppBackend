@@ -27,6 +27,7 @@ public class UpdateTaskRequest {
     private List<Tag> tags;
     private Double position;
     private boolean isCanceled;
+    private String taskState;
     private String localizationUuid;
     private double localizationRadius;
     private boolean notificationOnEnter;

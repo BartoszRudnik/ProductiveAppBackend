@@ -123,6 +123,8 @@ public class Task {
     @Column(nullable = false)
     private String uuid;
 
+    private String taskState = "COLLECT";
+
     @JsonIgnore
     @OneToMany(mappedBy = "task")
     private List<Attachment> attachments;
@@ -148,7 +150,7 @@ public class Task {
     }
 
     //Tworzenie tasku nadrzędnego
-    public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, LocalDateTime startDate, LocalDateTime endDate, ApplicationUser userDelegated, String delegatedEmail, String uuid) {
+    public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, LocalDateTime startDate, LocalDateTime endDate, ApplicationUser userDelegated, String delegatedEmail, String uuid, String taskState) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -162,6 +164,7 @@ public class Task {
         this.childTask = new Task(taskName, description, userDelegated, priority, ifDone, startDate, endDate, this, UUID.randomUUID().toString());
         this.isCanceled = false;
         this.uuid = uuid;
+        this.taskState = taskState;
     }
 
     //Tworzenie tasku podrzędnego
@@ -181,7 +184,7 @@ public class Task {
 
     //Tworzenie tasku nadrzędnego z powiadomieniem
     public Task(String taskName, String description, ApplicationUser user, TaskList taskList, TaskPriority priority, Boolean ifDone, LocalDateTime startDate, LocalDateTime endDate, ApplicationUser userDelegated, String delegatedEmail, Localization notificationLocalization, double localizationRadius, boolean notificationOnEnter,
-                boolean notificationOnExit, String uuid) {
+                boolean notificationOnExit, String uuid, String taskState) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -199,6 +202,7 @@ public class Task {
         this.childTask = new Task(taskName, description, userDelegated, priority, ifDone, startDate, endDate, this, notificationLocalization, localizationRadius, notificationOnEnter, notificationOnExit, UUID.randomUUID().toString());
         this.isCanceled = false;
         this.uuid = uuid;
+        this.taskState = taskState;
     }
 
     //Tworzenie tasku podrzędnego z powiadomieniem
@@ -221,7 +225,7 @@ public class Task {
     }
 
 
-    public Task(String taskName, String description, ApplicationUser user, LocalDateTime startDate, LocalDateTime endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail, String uuid) {
+    public Task(String taskName, String description, ApplicationUser user, LocalDateTime startDate, LocalDateTime endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail, String uuid, String taskState) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -233,9 +237,10 @@ public class Task {
         this.delegatedEmail = delegatedEmail;
         this.taskStatus = "Sent";
         this.uuid = uuid;
+        this.taskState = taskState;
     }
 
-    public Task(String taskName, String description, ApplicationUser user, LocalDateTime startDate, LocalDateTime endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail, Localization notificationLocalization, boolean notificationOnEnter, double localizationRadius, boolean notificationOnExit, String uuid) {
+    public Task(String taskName, String description, ApplicationUser user, LocalDateTime startDate, LocalDateTime endDate, boolean ifDone, TaskPriority priority, TaskList taskList, String delegatedEmail, Localization notificationLocalization, boolean notificationOnEnter, double localizationRadius, boolean notificationOnExit, String uuid, String taskState) {
         this.taskName = taskName;
         this.description = description;
         this.user = user;
@@ -251,6 +256,6 @@ public class Task {
         this.notificationOnEnter = notificationOnEnter;
         this.notificationOnExit = notificationOnExit;
         this.uuid = uuid;
+        this.taskState = taskState;
     }
-
 }

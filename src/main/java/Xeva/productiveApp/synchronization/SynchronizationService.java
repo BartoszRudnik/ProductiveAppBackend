@@ -60,7 +60,7 @@ public class SynchronizationService {
 
             if(!this.taskService.isPresent(t.getUuid())){
 
-                this.taskService.addTask(user, taskPriority, taskList, tagList, t.getDelegatedEmail(), t.getNotificationLocalizationUuid(), t.getTitle(), t.getDescription(), t.isDone(), t.getStartDate(), t.getEndDate(), t.getUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit());
+                this.taskService.addTask(user, taskPriority, taskList, tagList, t.getDelegatedEmail(), t.getNotificationLocalizationUuid(), t.getTitle(), t.getDescription(), t.isDone(), t.getStartDate(), t.getEndDate(), t.getUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit(), t.getTaskState());
 
             }else{
                 Task existingTask = this.taskService.findByUuid(t.getUuid());

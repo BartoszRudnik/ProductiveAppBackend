@@ -25,6 +25,7 @@ public class AddTaskRequest {
     private LocalDateTime endDate;
     private List<Tag> tags;
     private String uuid;
+    private String taskState;
 
     private String localizationUuid;
     private double localizationRadius;
