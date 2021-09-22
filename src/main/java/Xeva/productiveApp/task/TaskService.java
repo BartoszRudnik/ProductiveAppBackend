@@ -385,7 +385,7 @@ public class TaskService {
             ApplicationUser delegatedUser = this.userService.findByEmail(delegatedEmail).get();
 
             Localization existingLocalization = this.localizationService.findByUuid(localizationUuid);
-            Localization newLocalization = new Localization(existingLocalization.getLocalizationName(), existingLocalization.getStreet(), existingLocalization.getLocality(), existingLocalization.getCountry(), existingLocalization.getLongitude(), existingLocalization.getLatitude(), delegatedUser, UUID.randomUUID().toString());
+            Localization newLocalization = new Localization(existingLocalization.getLocalizationName(), existingLocalization.getStreet(), existingLocalization.getLocality(), existingLocalization.getCountry(), existingLocalization.getLongitude(), existingLocalization.getLatitude(), delegatedUser, UUID.randomUUID().toString(), false);
 
             if(this.localizationRepository.findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(existingLocalization.getCountry(), existingLocalization.getLocality(), existingLocalization.getStreet(), existingLocalization.getLatitude(), existingLocalization.getLongitude(), delegatedUser).isEmpty()) {
                 this.localizationRepository.save(newLocalization);
@@ -476,7 +476,7 @@ public class TaskService {
                ApplicationUser delegatedUser = this.userService.findByEmail(request.getDelegatedEmail()).get();
 
                Localization existingLocalization = this.localizationService.findByUuid(request.getLocalizationUuid());
-               Localization newLocalization = new Localization(existingLocalization.getLocalizationName(), existingLocalization.getStreet(), existingLocalization.getLocality(), existingLocalization.getCountry(), existingLocalization.getLongitude(), existingLocalization.getLatitude(), delegatedUser, UUID.randomUUID().toString());
+               Localization newLocalization = new Localization(existingLocalization.getLocalizationName(), existingLocalization.getStreet(), existingLocalization.getLocality(), existingLocalization.getCountry(), existingLocalization.getLongitude(), existingLocalization.getLatitude(), delegatedUser, UUID.randomUUID().toString(), false);
 
                 if(this.localizationRepository.findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(existingLocalization.getCountry(), existingLocalization.getLocality(), existingLocalization.getStreet(), existingLocalization.getLatitude(), existingLocalization.getLongitude(), delegatedUser).isEmpty()) {
                     this.localizationRepository.save(newLocalization);
@@ -565,7 +565,7 @@ public class TaskService {
     private Localization setDelegatedTaskLocalization(Task task, ApplicationUser delegatedUser) {
         Localization notificationLocalization = task.getNotificationLocalization();
 
-        AddLocalization childLoc = new AddLocalization(notificationLocalization.getLocalizationName(), notificationLocalization.getStreet(), notificationLocalization.getLocality(), notificationLocalization.getCountry(), notificationLocalization.getLongitude(), notificationLocalization.getLatitude(), notificationLocalization.getUuid());
+        AddLocalization childLoc = new AddLocalization(notificationLocalization.getLocalizationName(), notificationLocalization.getStreet(), notificationLocalization.getLocality(), notificationLocalization.getCountry(), notificationLocalization.getLongitude(), notificationLocalization.getLatitude(), notificationLocalization.getUuid(), false);
         Long id = this.localizationService.addLocalization(delegatedUser.getEmail(), childLoc);
 
         return this.localizationService.findById(id).get();

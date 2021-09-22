@@ -81,7 +81,7 @@ public class LocalizationService {
 
         ApplicationUser user = appUserService.findByEmail(mail).get();
 
-        Localization localization = new Localization(addLocalization.getLocalizationName(), addLocalization.getStreet(), addLocalization.getLocality(), addLocalization.getCountry(), addLocalization.getLongitude(), addLocalization.getLatitude(), user, addLocalization.getUuid());
+        Localization localization = new Localization(addLocalization.getLocalizationName(), addLocalization.getStreet(), addLocalization.getLocality(), addLocalization.getCountry(), addLocalization.getLongitude(), addLocalization.getLatitude(), user, addLocalization.getUuid(), addLocalization.getSaved());
 
         this.localizationRepository.save(localization);
 

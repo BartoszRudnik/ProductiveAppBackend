@@ -215,7 +215,7 @@ public class SynchronizationService {
             if(!this.localizationService.localizationAlreadyExist(location.getUuid())){
                 ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
-                Localization newLocalization = new Localization(location.getLocalizationName(), location.getStreet(), location.getLocality(),location.getCountry(), location.getLongitude(),location.getLatitude(), user, location.getUuid());
+                Localization newLocalization = new Localization(location.getLocalizationName(), location.getStreet(), location.getLocality(),location.getCountry(), location.getLongitude(),location.getLatitude(), user, location.getUuid(), location.getSaved());
 
                 this.localizationService.save(newLocalization);
             }else{

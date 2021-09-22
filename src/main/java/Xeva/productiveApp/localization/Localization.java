@@ -35,6 +35,7 @@ public class Localization {
     private Float latitude;
     private LocalDateTime lastUpdated;
     private String uuid;
+    private Boolean saved;
 
     @PrePersist
     public void onInsert() {
@@ -51,7 +52,7 @@ public class Localization {
     @JoinColumn(nullable = false, name = "application_user_id")
     private ApplicationUser user;
 
-    public Localization(String localizationName, String street, String locality, String country, Float longitude, Float latitude, ApplicationUser user, String uuid){
+    public Localization(String localizationName, String street, String locality, String country, Float longitude, Float latitude, ApplicationUser user, String uuid, Boolean saved){
         this.localizationName = localizationName;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -60,6 +61,7 @@ public class Localization {
         this.country = country;
         this.locality = locality;
         this.uuid = uuid;
+        this.saved = saved;
     }
 
 }

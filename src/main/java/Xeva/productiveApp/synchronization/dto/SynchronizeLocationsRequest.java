@@ -21,5 +21,6 @@ public class SynchronizeLocationsRequest {
     private Float latitude;
     private LocalDateTime lastUpdated;
     private String uuid;
+    private Boolean saved;
 
 }

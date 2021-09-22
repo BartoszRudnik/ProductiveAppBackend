@@ -16,5 +16,6 @@ public class AddLocalization {
     private Float longitude;
     private Float latitude;
     private String uuid;
+    private Boolean saved;
 
 }
