@@ -22,11 +22,6 @@ public class FilterSettingsController {
         filterSettingsService.changeShowOnlyWithLocation(mail);
     }
 
-    @PostMapping("/changeShowOnlyUnfinishedStatus/{mail}")
-    public void changeShowOnlyUnfinishedStatus(@PathVariable String mail){
-        filterSettingsService.changeShowOnlyUnfinished(mail);
-    }
-
     @PostMapping("/changeShowOnlyDelegatedStatus/{mail}")
     public void changeShowOnlyDelegatedStatus(@PathVariable String mail){
         filterSettingsService.changeShowOnlyDelegated(mail);

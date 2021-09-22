@@ -40,7 +40,7 @@ public class FilterSettingsService {
 
         if(this.filterSettingsRepository.findByUser(applicationUser).isEmpty()){
 
-            FilterSettings newSettings = new FilterSettings(applicationUser, false, false, false);
+            FilterSettings newSettings = new FilterSettings(applicationUser, false, false);
             this.filterSettingsRepository.save(newSettings);
 
         }
@@ -54,18 +54,6 @@ public class FilterSettingsService {
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
         userSettings.setShowWithLocation(!userSettings.isShowWithLocation());
-
-        filterSettingsRepository.save(userSettings);
-
-    }
-
-    public void changeShowOnlyUnfinished(String mail){
-
-        ApplicationUser applicationUser = validateRequest(mail);
-
-        FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
-
-        userSettings.setShowUnfinished(!userSettings.isShowUnfinished());
 
         filterSettingsRepository.save(userSettings);
 
@@ -289,7 +277,7 @@ public class FilterSettingsService {
 
         FilterSettings userSettings = filterSettingsRepository.findByUser(applicationUser).get();
 
-        return new FilterSettingsResponse(userSettings.getId(), userSettings.isShowUnfinished(), userSettings.isShowDelegated(), userSettings.isShowWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getLocations(), userSettings.getSortingMode());
+        return new FilterSettingsResponse(userSettings.getId(), userSettings.isShowDelegated(), userSettings.isShowWithLocation(), userSettings.getCollaboratorEmail(), userSettings.getPriorities(), userSettings.getTags(), userSettings.getLocations(), userSettings.getSortingMode());
 
     }
 

@@ -13,7 +13,6 @@ import java.util.List;
 @ToString
 public class SynchronizeSettingsRequest {
 
-    private boolean showOnlyUnfinished;
     private boolean showOnlyDelegated;
     private boolean showOnlyWithLocalization;
     private List<String> collaborators;

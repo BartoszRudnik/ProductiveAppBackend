@@ -66,7 +66,7 @@ public class SynchronizationService {
                 Task existingTask = this.taskService.findByUuid(t.getUuid());
 
                 if(existingTask != null && existingTask.getLastUpdated().isBefore(t.getLastUpdated())){
-                    this.taskService.updateTask(tagList, t.getPosition(), t.getUuid(), t.getDescription(), t.getTitle(), t.getStartDate(), t.getEndDate(), t.getPriority(), t.isDone(), t.getLocalization(), t.isCanceled(), t.getNotificationLocalizationUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit(), t.getDelegatedEmail());
+                    this.taskService.updateTask(tagList, t.getPosition(), t.getUuid(), t.getDescription(), t.getTitle(), t.getStartDate(), t.getEndDate(), t.getPriority(), t.isDone(), t.getLocalization(), t.isCanceled(), t.getNotificationLocalizationUuid(), t.getNotificationLocalizationRadius(), t.isNotificationOnEnter(), t.isNotificationOnExit(), t.getDelegatedEmail(), t.getTaskState());
                 }
             }
         }
@@ -95,7 +95,7 @@ public class SynchronizationService {
         ApplicationUser user = this.appUserService.findByEmail(mail).get();
 
         if(!this.filterSettingsService.settingsExist(user)){
-            FilterSettings filterSettings = new FilterSettings(user, request.isShowOnlyUnfinished(), request.isShowOnlyDelegated(), request.isShowOnlyWithLocalization(), request.getCollaborators(), request.getPriorities(), request.getTags(), request.getLocations(), request.getSortingMode());
+            FilterSettings filterSettings = new FilterSettings(user, request.isShowOnlyDelegated(), request.isShowOnlyWithLocalization(), request.getCollaborators(), request.getPriorities(), request.getTags(), request.getLocations(), request.getSortingMode());
 
             this.filterSettingsService.save(filterSettings);
         }else{
@@ -103,7 +103,6 @@ public class SynchronizationService {
 
             if(filterSettings != null && filterSettings.getLastUpdated().isBefore(request.getLastUpdated())){
                 filterSettings.setShowDelegated(request.isShowOnlyDelegated());
-                filterSettings.setShowUnfinished(request.isShowOnlyUnfinished());
                 filterSettings.setShowWithLocation(request.isShowOnlyWithLocalization());
                 filterSettings.setSortingMode(request.getSortingMode());
                 filterSettings.setCollaboratorEmail(request.getCollaborators());

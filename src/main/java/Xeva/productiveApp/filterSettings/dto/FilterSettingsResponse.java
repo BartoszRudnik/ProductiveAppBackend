@@ -12,7 +12,6 @@ import java.util.List;
 public class FilterSettingsResponse {
 
     private Long id;
-    private boolean showOnlyUnfinished;
     private boolean showOnlyDelegated;
     private boolean showOnlyWithLocalization;
     private List<String> collaboratorEmail;

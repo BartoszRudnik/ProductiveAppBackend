@@ -326,7 +326,7 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public void updateTask(List<String> tags, double position, String uuid, String description, String taskName, LocalDateTime startDate, LocalDateTime endDate, String priority, boolean isDone, String taskList, boolean isCanceled, String localizationUuid, double notificationRadius, boolean notificationOnEnter, boolean notificationOnExit, String delegatedEmail){
+    public void updateTask(List<String> tags, double position, String uuid, String description, String taskName, LocalDateTime startDate, LocalDateTime endDate, String priority, boolean isDone, String taskList, boolean isCanceled, String localizationUuid, double notificationRadius, boolean notificationOnEnter, boolean notificationOnExit, String delegatedEmail, String taskState){
 
         if(this.taskRepository.findByUuid(uuid).isEmpty()){
             throw new IllegalStateException("Task doesn't exist");
@@ -344,6 +344,7 @@ public class TaskService {
         task.setTaskList(this.getLocalization(taskList));
         task.setPosition(position);
         task.setIsCanceled(isCanceled);
+        task.setTaskState(taskState);
 
         if(localizationUuid != null) {
             task.setNotificationLocalization(this.localizationService.findByUuid(localizationUuid));
@@ -434,6 +435,7 @@ public class TaskService {
         task.setTaskList(this.getLocalization(request.getLocalization()));
         task.setPosition(request.getPosition());
         task.setIsCanceled(request.isCanceled());
+        task.setTaskState(request.getTaskState());
 
         if(request.getLocalizationUuid() != null) {
             task.setNotificationLocalization(this.localizationService.findByUuid(request.getLocalizationUuid()));

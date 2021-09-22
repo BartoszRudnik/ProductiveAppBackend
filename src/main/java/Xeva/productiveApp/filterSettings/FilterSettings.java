@@ -32,7 +32,6 @@ public class FilterSettings {
     @JoinColumn(nullable = false, name = "application_user_id", unique = true)
     private ApplicationUser user;
 
-    private boolean showUnfinished;
     private boolean showDelegated;
     private boolean showWithLocation;
 
@@ -62,9 +61,8 @@ public class FilterSettings {
         this.lastUpdated = LocalDateTime.now();
     }
 
-    public FilterSettings(ApplicationUser user, boolean showUnfinished, boolean showDelegated, boolean showWithLocation){
+    public FilterSettings(ApplicationUser user, boolean showDelegated, boolean showWithLocation){
         this.user = user;
-        this.showUnfinished = showUnfinished;
         this.showDelegated = showDelegated;
         this.showWithLocation = showWithLocation;
         this.collaboratorEmail = new ArrayList<>();
@@ -74,9 +72,8 @@ public class FilterSettings {
         this.sortingMode = 0;
     }
 
-    public FilterSettings(ApplicationUser user, boolean showUnfinished, boolean showDelegated, boolean showWithLocation, List<String> collaboratorEmail, List<String> priorities, List<String> tags, List<String> locations, int sortingMode){
+    public FilterSettings(ApplicationUser user, boolean showDelegated, boolean showWithLocation, List<String> collaboratorEmail, List<String> priorities, List<String> tags, List<String> locations, int sortingMode){
         this.user = user;
-        this.showUnfinished = showUnfinished;
         this.showDelegated = showDelegated;
         this.showWithLocation = showWithLocation;
         this.collaboratorEmail = collaboratorEmail;
