@@ -176,7 +176,7 @@ public class TaskService {
 
     }
 
-    public long addTask(AddTaskRequest request){
+    public AddResponse addTask(AddTaskRequest request){
 
         boolean isUser = userService.findByEmail(request.getUserEmail()).isPresent();
 
@@ -217,8 +217,13 @@ public class TaskService {
         this.saveTask(task);
         this.setTags(task, tags);
 
-        return task.getId();
+        String childTaskUuid = "";
 
+        if(task.getChildTask() != null){
+            childTaskUuid = task.getChildTask().getUuid();
+        }
+
+        return new AddResponse(task.getId(), childTaskUuid);
     }
 
     public void deleteTask(String uuid, Long id){
@@ -417,7 +422,7 @@ public class TaskService {
         this.taskRepository.save(task);
     }
 
-    public void updateTask(UpdateTaskRequest request){
+    public AddResponse updateTask(UpdateTaskRequest request){
 
         if(this.taskRepository.findByUuid(request.getUuid()).isEmpty()){
             throw new IllegalStateException("Task doesn't exist");
@@ -532,6 +537,14 @@ public class TaskService {
         this.tagService.saveAll(tagsToAdd);
 
         this.taskRepository.save(task);
+
+        String childTaskUuid = "";
+
+        if(task.getDelegatedEmail() != null){
+            childTaskUuid = task.getChildTask().getUuid();
+        }
+
+        return new AddResponse(task.getId(), childTaskUuid);
     }
 
     private void setLocalizationNotification(Task task, ApplicationUser delegatedUser, String localizationUuid, String taskName, String description, String priority, boolean isDone, LocalDateTime startDate, LocalDateTime endDate, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {

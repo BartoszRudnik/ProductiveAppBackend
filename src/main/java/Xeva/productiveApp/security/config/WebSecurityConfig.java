@@ -40,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     antMatchers("/api/v*/locale/**").permitAll().
                     antMatchers("/api/v*/synchronize/**").permitAll().
                     antMatchers("/api/v*/version/**").permitAll().
+                    antMatchers("/api/v*/delegatedTaskSSE/**").permitAll().
         anyRequest().
         authenticated().and()
         .formLogin();

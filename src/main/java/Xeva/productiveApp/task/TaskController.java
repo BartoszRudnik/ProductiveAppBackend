@@ -35,7 +35,7 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public long newTask(@RequestBody AddTaskRequest request){
+    public AddResponse newTask(@RequestBody AddTaskRequest request){
         return taskService.addTask(request);
     }
 
@@ -45,8 +45,8 @@ public class TaskController {
     }
 
     @PutMapping("/update")
-    public void updateTask(@RequestBody UpdateTaskRequest request){
-        this.taskService.updateTask(request);
+    public AddResponse updateTask(@RequestBody UpdateTaskRequest request){
+        return this.taskService.updateTask(request);
     }
 
     @PutMapping("/updatePosition/{taskId}")
