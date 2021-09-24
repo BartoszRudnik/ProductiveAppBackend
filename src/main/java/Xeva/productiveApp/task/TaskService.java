@@ -218,12 +218,18 @@ public class TaskService {
         this.setTags(task, tags);
 
         String childTaskUuid = "";
+        String parentTaskUuid = "";
+        String parentTaskEmail = "";
 
         if(task.getChildTask() != null){
             childTaskUuid = task.getChildTask().getUuid();
         }
+        if(task.getParentTask() != null){
+            parentTaskUuid = task.getParentTask().getUuid();
+            parentTaskEmail = task.getParentTask().getUser().getEmail();
+        }
 
-        return new AddResponse(task.getId(), childTaskUuid);
+        return new AddResponse(task.getId(), childTaskUuid, parentTaskUuid, parentTaskEmail);
     }
 
     public void deleteTask(String uuid, Long id){
@@ -396,6 +402,7 @@ public class TaskService {
                 this.localizationRepository.save(newLocalization);
             }else{
                 newLocalization = this.localizationRepository.findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(existingLocalization.getCountry(), existingLocalization.getLocality(), existingLocalization.getStreet(), existingLocalization.getLatitude(), existingLocalization.getLongitude(), delegatedUser).get();
+                newLocalization.setUuid(UUID.randomUUID().toString());
             }
 
             task.getChildTask().setNotificationLocalization(newLocalization);
@@ -487,6 +494,7 @@ public class TaskService {
                     this.localizationRepository.save(newLocalization);
                 }else{
                     newLocalization = this.localizationRepository.findTopByCountryAndLocalityAndStreetAndLatitudeAndLongitudeAndUser(existingLocalization.getCountry(), existingLocalization.getLocality(), existingLocalization.getStreet(), existingLocalization.getLatitude(), existingLocalization.getLongitude(), delegatedUser).get();
+                    newLocalization.setUuid(UUID.randomUUID().toString());
                 }
 
                task.getChildTask().setNotificationLocalization(newLocalization);
@@ -539,12 +547,18 @@ public class TaskService {
         this.taskRepository.save(task);
 
         String childTaskUuid = "";
+        String parentTaskUuid = "";
+        String parentTaskEmail = "";
 
-        if(task.getDelegatedEmail() != null){
+        if(task.getChildTask() != null){
             childTaskUuid = task.getChildTask().getUuid();
         }
+        if(task.getParentTask() != null){
+            parentTaskUuid = task.getParentTask().getUuid();
+            parentTaskEmail = task.getParentTask().getUser().getEmail();
+        }
 
-        return new AddResponse(task.getId(), childTaskUuid);
+        return new AddResponse(task.getId(), childTaskUuid, parentTaskUuid, parentTaskEmail);
     }
 
     private void setLocalizationNotification(Task task, ApplicationUser delegatedUser, String localizationUuid, String taskName, String description, String priority, boolean isDone, LocalDateTime startDate, LocalDateTime endDate, double localizationRadius, boolean notificationOnEnter, boolean notificationOnExit) {

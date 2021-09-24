@@ -10,4 +10,6 @@ import lombok.*;
 public class AddResponse {
     Long taskId;
     String childTaskUuid;
+    String parentTaskUuid;
+    String parentTaskEmail;
 }
