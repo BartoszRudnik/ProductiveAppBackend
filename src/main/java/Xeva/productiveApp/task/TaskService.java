@@ -62,6 +62,8 @@ public class TaskService {
         }
 
         ApplicationUser user = userService.findByEmail(mail).get();
+        user.setNewTask(false);
+
         Task task = new Task();
         if(taskRepository.findByUuid(taskUuid).isPresent()) {
             task = taskRepository.findByUuid(taskUuid).get();
@@ -87,6 +89,8 @@ public class TaskService {
         else {
             taskResponse = new GetTasksResponse(task, tagService.findAllByTaskId(task.getId()));
         }
+
+        this.userService.save(user);
 
         return taskResponse;
     }
@@ -316,6 +320,9 @@ public class TaskService {
                 tasksResponse.add(new GetTasksResponse(task, tagService.findAllByTaskId(task.getId())));
             }
         }
+
+        user.setNewTask(false);
+        this.userService.save(user);
 
         return tasksResponse;
 

@@ -1,6 +1,7 @@
 package Xeva.productiveApp.delegatedTaskSSE;
 
 import Xeva.productiveApp.delegatedTaskSSE.dto.EventDto;
+import Xeva.productiveApp.delegatedTaskSSE.dto.IsNewTaskResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -20,5 +21,10 @@ public class SseController {
     @PostMapping("/publish/{memberId}")
     public void publishEvent(@PathVariable String memberId, @RequestBody EventDto event) {
         this.notificationService.sendNotification(memberId, event);
+    }
+
+    @GetMapping("/isNewTask/{email}")
+    public IsNewTaskResponse checkIfNewTask(@PathVariable String email){
+        return this.notificationService.checkIfNewTask(email);
     }
 }

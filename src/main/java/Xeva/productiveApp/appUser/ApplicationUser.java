@@ -85,6 +85,8 @@ public class ApplicationUser implements UserDetails {
     private LocalDateTime lastUpdatedGraphic = LocalDateTime.now();
     private LocalDateTime lastUpdateName = LocalDateTime.now();
 
+    private boolean isNewTask = false;
+
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 
         this.firstName = firstName;
