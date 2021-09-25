@@ -100,7 +100,6 @@ public class UserRelationService {
     }
 
     public void acceptAskForPermission(String userMail, String collaboratorMail){
-
         this.checkIfUserExists(userMail);
         this.checkIfUserExists(collaboratorMail);
 
@@ -124,11 +123,9 @@ public class UserRelationService {
         }
 
         userRelationRepository.save(userRelation);
-
     }
 
     public void declineAskForPermission(String userMail, String collaboratorMail){
-
         this.checkIfUserExists(userMail);
         this.checkIfUserExists(collaboratorMail);
 
@@ -150,11 +147,9 @@ public class UserRelationService {
         }
 
         userRelationRepository.save(userRelation);
-
     }
 
     public void askForPermission(String userMail, String collaboratorMail){
-
         this.checkIfUserExists(userMail);
         this.checkIfUserExists(collaboratorMail);
 
@@ -176,7 +171,6 @@ public class UserRelationService {
         }
 
         userRelationRepository.save(userRelation);
-
     }
 
     public void checkIfUserExists(String mail){
@@ -188,7 +182,6 @@ public class UserRelationService {
     }
 
     public CollaboratorNameResponse getCollaboratorName(String user1Email, String user2Email){
-
         this.checkIfUserExists(user1Email);
         this.checkIfUserExists(user2Email);
 
@@ -206,11 +199,9 @@ public class UserRelationService {
         }
 
         return collaboratorNameResponse;
-
     }
 
     public void changePermission(String userMail, String collaboratorMail){
-
         this.checkIfUserExists(userMail);
         this.checkIfUserExists(collaboratorMail);
 
@@ -232,11 +223,9 @@ public class UserRelationService {
         }
 
         this.userRelationRepository.save(relation);
-
     }
 
     public Long addRelation(Request request){
-
         if(request.getCollaboratorEmail().equals(request.getUserEmail())){
             throw new IllegalStateException("Cannot invite yourself");
         }
@@ -251,12 +240,13 @@ public class UserRelationService {
 
         userRelationRepository.save(newRelation);
 
-        return newRelation.getId();
+        user2.setNewCollaborator(true);
+        this.appUserService.save(user2);
 
+        return newRelation.getId();
     }
 
     public void deleteRelation(String uuid){
-
         if(userRelationRepository.findByUuid(uuid).isPresent()) {
 
             UserRelation relationToDelete = userRelationRepository.findByUuid(uuid).get();
@@ -266,11 +256,9 @@ public class UserRelationService {
         }else{
             throw new IllegalStateException("Given relation doesn't exists");
         }
-
     }
 
     public Set<AllCollaboratorsResponse> getAllCollaborators(String mail){
-
         checkIfUserExists(mail);
 
         ApplicationUser appUser = appUserService.findByEmail(mail).get();
@@ -299,8 +287,10 @@ public class UserRelationService {
 
         }
 
-        return result;
+        appUser.setNewCollaborator(false);
+        this.appUserService.save(appUser);
 
+        return result;
     }
 
     public UserRelation getUsersRelation(ApplicationUser user1, ApplicationUser user2){
@@ -315,7 +305,6 @@ public class UserRelationService {
     }
 
     public Set<String> getCollaborators(String mail){
-
         checkIfUserExists(mail);
 
         ApplicationUser user = appUserService.findByEmail(mail).get();
@@ -334,12 +323,13 @@ public class UserRelationService {
             }
         }
 
-        return result;
+        user.setNewCollaborator(false);
+        this.appUserService.save(user);
 
+        return result;
     }
 
     public void acceptInvitation(String uuid){
-
         UserRelation relation;
 
         if(userRelationRepository.findByUuid(uuid).isPresent()) {
@@ -350,10 +340,11 @@ public class UserRelationService {
 
             this.userRelationRepository.save(relation);
 
+            relation.getUser2().setNewCollaborator(true);
+            this.appUserService.save(relation.getUser2());
         }else{
             throw new IllegalStateException("Given relation doesn't exists");
         }
-
     }
 
     public void declineInvitation(String uuid){
@@ -366,9 +357,7 @@ public class UserRelationService {
 
             //relation.setState(RelationState.DECLINED);
             userRelationRepository.delete(relation);
-
             userRelationRepository.save(relation);
-
         }else{
             throw new IllegalStateException("Given relation doesn't exists");
         }
@@ -402,5 +391,31 @@ public class UserRelationService {
 
     public UserRelation findById(Long id) {
         return this.userRelationRepository.findById(id).get();
+    }
+
+    public AllCollaboratorsResponse getSingleCollaborator(String relationUuid) {
+        if(this.userRelationRepository.findByUuid(relationUuid).isPresent()){
+            UserRelation relation = this.userRelationRepository.findByUuid(relationUuid).get();
+
+            String user1Name = " ";
+            String user2Name = " ";
+
+            if(relation.getUser1().getFirstName() != null && relation.getUser1().getLastName() != null){
+                user1Name = relation.getUser1().getFirstName() + " " + relation.getUser1().getLastName();
+            }
+
+            if(relation.getUser2().getFirstName() != null && relation.getUser2().getLastName() != null){
+                user2Name = relation.getUser2().getFirstName() + " " + relation.getUser2().getLastName();
+            }
+
+            relation.getUser2().setNewCollaborator(false);
+            relation.getUser1().setNewCollaborator(false);
+            this.appUserService.save(relation.getUser2());
+            this.appUserService.save(relation.getUser1());
+
+            return new AllCollaboratorsResponse(relation.getId(), relation.getUser1().getEmail(), relation.getUser2().getEmail(), user1Name, user2Name, relation.getState().toString(), relation.isUser1Permission(), relation.isUser2Permission(), relation.isUser1AskForPermission(), relation.isUser2AskForPermission(), relation.getLastUpdated(), relation.getUuid());
+        }else{
+            return null;
+        }
     }
 }

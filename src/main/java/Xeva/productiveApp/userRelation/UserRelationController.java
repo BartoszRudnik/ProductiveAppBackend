@@ -91,6 +91,11 @@ public class UserRelationController {
         return userRelationService.getCollaborators(mail);
     }
 
+    @GetMapping("/getSingleCollaborator/{relationUuid}")
+    public AllCollaboratorsResponse getSingleCollaborator(@PathVariable String relationUuid){
+        return this.userRelationService.getSingleCollaborator(relationUuid);
+    }
+
     @GetMapping("/getAllCollaborators/{mail}")
     public Set<AllCollaboratorsResponse> getAllCollaborators(@PathVariable String mail){
         return userRelationService.getAllCollaborators(mail);

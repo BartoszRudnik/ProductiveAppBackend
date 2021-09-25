@@ -86,6 +86,7 @@ public class ApplicationUser implements UserDetails {
     private LocalDateTime lastUpdateName = LocalDateTime.now();
 
     private boolean isNewTask = false;
+    private boolean isNewCollaborator = false;
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 

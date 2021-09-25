@@ -1,5 +1,6 @@
 package Xeva.productiveApp.delegatedTaskSSE;
 
+import Xeva.productiveApp.delegatedTaskSSE.dto.CollaboratorEventDto;
 import Xeva.productiveApp.delegatedTaskSSE.dto.EventDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,11 @@ public class EventMapper {
                 .id(RandomStringUtils.randomAlphanumeric(12))
                 .name(event.getTaskUuid())
                 .data(event.getUserMail());
+    }
 
-
+    public SseEmitter.SseEventBuilder toSseEventBuilder(CollaboratorEventDto event) {
+        return SseEmitter.event()
+                .id(RandomStringUtils.randomAlphanumeric(12))
+                .name(event.getRelationUuid());
     }
 }

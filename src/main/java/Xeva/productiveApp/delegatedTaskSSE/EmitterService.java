@@ -21,4 +21,13 @@ public class EmitterService {
         this.repository.addOrReplaceEmitter(memberId, emitter);
         return emitter;
     }
+
+    public SseEmitter createCollaboratorEmitter(String memberId) {
+        SseEmitter emitter = new SseEmitter(this.eventsTimeout);
+        emitter.onCompletion(() -> this.repository.remove(memberId));
+        emitter.onTimeout(() -> this.repository.remove(memberId));
+        emitter.onError(e -> this.repository.remove(memberId));
+        this.repository.addOrReplaceEmitter(memberId + "collaborator", emitter);
+        return emitter;
+    }
 }
