@@ -21,7 +21,7 @@ public class RegistrationController {
 
         ConfirmationToken token = registrationService.register(request);
 
-        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId());
+        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId(), token.getAppUser().isFirstLogin());
 
     };
 

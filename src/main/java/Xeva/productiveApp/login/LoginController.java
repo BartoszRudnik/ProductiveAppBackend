@@ -22,7 +22,7 @@ public class LoginController {
 
         ConfirmationToken token = loginService.signIn(request);
 
-        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId());
+        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId(), token.getAppUser().isFirstLogin());
 
     }
 
@@ -30,7 +30,7 @@ public class LoginController {
     public ResponseToken googleLogin(@RequestBody RegistrationRequest request){
         ConfirmationToken token = loginService.googleSignIn(request);
 
-        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId());
+        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId(), token.getAppUser().isFirstLogin());
 
     }
 

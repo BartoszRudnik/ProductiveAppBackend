@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "api/v1/userData")
 @AllArgsConstructor
 public class ApplicationUserController {
-
     private final AppUserService appUserService;
 
     @PostMapping("/update/{userMail}")
@@ -28,4 +27,8 @@ public class ApplicationUserController {
         return appUserService.getUserData(userMail);
     }
 
+    @PostMapping("/changeFirstLoginStatus/{userMail}")
+    public void changeFirstLoginStatus(@PathVariable String userMail){
+        this.appUserService.changeFirstLoginStatus(userMail);
+    }
 }

@@ -21,7 +21,7 @@ public class NewPasswordController {
 
         ConfirmationToken token = newPasswordService.newPassword(request);
 
-        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId());
+        return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId(), token.getAppUser().isFirstLogin());
 
     }
 

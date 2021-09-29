@@ -229,4 +229,13 @@ public class AppUserService implements UserDetailsService {
         appUserRepository.updateAppUserPassword(email, newPassword);
     }
 
+    public void changeFirstLoginStatus(String userMail) {
+        if(this.appUserRepository.findByEmail(userMail).isPresent()){
+            ApplicationUser user = this.appUserRepository.findByEmail(userMail).get();
+
+            user.setFirstLogin(false);
+
+            this.appUserRepository.save(user);
+        }
+    }
 }
