@@ -356,8 +356,7 @@ public class UserRelationService {
             relation = userRelationRepository.findByUuid(uuid).get();
 
             //relation.setState(RelationState.DECLINED);
-            userRelationRepository.delete(relation);
-            userRelationRepository.save(relation);
+            this.userRelationRepository.delete(relation);
         }else{
             throw new IllegalStateException("Given relation doesn't exists");
         }
