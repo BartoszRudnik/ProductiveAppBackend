@@ -118,13 +118,13 @@ public class SynchronizationService {
     public void synchronizeUser(SynchronizeUserRequest request){
         ApplicationUser user = this.appUserService.findByEmail(request.getEmail()).get();
 
-        if(!this.userImageService.checkIfExists(request.getEmail())){
+        if(!this.userImageService.checkIfExists(request.getEmail()) && request.getLocalImage().length > 0){
 
             this.userImageService.setImage(request.getLocalImage(), user);
         }else{
             UserImage userImage = this.userImageService.getUserImage(user);
 
-            if(userImage.getLastUpdated().isBefore(request.getLastUpdatedImage())){
+            if(userImage.getLastUpdated().isBefore(request.getLastUpdatedImage()) && request.getLocalImage().length > 0){
 
                 this.userImageService.setImage(request.getLocalImage(), user);
             }

@@ -88,6 +88,7 @@ public class ApplicationUser implements UserDetails {
     private boolean firstLogin = true;
     private boolean isNewTask = false;
     private boolean isNewCollaborator = false;
+    private boolean isNewPermission = false;
 
     public ApplicationUser(String firstName, String lastName, String email, String password, AppUserRole userRole) {
 

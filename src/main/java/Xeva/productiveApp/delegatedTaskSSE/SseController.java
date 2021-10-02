@@ -3,6 +3,7 @@ package Xeva.productiveApp.delegatedTaskSSE;
 import Xeva.productiveApp.delegatedTaskSSE.dto.CollaboratorEventDto;
 import Xeva.productiveApp.delegatedTaskSSE.dto.EventDto;
 import Xeva.productiveApp.delegatedTaskSSE.dto.IsNewTaskResponse;
+import Xeva.productiveApp.delegatedTaskSSE.dto.PermissionDto;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -24,6 +25,16 @@ public class SseController {
         return this.emitterService.createCollaboratorEmitter(memberId);
     }
 
+    @GetMapping("/subscribePermission/{memberId}")
+    public SseEmitter subscribePermissionEvents(@PathVariable String memberId){
+        return this.emitterService.createPermissionEmitter(memberId);
+    }
+
+    @PostMapping("/publishPermission/{memberId}")
+    public void publishPermissionEvent(@PathVariable String memberId, @RequestBody PermissionDto event){
+       this.notificationService.sendNotification(memberId, event);
+    }
+
     @PostMapping("/publish/{memberId}")
     public void publishEvent(@PathVariable String memberId, @RequestBody EventDto event) {
         this.notificationService.sendNotification(memberId, event);
@@ -42,5 +53,10 @@ public class SseController {
     @GetMapping("/isNewCollaborator/{email}")
     public IsNewTaskResponse checkIfNewCollaborator(@PathVariable String email){
         return this.notificationService.checkIfNewCollaborator(email);
+    }
+
+    @GetMapping("/isNewPermission/{email}")
+    public IsNewTaskResponse checkIfNewPermission(@PathVariable String email){
+        return this.notificationService.checkIfNewPermission(email);
     }
 }
