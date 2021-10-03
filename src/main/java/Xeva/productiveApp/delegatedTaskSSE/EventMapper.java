@@ -27,7 +27,6 @@ public class EventMapper {
     public SseEmitter.SseEventBuilder toSseEventBuilder(PermissionDto event) {
         return SseEmitter.event()
                 .id(RandomStringUtils.randomAlphanumeric(12))
-                .name(event.getRelationUuid())
-                .data(event.getAction());
+                .name(event.getRelationUuid() + " " + event.getAction());
     }
 }
