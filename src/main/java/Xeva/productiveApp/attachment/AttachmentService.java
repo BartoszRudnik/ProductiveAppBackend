@@ -91,7 +91,6 @@ public class AttachmentService {
     }
 
     public List<GetAttachments> getUserAttachments(String userMail){
-
         if(this.appUserRepository.findByEmail(userMail).isEmpty()){
             throw new IllegalStateException("User doesn't exist");
         }
@@ -102,14 +101,15 @@ public class AttachmentService {
 
         List<GetAttachments> result = new ArrayList<>();
 
-        for(Attachment attachment : attachments){
-            GetAttachments getAttachments = new GetAttachments(attachment.getAttachmentId(), attachment.getTask().getUuid(), attachment.getFileName(), attachment.getUuid(), attachment.getFile());
+        if(attachments != null) {
+            for (Attachment attachment : attachments) {
+                GetAttachments getAttachments = new GetAttachments(attachment.getAttachmentId(), attachment.getTask().getUuid(), attachment.getFileName(), attachment.getUuid(), attachment.getFile());
 
-            result.add(getAttachments);
+                result.add(getAttachments);
+            }
         }
 
         return result;
-
     }
 
     public List<GetAttachments> getDelegatedAttachments(DelegatedAttachments attachments){
@@ -146,4 +146,21 @@ public class AttachmentService {
 
     }
 
+    public List<GetAttachments> getTaskAttachments(String taskUuid, String parentTaskUuid) {
+        List<Attachment> taskAttachments = new ArrayList<>();
+        List<GetAttachments> resultList = new ArrayList<>();
+
+        if(this.attachmentRepository.findAllByTaskUuid(taskUuid).isPresent()){
+            taskAttachments.addAll(this.attachmentRepository.findAllByTaskUuid(taskUuid).get());
+        }
+        if(this.attachmentRepository.findAllByTaskUuid(parentTaskUuid).isPresent()){
+            taskAttachments.addAll(this.attachmentRepository.findAllByTaskUuid(parentTaskUuid).get());
+        }
+
+        for(Attachment attachment : taskAttachments){
+            resultList.add(new GetAttachments(attachment.getAttachmentId(), attachment.getTask().getUuid(), attachment.getFileName(), attachment.getUuid(), attachment.getFile()));
+        }
+
+        return resultList;
+    }
 }

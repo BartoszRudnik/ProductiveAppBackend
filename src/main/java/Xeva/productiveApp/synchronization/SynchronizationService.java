@@ -124,7 +124,7 @@ public class SynchronizationService {
         }else{
             UserImage userImage = this.userImageService.getUserImage(user);
 
-            if(userImage.getLastUpdated().isBefore(request.getLastUpdatedImage()) && request.getLocalImage().length > 0){
+            if(userImage != null && request.getLastUpdatedImage() != null && userImage.getLastUpdated().isBefore(request.getLastUpdatedImage()) && request.getLocalImage().length > 0){
 
                 this.userImageService.setImage(request.getLocalImage(), user);
             }

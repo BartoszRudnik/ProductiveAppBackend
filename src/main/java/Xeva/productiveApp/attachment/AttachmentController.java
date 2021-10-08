@@ -18,6 +18,11 @@ public class AttachmentController {
 
     private final AttachmentService attachmentService;
 
+    @GetMapping("/getTaskAttachments/{taskUuid}/{parentTaskUuid}")
+    public List<GetAttachments> getTaskAttachments(@PathVariable String taskUuid, @PathVariable String parentTaskUuid){
+        return this.attachmentService.getTaskAttachments(taskUuid, parentTaskUuid);
+    }
+
     @PostMapping("/addAttachment/{userMail}/{taskUuid}/{fileName}/{uuid}")
     public Long addAttachment(@PathVariable String taskUuid, @PathVariable String uuid, @PathVariable String fileName, @PathVariable String userMail , @RequestParam MultipartFile multipartFile) throws IOException {
         return this.attachmentService.addAttachment(multipartFile, taskUuid, userMail, fileName, uuid);
