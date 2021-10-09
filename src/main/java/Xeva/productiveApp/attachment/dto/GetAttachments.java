@@ -13,6 +13,5 @@ public class GetAttachments {
     private String taskUuid;
     private String fileName;
     private String uuid;
-    private byte[] localFile;
 
 }
