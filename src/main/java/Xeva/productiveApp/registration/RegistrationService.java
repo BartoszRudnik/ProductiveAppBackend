@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -30,8 +31,8 @@ public class RegistrationService {
             throw new IllegalStateException("email not valid");
         }
 
-        ConfirmationToken confirmationToken = appUserService.signUpUser(new ApplicationUser(
-                request.getFirstName(), request.getLastName(), request.getEmail(), request.getPassword(), AppUserRole.MAIL_USER));
+        ConfirmationToken confirmationToken = this.appUserService.signUpUser(new ApplicationUser(
+                request.getFirstName(), request.getLastName(), request.getEmail().toLowerCase(), request.getPassword(), AppUserRole.MAIL_USER));
 
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + confirmationToken.getToken();
 

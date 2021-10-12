@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -187,7 +188,7 @@ public class AppUserService implements UserDetailsService {
     public ConfirmationToken signUpUser(ApplicationUser applicationUser){
 
         boolean userExists = appUserRepository
-                .findByEmail(applicationUser.getEmail())
+                .findByEmail(applicationUser.getEmail().toLowerCase())
                 .isPresent();
 
         if(userExists){

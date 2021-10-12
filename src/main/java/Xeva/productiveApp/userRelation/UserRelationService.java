@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -226,15 +227,15 @@ public class UserRelationService {
     }
 
     public Long addRelation(Request request){
-        if(request.getCollaboratorEmail().equals(request.getUserEmail())){
+        if(request.getCollaboratorEmail().toLowerCase().equals(request.getUserEmail())){
             throw new IllegalStateException("Cannot invite yourself");
         }
 
         checkIfUserExists(request.getUserEmail());
-        checkIfUserExists(request.getCollaboratorEmail());
+        checkIfUserExists(request.getCollaboratorEmail().toLowerCase());
 
         ApplicationUser user1 = appUserService.findByEmail(request.getUserEmail()).get();
-        ApplicationUser user2 = appUserService.findByEmail(request.getCollaboratorEmail()).get();
+        ApplicationUser user2 = appUserService.findByEmail(request.getCollaboratorEmail().toLowerCase()).get();
 
         UserRelation newRelation = new UserRelation(user1, user2, request.getUuid());
 

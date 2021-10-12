@@ -7,22 +7,18 @@ import Xeva.productiveApp.registration.dto.RegistrationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+
 @Service
 @AllArgsConstructor
 public class LoginService {
-
     private final AppUserService appUserService;
 
     public ConfirmationToken signIn(LoginRequest request){
-
-        return appUserService.signInUser(request.getEmail(), request.getPassword());
-
+        return appUserService.signInUser(request.getEmail().toLowerCase(), request.getPassword());
     }
 
     public ConfirmationToken googleSignIn(RegistrationRequest request){
-
         return appUserService.googleSignIn(request);
-
     }
-
 }

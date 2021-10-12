@@ -13,21 +13,17 @@ import java.time.Duration;
 @RequestMapping(path = "api/v1/registration")
 @AllArgsConstructor
 public class RegistrationController {
-
     private final RegistrationService registrationService;
 
     @PostMapping
     public ResponseToken register(@RequestBody RegistrationRequest request){
-
-        ConfirmationToken token = registrationService.register(request);
+        ConfirmationToken token = this.registrationService.register(request);
 
         return new ResponseToken(token.getToken(), Duration.between(token.getCreatedAt(), token.getExpiresAt()).toMillis(), token.getAppUser().getId(), token.getAppUser().isFirstLogin());
-
-    };
+    }
 
     @GetMapping(path = "confirm")
     public String confirm(@RequestParam("token") String token){
-        return registrationService.confirmToken(token);
+        return this.registrationService.confirmToken(token);
     }
-
 }
