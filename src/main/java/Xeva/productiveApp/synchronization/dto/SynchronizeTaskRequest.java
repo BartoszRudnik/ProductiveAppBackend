@@ -30,8 +30,8 @@ public class SynchronizeTaskRequest {
     private LocalDateTime endDate;
     private String tags;
     private boolean done;
-    private boolean isDelegated;
-    private boolean isCanceled;
+    private boolean delegated;
+    private boolean canceled;
     private int parentId;
     private int childId;
     private String notificationLocalizationUuid;

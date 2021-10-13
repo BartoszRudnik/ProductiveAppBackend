@@ -26,7 +26,7 @@ public class UpdateTaskRequest {
     private LocalDateTime endDate;
     private List<Tag> tags;
     private Double position;
-    private boolean isCanceled;
+    private boolean canceled;
     private String taskState;
     private String localizationUuid;
     private double localizationRadius;

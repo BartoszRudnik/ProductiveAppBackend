@@ -93,7 +93,6 @@ public class Task {
     )
     @OneToOne(cascade = {
             CascadeType.PERSIST,
-            CascadeType.REFRESH
     })
     @JsonIgnore
     private Task childTask;
