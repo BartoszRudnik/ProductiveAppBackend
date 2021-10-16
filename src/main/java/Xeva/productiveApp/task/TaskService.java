@@ -425,7 +425,7 @@ public class TaskService {
             }
         }
         else if(this.userService.findByEmail(request.getDelegatedEmail()).isPresent()) {
-            if(task.getChildTask() == null) {
+            if(task.getChildTask() == null && task.getTaskList() == TaskList.DELEGATED) {
                 ApplicationUser delegatedUser = this.userService.findByEmail(request.getDelegatedEmail()).get();
 
                 this.setLocalizationNotification(request, task, delegatedUser);
